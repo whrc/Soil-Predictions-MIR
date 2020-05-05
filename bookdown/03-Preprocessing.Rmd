@@ -1,0 +1,168 @@
+# Data Preprocessing
+
+## Extract OPUS files
+For Bruker Instruments, an OPUS file containing spectral data, will be output for each sample that is scanned. To compile these separate files into one dataset, we use a couple functions from the ['simplerspec'](https://github.com/philipp-baumann/simplerspec) package by Philip Baumann, as well as the stringr and foreach packages.
+
+```{r eval=TRUE}
+#---Packages---#
+library(stringr) #used for str_sub
+library(foreach) #used within read-opus-universal.R
+source("Single_Lib/reference_files/gather-spc.R") #simplerspec function
+source("Single_Lib/reference_files/read-opus-universal.R") #simplerspec function
+```
+Gets the paths of all OPUS files...
+```{r}
+#---List Files---#
+spectraPath <- "/Single_Lib/SPECTRA" #folder of OPUS files
+dirs <- list.dirs(paste(getwd(),spectraPath,sep=""), full.names=TRUE)
+all.files <- list.files(dirs, pattern= "*.0", recursive=TRUE,full.names=TRUE)
+```
+
+```{r eval=TRUE, echo=FALSE}
+all.files <- all.files[1:3] #subset for demostration
+```
+
+Extracts the spectra and gathers it into a tibble data frame...
+```{r eval=TRUE, echo=TRUE, warning=FALSE, collapse=TRUE}
+#---Extract Spectra---#
+spc_list <- read_opus_univ(fnames = all.files, extract = c("spc"))
+soilspec_tbl <- spc_list %>%
+  gather_spc()
+spc <- soilspec_tbl$spc
+```
+
+Optionally truncates the dataset to ensure the spectra from different samples align. Only necessary if instrument settings are changed between runs. 3017 would be changed to the number of spectral columns (wavelengths collected)
+```{r eval=FALSE}
+spc <- lapply(1:length(spc),function(x) spc[[x]][,1:3017])
+```
+
+Processes spectra into a dataframe and assigns a sample_id, based off the file names...    
+*sample_ids that are numeric may cause issues while merging so a string ID is advised.
+```{r eval=FALSE}
+spc.df <- as.data.frame(matrix(unlist(spc), nrow=length(spc), byrow=T))
+colnames(spc.df) <- colnames(spc[[1]])
+spc.df <- data.frame(sample_id = soilspec_tbl$sample_id, spc.df)
+spc.df$sample_id <- str_sub(spc.df$sample_id,1,9)
+```
+
+Optionally saves the spectra as an R dataset or csv file...
+```{r eval=FALSE}
+save(spc.df, file="spectra_original.RData")
+write.csv(spc.df, "spectra_original.csv")
+```
+
+## Process Spectra
+
+We narrow down the regions of the spectra by truncating wavenumbers below 628 and between 2268 to 2389, which is a CO2 sensitive region.
+```{r eval=FALSE}
+#---Edit Spectral Columns---#
+col.names <- colnames(spectra$spc) #get column names which are wavenumbers
+col.names <- as.numeric(substring(col.names,2))
+
+cutoff <- which(col.names <= 628)[1]
+spectra$spc <- spectra$spc[,-c(cutoff:length(col.names))] #truncate at >= 628
+
+min.index <- which(col.names <= 2389)[1]
+max.index <- which(col.names <= 2268)[1]
+spectra$spc <- spectra$spc[,-c(min.index:max.index)] #remove CO2 region
+```
+
+We perform a baseline transformation to normalize the spectra
+```{r eval=FALSE}
+#---Baseline Transformation---#
+library(matrixStats)
+base_offset <- function(x){
+  test <- rowMins(x)
+  return(x-test)
+}
+spectra$spc <- base_offset(spectra$spc)
+```
+
+Optionally saves the processed spectra as an R dataset or csv file...
+```{r eval=FALSE}
+#---Save Spectra---#
+save(spc.df, file="Single_Lib/spectra_processed.RData")
+write.csv(spc.df, "Single_Lib/spectra_processed.csv")
+```
+<!--could show head of the spectra, or a figure showing the dimensions-->
+
+## Merge with Lab Data
+If there is lab data associated with your soil samples, this can be merged with the spectral data and later used to assess the performance of your models.The example lab dataset below provides information about where the soil sample was taken with the Site_ID and Horizon, as well as the lab measurements for various soil properties including Organic Carbon, Sand, Silt and Clay.
+
+<!--discuss FTIR run-lists and associating IDs -->
+```{r eval=FALSE}
+#---Read Lab Data---#
+library(readr) #used to open the .csv file
+lab <- data.frame(read_csv("Single_Lib/LAB_DATA.csv", col_types=cols())) #read in the lab data
+```
+
+```{r eval=FALSE, echo=FALSE}
+library(knitr)
+kable(lab[1:3,], caption="Lab Data")
+```
+            
+            
+The merge() command joins the lab dataset to the spectral dataset. The all.y=TRUE parameter indicates that the final dataset will contain all the rows of spectra. This means that if some samples do not have lab data, they will be assigned a value of NA but the spectra will remain in the set. 
+```{r eval=FALSE}
+#---Merge Data---#
+all_data <- merge(lab, spectra, all.y=TRUE)
+save(all_data, file="Single_Lib/spectra_lab_merge.RData")
+write.csv(all_data, "Single_Lib/spectra_lab_merge.csv", row.names=FALSE)
+```
+<!-- could show the head of this dataset as well -->
+
+```{r eval=FALSE, echo=FALSE, warning=FALSE}
+load("Single_Lib/spectra_lab_merge.RData")
+kable(all_data[1:3,], caption="All Data")
+```
+
+The final dataframe contains a unique ID, lab data, and a matrix of spectral data called 'spc'. It is suggested to save this file as RData so it may be reloaded as needed.
+
+
+## Select Calibration Set
+Once the full dataset is processed, it must be split into calibration and validation sets to that will be used to train and test the model. This process must be repeated for each soil property that is being predicted, since outliers and NA values may vary among the properties. The example below shows this step for a single property, while the RUNFILE code shows it implemented in a loop for several properties.
+
+```{r eval=FALSE}
+#---Packages---#
+library(pls) #used for plsr model
+source("Single_Lib/reference_files/functions_modelChoice.R") #used for optimum_sd_outlier()
+```
+
+Rows that have NA or negative values for the property being predicted (% Organic Carbon) are excluded from the dataset.
+```{r eval=FALSE}
+#---Eliminate NA & negative---#
+all_data <- all_data[!is.na(all_data[,property]),] #no NAs
+all_data <- all_data[which(all_data[,property] > 0),] #no negative values
+```
+
+A pls model is created from the remaining data to flag outliers. Samples that have inaccurate predictions are excluded. This is measured by regressing the predictions against its associated lab data, and evaluating how many standard deviations each sample is from the best fit line. Those >99th percentile are removed since...
+```{r eval=FALSE}
+#---Remove Outliers---#
+pls.fit <- plsr(sqrt(get(property))~spc, ncomp= 20, data = all_data, valid="CV", segments = 50) #fit a pls model to the data
+pred <- c(predict(pls.fit, newdata = all_data$spc,ncomp=20))^2 #make predictions
+sd.outlier <- optimum_sd_outlier(pred, all_data[,property], seq(0.1,3, by =0.02)) #flag samples that performed poorly as outliers
+row.index <- outlier(pred, all_data[,property], sd.outlier[1])
+if(length(row.index) > 0){
+  all_data <- all_data[row.index,] #subset non-outliers
+}
+```
+<!--Insert plot showing the outlier selection process-->
+
+Performing kennard stone to separate data into 80% calibration and 20% validation sets. This step can be skipped if using MBL modeling approach which uses the entire dataset. If both modeling approaches are being used, you can load and row bind the calibration and validation sets for MBL.
+```{r eval=FALSE}
+#---Kennard Stone---#
+ken_stone<- prospectr::kenStone(X = all_data$spc, k = as.integer(0.8*nrow(all_data)), metric = "mahal", pc = 10) 
+calib <- all_data[ken_stone$model, ] #subset calibration set
+valid <- all_data[ken_stone$test, ] #subset validation set
+```
+
+Save calibration and validation set for that particular property
+```{r eval=FALSE}
+#Save for property
+save(calib, file=paste("Single_Lib/calib",property,"RData", sep="."))
+save(valid, file=paste("Single_Lib/valid",property,"RData", sep="."))
+```
+
+An alternative to saving the datasets would be to add a column indicating whether a sample falls under the calibration or validation set. This could be used to subset the correct datasets when making predictions. If the full dataset is large and takes a while to load, saving the former approach is preferred. If the set loads relatively quickly, it may be worth it to save storage space and use the latter method.
+
+

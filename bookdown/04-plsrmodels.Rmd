@@ -1,0 +1,49 @@
+# PLSR Models
+
+This section walks through the code for creating a parial least squares regression from your data and using it to make predictions. 
+
+## Model Theory
+Partial Least Squares Regression (PLSR) is a useful technique for making predictions on high dimensional datasets; Those with many columns or predictor variables relative to the number of rows or instances. In this example, we are using 2720 columns of spectral data as predictor variables for only 333 samples. A simple regression model would {not be good for these reasons}. PLSR models, like Principal Component Analysis (PCA), reduce the dimensionality of the dataset by creating new set of orthogonal variables that explain the most variation in the data. These come in the form of scores and loadings {explain contrast with PCA}
+
+vocab: orthogonal, high dimensional, latent variables
+
+<!--have links to define orthogonal-->
+
+## Making PLSR Predictions
+
+To predict using PLSR models, we use the [pls package in r](https://cran.r-project.org/web/packages/pls/vignettes/pls-manual.pdf)
+```{r eval=FALSE}
+#---Packages---#
+library(pls)
+```
+
+Assuming you have exited the environment where you pre-processed spectra, reload your calibration and validation sets.
+```{r eval=FALSE}
+#---Load Data---#
+load("Single_Lib/calib.OC.RData")
+load("Single_Lib/valid.OC.RData")
+```
+
+The plsr command creates a model based on the following inputs:  
+**Y** The lab data/ observed data for the soil property you are trying to predict. We chose to square root transform this variable to normalize the data. Predictions made my the model are squared to back transform them.  
+**X** A matrix of spectra with the same number of rows as Y  
+**ncomp** The number of components that you would like to include in the model  
+**data** The dataset containing Y and X  
+**valid** The preferred validation type ("LOO","CV","none")  
+
+```{r eval=FALSE}
+#---Create Model---#
+plsr.model <- plsr(sqrt(get(property))~spc, ncomp=20, data = calib, valid="LOO")
+save(plsr.model, file = paste("plsr", property,".RData", sep="")) #saving the model
+```
+
+Explain ncomp one sigma, how predictions are stored in plsr.model, do predictions on both calibration and validation data. 
+Flag which are cal and val for each property. define valid in this file as where OC.cal==1. (Saves storage space, compromise is possibly runtime of getting that subset? But it seems like its quicker than loading all the data again)
+```{r eval=FALSE}
+#---Applying Model---#
+ncomp.onesigma <- selectNcomp(plsr.model, method = "onesigma", plot = TRUE, ylim = c(0, 50))
+predVals <- c(predict(plsr.model, newdata = predDat$spc, ncomp=ncomp.onesigma))^2
+savename <- paste(property, modelType, predDatName, paste("v",datname,sep=""), sep=".")
+```
+
+  

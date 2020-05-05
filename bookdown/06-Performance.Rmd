@@ -1,0 +1,18 @@
+# Model Performance
+
+## Statistics
+Create summary table with the predictions against the lab data
+```{r eval=FALSE}
+#---Summary Table---#
+col.names <- colnames(predDat)
+propCol <- which(col.names == toString(property))[1]
+pred_obs <- data.frame(predDat[,1], predVals, (predDat[,propCol])*unit_adj)
+names(pred_obs) <- c("ID", "pred", "obs")
+```
+
+## Plots
+```{r eval=FALSE}
+#---Validation Plot---#
+max <- max(pred_obs[,c("pred", "obs")])
+plot.plsr(pred_obs$obs, pred_obs$pred, property, c(0,(1.1*max)),units)
+```
