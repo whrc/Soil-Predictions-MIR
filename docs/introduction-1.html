@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2 Background | Soil Predictions using MIR-Spectroscopy</title>
-  <meta name="description" content="2 Background | Soil Predictions using MIR-Spectroscopy" />
+  <title>2 Introduction | Soil Predictions using MIR-Spectroscopy</title>
+  <meta name="description" content="2 Introduction | Soil Predictions using MIR-Spectroscopy" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2 Background | Soil Predictions using MIR-Spectroscopy" />
+  <meta property="og:title" content="2 Introduction | Soil Predictions using MIR-Spectroscopy" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2 Background | Soil Predictions using MIR-Spectroscopy" />
+  <meta name="twitter:title" content="2 Introduction | Soil Predictions using MIR-Spectroscopy" />
   
   
   
@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="index.html"/>
-<link rel="next" href="data-preprocessing.html"/>
+<link rel="next" href="background.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -113,7 +113,6 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
-<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -126,33 +125,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">Soil Predictions using MIR-Spectroscopy</a></li>
-
-<li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i><b>2</b> Background</a></li>
-<li class="chapter" data-level="3" data-path="data-preprocessing.html"><a href="data-preprocessing.html"><i class="fa fa-check"></i><b>3</b> Data Preprocessing</a><ul>
-<li class="chapter" data-level="3.1" data-path="data-preprocessing.html"><a href="data-preprocessing.html#extract-opus-files"><i class="fa fa-check"></i><b>3.1</b> Extract OPUS files</a></li>
-<li class="chapter" data-level="3.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#process-spectra"><i class="fa fa-check"></i><b>3.2</b> Process Spectra</a></li>
-<li class="chapter" data-level="3.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>3.3</b> Merge with Lab Data</a></li>
-<li class="chapter" data-level="3.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#select-calibration-set"><i class="fa fa-check"></i><b>3.4</b> Select Calibration Set</a></li>
+<li class="chapter" data-level="2" data-path="introduction-1.html"><a href="introduction-1.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i><b>3</b> Background</a></li>
+<li class="chapter" data-level="4" data-path="data-preprocessing.html"><a href="data-preprocessing.html"><i class="fa fa-check"></i><b>4</b> Data Preprocessing</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-preprocessing.html"><a href="data-preprocessing.html#extract-opus-files"><i class="fa fa-check"></i><b>4.1</b> Extract OPUS files</a></li>
+<li class="chapter" data-level="4.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#process-spectra"><i class="fa fa-check"></i><b>4.2</b> Process Spectra</a></li>
+<li class="chapter" data-level="4.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>4.3</b> Merge with Lab Data</a></li>
+<li class="chapter" data-level="4.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#select-calibration-set"><i class="fa fa-check"></i><b>4.4</b> Select Calibration Set</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="plsr-models.html"><a href="plsr-models.html"><i class="fa fa-check"></i><b>4</b> PLSR Models</a><ul>
-<li class="chapter" data-level="4.1" data-path="plsr-models.html"><a href="plsr-models.html#model-theory"><i class="fa fa-check"></i><b>4.1</b> Model Theory</a></li>
-<li class="chapter" data-level="4.2" data-path="plsr-models.html"><a href="plsr-models.html#making-plsr-predictions"><i class="fa fa-check"></i><b>4.2</b> Making PLSR Predictions</a></li>
+<li class="chapter" data-level="5" data-path="plsr-models.html"><a href="plsr-models.html"><i class="fa fa-check"></i><b>5</b> PLSR Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="plsr-models.html"><a href="plsr-models.html#model-theory"><i class="fa fa-check"></i><b>5.1</b> Model Theory</a></li>
+<li class="chapter" data-level="5.2" data-path="plsr-models.html"><a href="plsr-models.html#making-plsr-predictions"><i class="fa fa-check"></i><b>5.2</b> Making PLSR Predictions</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>5</b> MBL Models</a><ul>
-<li class="chapter" data-level="5.1" data-path="mbl-models.html"><a href="mbl-models.html#model-theory-1"><i class="fa fa-check"></i><b>5.1</b> Model Theory</a></li>
-<li class="chapter" data-level="5.2" data-path="mbl-models.html"><a href="mbl-models.html#making-mbl-predictions"><i class="fa fa-check"></i><b>5.2</b> Making MBL Predictions</a></li>
+<li class="chapter" data-level="6" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>6</b> MBL Models</a><ul>
+<li class="chapter" data-level="6.1" data-path="mbl-models.html"><a href="mbl-models.html#model-theory-1"><i class="fa fa-check"></i><b>6.1</b> Model Theory</a></li>
+<li class="chapter" data-level="6.2" data-path="mbl-models.html"><a href="mbl-models.html#making-mbl-predictions"><i class="fa fa-check"></i><b>6.2</b> Making MBL Predictions</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>6</b> Model Performance</a><ul>
-<li class="chapter" data-level="6.1" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i><b>6.1</b> Statistics</a></li>
-<li class="chapter" data-level="6.2" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i><b>6.2</b> Plots</a></li>
+<li class="chapter" data-level="7" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>7</b> Model Performance</a><ul>
+<li class="chapter" data-level="7.1" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i><b>7.1</b> Statistics</a></li>
+<li class="chapter" data-level="7.2" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i><b>7.2</b> Plots</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
-<li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-
 </ul>
 
       </nav>
@@ -170,9 +164,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="background" class="section level1">
-<h1><span class="header-section-number">2</span> Background</h1>
-<p>Mid-Infrared (MIR) spectroscopy is a cost effective technique for predicting a variety of soil health properties.</p>
+<div id="introduction-1" class="section level1">
+<h1><span class="header-section-number">2</span> Introduction</h1>
+<p><img src="images/soil-pic.png" /></p>
+<p>This guide documents the use of MIR-spectroscopy at the Woods Hole Research Center, to predict various soil health properties. It is aimed at helping other teams build soil spectral libraries, create models from their data, access model performance against known values, and ultimately make predictions on new data. The machine learning methods outlined in this document were selected after assessing the performance of a variety of models. This process is explained in the following paper:</p>
+<p><em>Dangal S.R.S., J. Sanderman, S. Wills, and L. Rameriz-Lopez. 2019. <a href="https://www.mdpi.com/2571-8789/3/1/11">Accurate and Precise Prediction of Soil Properties from a Large Mid-Infrared Spectral Library</a>. Soil Systems 3(1):11. <a href="doi:10.3390/soilsystems3010011" class="uri">doi:10.3390/soilsystems3010011</a></em></p>
+<p>Questions and comments can be sent to <a href="mailto:jsanderman@whrc.org" class="email">jsanderman@whrc.org</a> or <a href="mailto:crivard@whrc.org" class="email">crivard@whrc.org</a></p>
+<p><img src="images/jsanderman.png" alt="Jonathan Sanderman" />
+<img src="images/sdangal.png" alt="Shree Dangal" />
+<img src="images/crivard.png" alt="Charlotte Rivard" /></p>
+<p><strong>Woods Hole Research Center</strong><br />
+Website: <a href="https://whrc.org/">whrc.org</a><br />
+Instagram: <a href="https://www.instagram.com/woodsholeresearchcenter/">woodsholeresearchcenter</a><br />
+Address: 149 Woods Hole Rd, Falmouth, MA 02540</p>
+<p><img src="images/logo2.png" /></p>
 
 </div>
             </section>
@@ -181,7 +186,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="data-preprocessing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="background.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -207,7 +212,7 @@ gitbook.start({
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
-"theme": "sepia",
+"theme": "white",
 "family": "sans",
 "size": 2
 },
@@ -223,7 +228,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["_main.pdf", "_main.epub"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }
