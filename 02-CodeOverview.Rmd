@@ -1,0 +1,15 @@
+---
+title: "02-CodeOverview.Rmd"
+author: "Charlotte Rivard"
+date: "5/8/2020"
+output: html_document
+---
+
+# Code Overview
+
+## File Structure
+
+
+## Required Packages
+
+

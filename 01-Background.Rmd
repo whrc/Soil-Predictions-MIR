@@ -1,0 +1,9 @@
+# Background
+
+
+Mid-Infrared (MIR) spectroscopy is a quick, cost effective technique for predicting a variety of soil health properties. 
+
+"Diffuse reflectance spectroscopy (DRS) has been demonstrated to be a viable alternative for rapidly characterizing and measuring soil properties compared with time-consuming and expensive conventional soil laboratory analysis [6]. Visible (vis; 400–700 nm), near-infrared (NIR; 700–2500 nm), and mid-infrared (MIR; 2500–25,000 nm) regions have been used widely to characterize soil minerals and organic matter at the global [5,7,8], regional [9,10], national [11,12] and local scale [13]. Vis–NIR can be preferable to MIR due to its low instrumental cost and potential for field deployment [14]. Therefore, for soil surveys that require high sampling density with basic soil properties measurement (for, e.g., organic carbon, soil texture), vis–NIR may be preferable. In contrast, the MIR region contains strong molecular vibrations of most important soil minerals and organic components [7,15]. As a result, models built using MIR databases often perform better compared with the vis–NIR database for many soil properties, particularly for more minor soil constituents [6,16]" (soil systems paper)    
+
+![https://www.researchgate.net/figure/Representative-soil-mid-IR-spectrum-showing-absorptions-related-to-the-mineral-and_fig1_282420764](./images/spectra_properties.png)
+

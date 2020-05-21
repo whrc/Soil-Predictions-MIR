@@ -1,9 +1,10 @@
 # Data Preprocessing
 
 ## Extract OPUS files
+
 For Bruker Instruments, an OPUS file containing spectral data, will be output for each sample that is scanned. To compile these separate files into one dataset, we use a couple functions from the ['simplerspec'](https://github.com/philipp-baumann/simplerspec) package by Philip Baumann, as well as the stringr and foreach packages.
 
-```{r eval=TRUE}
+```{r eval=FALSE}
 #---Packages---#
 library(stringr) #used for str_sub
 library(foreach) #used within read-opus-universal.R
@@ -11,19 +12,19 @@ source("Single_Lib/reference_files/gather-spc.R") #simplerspec function
 source("Single_Lib/reference_files/read-opus-universal.R") #simplerspec function
 ```
 Gets the paths of all OPUS files...
-```{r}
+```{r, eval=FALSE}
 #---List Files---#
 spectraPath <- "/Single_Lib/SPECTRA" #folder of OPUS files
 dirs <- list.dirs(paste(getwd(),spectraPath,sep=""), full.names=TRUE)
 all.files <- list.files(dirs, pattern= "*.0", recursive=TRUE,full.names=TRUE)
 ```
 
-```{r eval=TRUE, echo=FALSE}
+```{r eval=FALSE, echo=FALSE}
 all.files <- all.files[1:3] #subset for demostration
 ```
 
 Extracts the spectra and gathers it into a tibble data frame...
-```{r eval=TRUE, echo=TRUE, warning=FALSE, collapse=TRUE}
+```{r eval=FALSE, echo=TRUE, warning=FALSE, collapse=TRUE}
 #---Extract Spectra---#
 spc_list <- read_opus_univ(fnames = all.files, extract = c("spc"))
 soilspec_tbl <- spc_list %>%
@@ -120,6 +121,8 @@ The final dataframe contains a unique ID, lab data, and a matrix of spectral dat
 
 
 ## Select Calibration Set
+{**OPTIONAL**}    
+
 Once the full dataset is processed, it must be split into calibration and validation sets to that will be used to train and test the model. This process must be repeated for each soil property that is being predicted, since outliers and NA values may vary among the properties. The example below shows this step for a single property, while the RUNFILE code shows it implemented in a loop for several properties.
 
 ```{r eval=FALSE}

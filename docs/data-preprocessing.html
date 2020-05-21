@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Data Preprocessing | Soil Predictions using MIR-Spectroscopy</title>
-  <meta name="description" content="3 Data Preprocessing | Soil Predictions using MIR-Spectroscopy" />
+  <title>4 Data Preprocessing | Soil Predictions using MIR-Spectroscopy</title>
+  <meta name="description" content="4 Data Preprocessing | Soil Predictions using MIR-Spectroscopy" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Data Preprocessing | Soil Predictions using MIR-Spectroscopy" />
+  <meta property="og:title" content="4 Data Preprocessing | Soil Predictions using MIR-Spectroscopy" />
   <meta property="og:type" content="book" />
   
   
@@ -16,11 +16,12 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Data Preprocessing | Soil Predictions using MIR-Spectroscopy" />
+  <meta name="twitter:title" content="4 Data Preprocessing | Soil Predictions using MIR-Spectroscopy" />
   
   
   
 
+<meta name="author" content="Charlotte Rivard" />
 
 
 
@@ -29,7 +30,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="background.html"/>
+<link rel="prev" href="code-overview.html"/>
 <link rel="next" href="plsr-models.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -131,23 +132,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i><b>2</b> Background</a></li>
-<li class="chapter" data-level="3" data-path="data-preprocessing.html"><a href="data-preprocessing.html"><i class="fa fa-check"></i><b>3</b> Data Preprocessing</a><ul>
-<li class="chapter" data-level="3.1" data-path="data-preprocessing.html"><a href="data-preprocessing.html#extract-opus-files"><i class="fa fa-check"></i><b>3.1</b> Extract OPUS files</a></li>
-<li class="chapter" data-level="3.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#process-spectra"><i class="fa fa-check"></i><b>3.2</b> Process Spectra</a></li>
-<li class="chapter" data-level="3.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>3.3</b> Merge with Lab Data</a></li>
-<li class="chapter" data-level="3.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#select-calibration-set"><i class="fa fa-check"></i><b>3.4</b> Select Calibration Set</a></li>
+<li class="chapter" data-level="3" data-path="code-overview.html"><a href="code-overview.html"><i class="fa fa-check"></i><b>3</b> Code Overview</a><ul>
+<li class="chapter" data-level="3.1" data-path="code-overview.html"><a href="code-overview.html#file-structure"><i class="fa fa-check"></i><b>3.1</b> File Structure</a></li>
+<li class="chapter" data-level="3.2" data-path="code-overview.html"><a href="code-overview.html#required-packages"><i class="fa fa-check"></i><b>3.2</b> Required Packages</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="plsr-models.html"><a href="plsr-models.html"><i class="fa fa-check"></i><b>4</b> PLSR Models</a><ul>
-<li class="chapter" data-level="4.1" data-path="plsr-models.html"><a href="plsr-models.html#model-theory"><i class="fa fa-check"></i><b>4.1</b> Model Theory</a></li>
-<li class="chapter" data-level="4.2" data-path="plsr-models.html"><a href="plsr-models.html#making-plsr-predictions"><i class="fa fa-check"></i><b>4.2</b> Making PLSR Predictions</a></li>
+<li class="chapter" data-level="4" data-path="data-preprocessing.html"><a href="data-preprocessing.html"><i class="fa fa-check"></i><b>4</b> Data Preprocessing</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-preprocessing.html"><a href="data-preprocessing.html#extract-opus-files"><i class="fa fa-check"></i><b>4.1</b> Extract OPUS files</a></li>
+<li class="chapter" data-level="4.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#process-spectra"><i class="fa fa-check"></i><b>4.2</b> Process Spectra</a></li>
+<li class="chapter" data-level="4.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>4.3</b> Merge with Lab Data</a></li>
+<li class="chapter" data-level="4.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#select-calibration-set"><i class="fa fa-check"></i><b>4.4</b> Select Calibration Set</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>5</b> MBL Models</a><ul>
-<li class="chapter" data-level="5.1" data-path="mbl-models.html"><a href="mbl-models.html#model-theory-1"><i class="fa fa-check"></i><b>5.1</b> Model Theory</a></li>
-<li class="chapter" data-level="5.2" data-path="mbl-models.html"><a href="mbl-models.html#making-mbl-predictions"><i class="fa fa-check"></i><b>5.2</b> Making MBL Predictions</a></li>
+<li class="chapter" data-level="5" data-path="plsr-models.html"><a href="plsr-models.html"><i class="fa fa-check"></i><b>5</b> PLSR Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="plsr-models.html"><a href="plsr-models.html#model-theory"><i class="fa fa-check"></i><b>5.1</b> Model Theory</a></li>
+<li class="chapter" data-level="5.2" data-path="plsr-models.html"><a href="plsr-models.html#making-plsr-models"><i class="fa fa-check"></i><b>5.2</b> Making PLSR Models</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>6</b> Model Performance</a><ul>
-<li class="chapter" data-level="6.1" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i><b>6.1</b> Statistics</a></li>
-<li class="chapter" data-level="6.2" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i><b>6.2</b> Plots</a></li>
+<li class="chapter" data-level="6" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>6</b> MBL Models</a><ul>
+<li class="chapter" data-level="6.1" data-path="mbl-models.html"><a href="mbl-models.html#model-theory-1"><i class="fa fa-check"></i><b>6.1</b> Model Theory</a><ul>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#animation"><i class="fa fa-check"></i>Animation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="mbl-models.html"><a href="mbl-models.html#making-mbl-predictions"><i class="fa fa-check"></i><b>6.2</b> Making MBL Predictions</a><ul>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#mbl-functions"><i class="fa fa-check"></i>MBL Functions</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#modeling-parameters"><i class="fa fa-check"></i>Modeling Parameters</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#sample-code"><i class="fa fa-check"></i>Sample Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>7</b> Model Performance</a><ul>
+<li class="chapter" data-level="7.1" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i><b>7.1</b> Statistics</a></li>
+<li class="chapter" data-level="7.2" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i><b>7.2</b> Plots</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -171,9 +183,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="data-preprocessing" class="section level1">
-<h1><span class="header-section-number">3</span> Data Preprocessing</h1>
+<h1><span class="header-section-number">4</span> Data Preprocessing</h1>
 <div id="extract-opus-files" class="section level2">
-<h2><span class="header-section-number">3.1</span> Extract OPUS files</h2>
+<h2><span class="header-section-number">4.1</span> Extract OPUS files</h2>
 <p>For Bruker Instruments, an OPUS file containing spectral data, will be output for each sample that is scanned. To compile these separate files into one dataset, we use a couple functions from the <a href="https://github.com/philipp-baumann/simplerspec">‘simplerspec’</a> package by Philip Baumann, as well as the stringr and foreach packages.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#---Packages---#</span></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(stringr) <span class="co">#used for str_sub</span></a>
@@ -188,12 +200,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Extracts the spectra and gathers it into a tibble data frame…</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#---Extract Spectra---#</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">spc_list &lt;-<span class="st"> </span><span class="kw">read_opus_univ</span>(<span class="dt">fnames =</span> all.files, <span class="dt">extract =</span> <span class="kw">c</span>(<span class="st">&quot;spc&quot;</span>))</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">## Extracted spectra data from file: &lt;WHRC03405_S_001_030.0&gt;</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">## Extracted spectra data from file: &lt;WHRC03406_S_002_014.0&gt;</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">## Extracted spectra data from file: &lt;WHRC03407_S_002_046.0&gt;</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">soilspec_tbl &lt;-<span class="st"> </span>spc_list <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="st">  </span><span class="kw">gather_spc</span>()</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">spc &lt;-<span class="st"> </span>soilspec_tbl<span class="op">$</span>spc</a></code></pre></div>
+<a class="sourceLine" id="cb3-3" data-line-number="3">soilspec_tbl &lt;-<span class="st"> </span>spc_list <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw">gather_spc</span>()</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">spc &lt;-<span class="st"> </span>soilspec_tbl<span class="op">$</span>spc</a></code></pre></div>
 <p>Optionally truncates the dataset to ensure the spectra from different samples align. Only necessary if instrument settings are changed between runs. 3017 would be changed to the number of spectral columns (wavelengths collected)</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">spc &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(spc),<span class="cf">function</span>(x) spc[[x]][,<span class="dv">1</span><span class="op">:</span><span class="dv">3017</span>])</a></code></pre></div>
 <p>Processes spectra into a dataframe and assigns a sample_id, based off the file names…<br />
@@ -207,7 +216,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">write.csv</span>(spc.df, <span class="st">&quot;spectra_original.csv&quot;</span>)</a></code></pre></div>
 </div>
 <div id="process-spectra" class="section level2">
-<h2><span class="header-section-number">3.2</span> Process Spectra</h2>
+<h2><span class="header-section-number">4.2</span> Process Spectra</h2>
 <p>We narrow down the regions of the spectra by truncating wavenumbers below 628 and between 2268 to 2389, which is a CO2 sensitive region.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#---Edit Spectral Columns---#</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">col.names &lt;-<span class="st"> </span><span class="kw">colnames</span>(spectra<span class="op">$</span>spc) <span class="co">#get column names which are wavenumbers</span></a>
@@ -234,7 +243,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!--could show head of the spectra, or a figure showing the dimensions-->
 </div>
 <div id="merge-with-lab-data" class="section level2">
-<h2><span class="header-section-number">3.3</span> Merge with Lab Data</h2>
+<h2><span class="header-section-number">4.3</span> Merge with Lab Data</h2>
 <p>If there is lab data associated with your soil samples, this can be merged with the spectral data and later used to assess the performance of your models.The example lab dataset below provides information about where the soil sample was taken with the Site_ID and Horizon, as well as the lab measurements for various soil properties including Organic Carbon, Sand, Silt and Clay.</p>
 <!--discuss FTIR run-lists and associating IDs -->
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co">#---Read Lab Data---#</span></a>
@@ -249,7 +258,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The final dataframe contains a unique ID, lab data, and a matrix of spectral data called ‘spc’. It is suggested to save this file as RData so it may be reloaded as needed.</p>
 </div>
 <div id="select-calibration-set" class="section level2">
-<h2><span class="header-section-number">3.4</span> Select Calibration Set</h2>
+<h2><span class="header-section-number">4.4</span> Select Calibration Set</h2>
+<p>{<strong>OPTIONAL</strong>}</p>
 <p>Once the full dataset is processed, it must be split into calibration and validation sets to that will be used to train and test the model. This process must be repeated for each soil property that is being predicted, since outliers and NA values may vary among the properties. The example below shows this step for a single property, while the RUNFILE code shows it implemented in a loop for several properties.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co">#---Packages---#</span></a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw">library</span>(pls) <span class="co">#used for plsr model</span></a>
@@ -286,7 +296,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="background.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="code-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="plsr-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
