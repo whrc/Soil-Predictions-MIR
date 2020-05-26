@@ -135,12 +135,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3" data-path="code-overview.html"><a href="code-overview.html"><i class="fa fa-check"></i><b>3</b> Code Overview</a><ul>
 <li class="chapter" data-level="3.1" data-path="code-overview.html"><a href="code-overview.html#file-structure"><i class="fa fa-check"></i><b>3.1</b> File Structure</a></li>
 <li class="chapter" data-level="3.2" data-path="code-overview.html"><a href="code-overview.html#required-packages"><i class="fa fa-check"></i><b>3.2</b> Required Packages</a></li>
+<li class="chapter" data-level="3.3" data-path="code-overview.html"><a href="code-overview.html#full-script"><i class="fa fa-check"></i><b>3.3</b> Full Script</a></li>
+<li class="chapter" data-level="3.4" data-path="code-overview.html"><a href="code-overview.html#getting-started"><i class="fa fa-check"></i><b>3.4</b> Getting Started</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="data-preprocessing.html"><a href="data-preprocessing.html"><i class="fa fa-check"></i><b>4</b> Data Preprocessing</a><ul>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#script-overview"><i class="fa fa-check"></i>Script Overview</a></li>
 <li class="chapter" data-level="4.1" data-path="data-preprocessing.html"><a href="data-preprocessing.html#extract-opus-files"><i class="fa fa-check"></i><b>4.1</b> Extract OPUS files</a></li>
-<li class="chapter" data-level="4.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#process-spectra"><i class="fa fa-check"></i><b>4.2</b> Process Spectra</a></li>
-<li class="chapter" data-level="4.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>4.3</b> Merge with Lab Data</a></li>
-<li class="chapter" data-level="4.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#select-calibration-set"><i class="fa fa-check"></i><b>4.4</b> Select Calibration Set</a></li>
+<li class="chapter" data-level="4.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#subset-spectral-range"><i class="fa fa-check"></i><b>4.2</b> Subset Spectral Range</a></li>
+<li class="chapter" data-level="4.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#baseline-transformation"><i class="fa fa-check"></i><b>4.3</b> Baseline Transformation</a></li>
+<li class="chapter" data-level="4.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>4.4</b> Merge with Lab Data</a></li>
+<li class="chapter" data-level="4.5" data-path="data-preprocessing.html"><a href="data-preprocessing.html#refine-reference-set"><i class="fa fa-check"></i><b>4.5</b> (Refine Reference Set)</a><ul>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#large-sets"><i class="fa fa-check"></i>Large Sets</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#property-subsets"><i class="fa fa-check"></i>Property Subsets</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#calval-groups"><i class="fa fa-check"></i>Cal/Val Groups</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="plsr-models.html"><a href="plsr-models.html"><i class="fa fa-check"></i><b>5</b> PLSR Models</a><ul>
 <li class="chapter" data-level="5.1" data-path="plsr-models.html"><a href="plsr-models.html#model-theory"><i class="fa fa-check"></i><b>5.1</b> Model Theory</a></li>
@@ -160,6 +168,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>7</b> Model Performance</a><ul>
 <li class="chapter" data-level="7.1" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i><b>7.1</b> Statistics</a></li>
 <li class="chapter" data-level="7.2" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i><b>7.2</b> Plots</a></li>
+<li class="chapter" data-level="7.3" data-path="model-performance.html"><a href="model-performance.html#outliers"><i class="fa fa-check"></i><b>7.3</b> Outliers</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="model-performance.html"><a href="model-performance.html#standard-deviation"><i class="fa fa-check"></i><b>7.3.1</b> Standard Deviation</a></li>
+<li class="chapter" data-level="7.3.2" data-path="model-performance.html"><a href="model-performance.html#f-ratio"><i class="fa fa-check"></i><b>7.3.2</b> F-Ratio</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -184,112 +196,333 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-preprocessing" class="section level1">
 <h1><span class="header-section-number">4</span> Data Preprocessing</h1>
+<div id="script-overview" class="section level2 unnumbered">
+<h2>Script Overview</h2>
+<ul>
+<li>Data Preprocessing must be performed for the <strong>reference set</strong>, used to create the models, as well as the dataset you are making predictions from, the <strong>prediction set</strong><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a><br />
+</li>
+<li>The prediction set and reference set will be the same dataset if you are just using a <strong>single spectral library</strong>, but can be different if you are using models from one set to make predictions on another.</li>
+<li>Data preprocesing is executed by the functions within <code>preprocess_functions.R</code><br />
+</li>
+<li>The code shown below is the section of the <code>RUNFILE.R</code> script which calls the preprocessing functions to preprocess the reference set. * Subsections 4.1-4.4 in this guide explain the steps and their respective functions in more detail</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">      <span class="co"># Reference Set Preprocessing #</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">source</span>(<span class="st">&quot;Functions/preprocess_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># Process Reference Set Spectra </span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">spectra &lt;-<span class="st"> </span><span class="kw">opus_to_dataset</span>(<span class="st">&quot;/Data_Raw/ref-SPECTRA&quot;</span>)</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span><span class="kw">subset_spectral_range</span>(spectra<span class="op">$</span>spc)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span><span class="kw">base_offset</span>(spectra<span class="op">$</span>spc)</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co"># Merge with Reference Set Lab Data</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">lab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">read_csv</span>(<span class="st">&quot;Data_Raw/ref-LAB_DATA.csv&quot;</span>))</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">all_refset &lt;-<span class="st"> </span><span class="kw">merge</span>(lab, spectra, <span class="dt">all.y=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co"># Save the Full Reference Set after Preprocessing</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Predictions&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Data_Processed&quot;</span>)}</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="kw">save</span>(all_refset, <span class="dt">file=</span><span class="st">&quot;Data_Processed/refset.ALL.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="kw">write.csv</span>(all_refset, <span class="st">&quot;Data_Processed/refset.ALL.csv&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co"># Save Reference Sets Optimal for each Property</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">properties &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;OC&quot;</span>,<span class="st">&quot;SAND&quot;</span>,<span class="st">&quot;SILT&quot;</span>, <span class="st">&quot;CLAY&quot;</span>) <span class="co">#Column names of lab data</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="cf">for</span>(property <span class="cf">in</span> properties){</a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">  prop_refset &lt;-<span class="st"> </span>all_refset</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNA</span>(prop_refset, property) <span class="co"># Remove NAs</span></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNeg</span>(prop_refset, property) <span class="co"># Remove Negative</span></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27">  prop_refset &lt;-<span class="st"> </span><span class="kw">noOut</span>(prop_refset, property) <span class="co"># Remove Outliers*</span></a>
+<a class="sourceLine" id="cb1-28" data-line-number="28">  savename &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;refset&quot;</span>, property, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Ex: refset.OC</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29">  <span class="kw">assign</span>(savename, prop_refset)</a>
+<a class="sourceLine" id="cb1-30" data-line-number="30">  <span class="kw">save</span>(<span class="dt">list=</span> savename, <span class="dt">file=</span><span class="kw">paste0</span>(<span class="st">&quot;Data_Processed/&quot;</span>, savename, <span class="st">&quot;.RData&quot;</span>))</a>
+<a class="sourceLine" id="cb1-31" data-line-number="31">  </a>
+<a class="sourceLine" id="cb1-32" data-line-number="32">  <span class="co">#split &lt;- calValSplit(prop_refset, property) # Split Calibration &amp; Validation Sets</span></a>
+<a class="sourceLine" id="cb1-33" data-line-number="33">  <span class="co">#calib &lt;- split[1]; valid &lt;- split[2]</span></a>
+<a class="sourceLine" id="cb1-34" data-line-number="34">  <span class="co">#save(calib, file=paste(&quot;Data_Processed/calib&quot;, property,&quot;RData&quot;, sep=&quot;.&quot;))</span></a>
+<a class="sourceLine" id="cb1-35" data-line-number="35">  <span class="co">#save(valid, file=paste(&quot;Data_Processed/valid&quot;, property,&quot;RData&quot;, sep=&quot;.&quot;))</span></a>
+<a class="sourceLine" id="cb1-36" data-line-number="36">}</a></code></pre></div>
+</div>
 <div id="extract-opus-files" class="section level2">
 <h2><span class="header-section-number">4.1</span> Extract OPUS files</h2>
-<p>For Bruker Instruments, an OPUS file containing spectral data, will be output for each sample that is scanned. To compile these separate files into one dataset, we use a couple functions from the <a href="https://github.com/philipp-baumann/simplerspec">‘simplerspec’</a> package by Philip Baumann, as well as the stringr and foreach packages.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#---Packages---#</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(stringr) <span class="co">#used for str_sub</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(foreach) <span class="co">#used within read-opus-universal.R</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">source</span>(<span class="st">&quot;Single_Lib/reference_files/gather-spc.R&quot;</span>) <span class="co">#simplerspec function</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">source</span>(<span class="st">&quot;Single_Lib/reference_files/read-opus-universal.R&quot;</span>) <span class="co">#simplerspec function</span></a></code></pre></div>
-<p>Gets the paths of all OPUS files…</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">#---List Files---#</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">spectraPath &lt;-<span class="st"> &quot;/Single_Lib/SPECTRA&quot;</span> <span class="co">#folder of OPUS files</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">dirs &lt;-<span class="st"> </span><span class="kw">list.dirs</span>(<span class="kw">paste</span>(<span class="kw">getwd</span>(),spectraPath,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">full.names=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">all.files &lt;-<span class="st"> </span><span class="kw">list.files</span>(dirs, <span class="dt">pattern=</span> <span class="st">&quot;*.0&quot;</span>, <span class="dt">recursive=</span><span class="ot">TRUE</span>,<span class="dt">full.names=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<p>For Bruker Instruments, an <strong>OPUS file</strong> containing spectral data, will be output for each sample that is scanned. To compile these separate files into one dataset, we use a couple functions from the <code>simplerspc</code><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> package by Philip Baumann, as well as the <code>stringr</code> and <code>foreach</code> packages.</p>
+<p>Executed within <code>preprocess_functions.R</code> :</p>
+<ul>
+<li><code>opus_to_dataset( SPECPATH, NWAVE, SAVE )</code>
+<ul>
+<li><code>SPECPATH</code>: <em>string</em>- The path to the folder of opus files. Default set to “/Data_Raw/SPECTRA”</li>
+<li><code>NWAVE</code>: <em>integer</em>- The number of wavelengths to extract. This will be set on the FTIR before running. The default is set to 3017, which we use at WHRC</li>
+<li><code>SAVE</code>: <em>boolean</em>- Whether or not you would like to save the extracted spectra as a dataframe. Saved to “Data_Preprocessed/Data_Processed/ref-spectra_original.RData” Default is FALSE<br />
+_</li>
+</ul></li>
+</ul>
+<p>Loads appropriate packages for opus_to_dataset…</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">#---Packages---#</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">library</span>(stringr) <span class="co">#used for str_sub</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">library</span>(foreach) <span class="co">#used within read-opus-universal.R</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">source</span>(<span class="st">&quot;Functions/gather-spc.R&quot;</span>) <span class="co">#simplerspec function</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">source</span>(<span class="st">&quot;Functions/read-opus-universal.R&quot;</span>) <span class="co">#simplerspec function</span></a></code></pre></div>
+<p>Gets the paths of all OPUS files…<br />
+A single path will look something like this:</p>
+<p><code>/Soil-Predictions-Example/Data_Raw/ref-SPECTRA/WHRC03405_S_001_030.0</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#---List Files---#</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">spectraPath &lt;-<span class="st"> &quot;/Data_Raw/ref-SPECTRA&quot;</span> <span class="co">#folder of OPUS files</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">dirs &lt;-<span class="st"> </span><span class="kw">list.dirs</span>(<span class="kw">paste</span>(<span class="kw">getwd</span>(),spectraPath,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">full.names=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">all.files &lt;-<span class="st"> </span><span class="kw">list.files</span>(dirs, <span class="dt">pattern=</span> <span class="st">&quot;*.0&quot;</span>, <span class="dt">recursive=</span><span class="ot">TRUE</span>,<span class="dt">full.names=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <p>Extracts the spectra and gathers it into a tibble data frame…</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#---Extract Spectra---#</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">spc_list &lt;-<span class="st"> </span><span class="kw">read_opus_univ</span>(<span class="dt">fnames =</span> all.files, <span class="dt">extract =</span> <span class="kw">c</span>(<span class="st">&quot;spc&quot;</span>))</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">soilspec_tbl &lt;-<span class="st"> </span>spc_list <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw">gather_spc</span>()</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">spc &lt;-<span class="st"> </span>soilspec_tbl<span class="op">$</span>spc</a></code></pre></div>
-<p>Optionally truncates the dataset to ensure the spectra from different samples align. Only necessary if instrument settings are changed between runs. 3017 would be changed to the number of spectral columns (wavelengths collected)</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">spc &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(spc),<span class="cf">function</span>(x) spc[[x]][,<span class="dv">1</span><span class="op">:</span><span class="dv">3017</span>])</a></code></pre></div>
-<p>Processes spectra into a dataframe and assigns a sample_id, based off the file names…<br />
-*sample_ids that are numeric may cause issues while merging so a string ID is advised.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">spc.df &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">matrix</span>(<span class="kw">unlist</span>(spc), <span class="dt">nrow=</span><span class="kw">length</span>(spc), <span class="dt">byrow=</span>T))</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">colnames</span>(spc.df) &lt;-<span class="st"> </span><span class="kw">colnames</span>(spc[[<span class="dv">1</span>]])</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">spc.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">sample_id =</span> soilspec_tbl<span class="op">$</span>sample_id, spc.df)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">spc.df<span class="op">$</span>sample_id &lt;-<span class="st"> </span><span class="kw">str_sub</span>(spc.df<span class="op">$</span>sample_id,<span class="dv">1</span>,<span class="dv">9</span>)</a></code></pre></div>
-<p>Optionally saves the spectra as an R dataset or csv file…</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">save</span>(spc.df, <span class="dt">file=</span><span class="st">&quot;spectra_original.RData&quot;</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">write.csv</span>(spc.df, <span class="st">&quot;spectra_original.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">#---Extract Spectra---#</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">spc_list &lt;-<span class="st"> </span><span class="kw">read_opus_univ</span>(<span class="dt">fnames =</span> all.files, <span class="dt">extract =</span> <span class="kw">c</span>(<span class="st">&quot;spc&quot;</span>))</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">soilspec_tbl &lt;-<span class="st"> </span>spc_list <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw">gather_spc</span>()</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">spc &lt;-<span class="st"> </span>soilspec_tbl<span class="op">$</span>spc</a></code></pre></div>
+<p>Truncates the dataset to the number of wavelengths specified, to ensure the spectra from different samples align…</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">spc &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(spc),<span class="cf">function</span>(x) spc[[x]][,<span class="dv">1</span><span class="op">:</span>NWAVE])</a></code></pre></div>
+<p>Processes spectra into a dataframe and assigns a <code>sample_id,</code> based off the file names<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>…</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">spc.df &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">matrix</span>(<span class="kw">unlist</span>(spc), <span class="dt">nrow=</span><span class="kw">length</span>(spc), <span class="dt">byrow=</span>T))</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">colnames</span>(spc.df) &lt;-<span class="st"> </span><span class="kw">colnames</span>(spc[[<span class="dv">1</span>]])</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">spc.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">sample_id =</span> soilspec_tbl<span class="op">$</span>sample_id, spc.df)</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">spc.df<span class="op">$</span>sample_id &lt;-<span class="st"> </span><span class="kw">str_sub</span>(spc.df<span class="op">$</span>sample_id,<span class="dv">1</span>,<span class="dv">9</span>)</a></code></pre></div>
+<p>Optionally saves the spectra as an R dataset and csv file…</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="cf">if</span>(SAVE<span class="op">==</span><span class="ot">TRUE</span>){</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">    <span class="kw">save</span>(spectra, <span class="dt">file=</span><span class="st">&quot;Data_Processed/ref-spectra_original.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">    <span class="kw">write.csv</span>(spectra, <span class="st">&quot;Data_Processed/ref-spectra_original.csv&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">}</a></code></pre></div>
 </div>
-<div id="process-spectra" class="section level2">
-<h2><span class="header-section-number">4.2</span> Process Spectra</h2>
-<p>We narrow down the regions of the spectra by truncating wavenumbers below 628 and between 2268 to 2389, which is a CO2 sensitive region.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#---Edit Spectral Columns---#</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">col.names &lt;-<span class="st"> </span><span class="kw">colnames</span>(spectra<span class="op">$</span>spc) <span class="co">#get column names which are wavenumbers</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">col.names &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">substring</span>(col.names,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">cutoff &lt;-<span class="st"> </span><span class="kw">which</span>(col.names <span class="op">&lt;=</span><span class="st"> </span><span class="dv">628</span>)[<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span>spectra<span class="op">$</span>spc[,<span class="op">-</span><span class="kw">c</span>(cutoff<span class="op">:</span><span class="kw">length</span>(col.names))] <span class="co">#truncate at &gt;= 628</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">min.index &lt;-<span class="st"> </span><span class="kw">which</span>(col.names <span class="op">&lt;=</span><span class="st"> </span><span class="dv">2389</span>)[<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">max.index &lt;-<span class="st"> </span><span class="kw">which</span>(col.names <span class="op">&lt;=</span><span class="st"> </span><span class="dv">2268</span>)[<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span>spectra<span class="op">$</span>spc[,<span class="op">-</span><span class="kw">c</span>(min.index<span class="op">:</span>max.index)] <span class="co">#remove CO2 region</span></a></code></pre></div>
-<p>We perform a baseline transformation to normalize the spectra</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">#---Baseline Transformation---#</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">library</span>(matrixStats)</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">base_offset &lt;-<span class="st"> </span><span class="cf">function</span>(x){</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">  test &lt;-<span class="st"> </span><span class="kw">rowMins</span>(x)</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">  <span class="kw">return</span>(x<span class="op">-</span>test)</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">}</a>
-<a class="sourceLine" id="cb8-7" data-line-number="7">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span><span class="kw">base_offset</span>(spectra<span class="op">$</span>spc)</a></code></pre></div>
-<p>Optionally saves the processed spectra as an R dataset or csv file…</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">#---Save Spectra---#</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">save</span>(spc.df, <span class="dt">file=</span><span class="st">&quot;Single_Lib/spectra_processed.RData&quot;</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw">write.csv</span>(spc.df, <span class="st">&quot;Single_Lib/spectra_processed.csv&quot;</span>)</a></code></pre></div>
+<div id="subset-spectral-range" class="section level2">
+<h2><span class="header-section-number">4.2</span> Subset Spectral Range</h2>
+<p>Executed within <code>preprocess_functions.R</code> :</p>
+<ul>
+<li><code>subset_spectral_range( SPECTRA )</code>
+<ul>
+<li><code>SPECTRA</code>: <em>matrix</em>- A matrix of spectral data</li>
+</ul></li>
+</ul>
+<p>Narrows down the regions of the spectra by truncating wavenumbers below 628 and between 2268 to 2389, which is a CO2 sensitive region</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">#---Edit Spectral Columns---#</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">col.names &lt;-<span class="st"> </span><span class="kw">colnames</span>(spectra<span class="op">$</span>spc) <span class="co">#get column names which are wavenumbers</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">col.names &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">substring</span>(col.names,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">cutoff &lt;-<span class="st"> </span><span class="kw">which</span>(col.names <span class="op">&lt;=</span><span class="st"> </span><span class="dv">628</span>)[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span>spectra<span class="op">$</span>spc[,<span class="op">-</span><span class="kw">c</span>(cutoff<span class="op">:</span><span class="kw">length</span>(col.names))] <span class="co">#truncate at &gt;= 628</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8">min.index &lt;-<span class="st"> </span><span class="kw">which</span>(col.names <span class="op">&lt;=</span><span class="st"> </span><span class="dv">2389</span>)[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb8-9" data-line-number="9">max.index &lt;-<span class="st"> </span><span class="kw">which</span>(col.names <span class="op">&lt;=</span><span class="st"> </span><span class="dv">2268</span>)[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span>spectra<span class="op">$</span>spc[,<span class="op">-</span><span class="kw">c</span>(min.index<span class="op">:</span>max.index)] <span class="co">#remove CO2 region</span></a></code></pre></div>
+</div>
+<div id="baseline-transformation" class="section level2">
+<h2><span class="header-section-number">4.3</span> Baseline Transformation</h2>
+<p>Executed within <code>preprocess_functions.R</code> :</p>
+<ul>
+<li><code>base_offset(x)</code> *
+<ul>
+<li><code>x</code>: a matrix</li>
+</ul></li>
+</ul>
+<p>Performs a baseline transformation to normalize the spectra</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">#---Package: matrixStats---#</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">library</span>(matrixStats) <span class="co"># For function rowMins()</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#---Baseline Transformation---#</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">row_mins &lt;-<span class="st"> </span><span class="kw">rowMins</span>(x) </a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="kw">return</span>(x<span class="op">-</span>row_mins)</a></code></pre></div>
 <!--could show head of the spectra, or a figure showing the dimensions-->
 </div>
 <div id="merge-with-lab-data" class="section level2">
-<h2><span class="header-section-number">4.3</span> Merge with Lab Data</h2>
-<p>If there is lab data associated with your soil samples, this can be merged with the spectral data and later used to assess the performance of your models.The example lab dataset below provides information about where the soil sample was taken with the Site_ID and Horizon, as well as the lab measurements for various soil properties including Organic Carbon, Sand, Silt and Clay.</p>
+<h2><span class="header-section-number">4.4</span> Merge with Lab Data</h2>
+<p>If there is lab data associated with your soil samples, this can be merged with the spectral data and later used to assess the performance of your models. The example lab dataset below provides information about where the soil sample was taken with the Site_ID and Horizon, as well as the lab measurements for various soil properties including Organic Carbon, Sand, Silt and Clay.</p>
 <!--discuss FTIR run-lists and associating IDs -->
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co">#---Read Lab Data---#</span></a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">library</span>(readr) <span class="co">#used to open the .csv file</span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">lab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">read_csv</span>(<span class="st">&quot;Single_Lib/LAB_DATA.csv&quot;</span>, <span class="dt">col_types=</span><span class="kw">cols</span>())) <span class="co">#read in the lab data</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-3" data-line-number="3">lab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">read_csv</span>(<span class="st">&quot;Data_Raw/ref-LAB_DATA.csv&quot;</span>))</a></code></pre></div>
 <p>The merge() command joins the lab dataset to the spectral dataset. The all.y=TRUE parameter indicates that the final dataset will contain all the rows of spectra. This means that if some samples do not have lab data, they will be assigned a value of NA but the spectra will remain in the set.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co">#---Merge Data---#</span></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">all_data &lt;-<span class="st"> </span><span class="kw">merge</span>(lab, spectra, <span class="dt">all.y=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw">save</span>(all_data, <span class="dt">file=</span><span class="st">&quot;Single_Lib/spectra_lab_merge.RData&quot;</span>)</a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw">write.csv</span>(all_data, <span class="st">&quot;Single_Lib/spectra_lab_merge.csv&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a></code></pre></div>
-<!-- could show the head of this dataset as well -->
+<a class="sourceLine" id="cb11-2" data-line-number="2">all_data &lt;-<span class="st"> </span><span class="kw">merge</span>(lab, spectra, <span class="dt">all.y=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Save the reference set file after preprocessing…</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co">#---Save after Preprocessing---#</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Data_Processed&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Data_Processed&quot;</span>)}</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw">save</span>(all_refset, <span class="dt">file=</span><span class="st">&quot;Data_Processed/refset.ALL.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="kw">write.csv</span>(all_refset, <span class="st">&quot;Data_Processed/refset.ALL.csv&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 <p>The final dataframe contains a unique ID, lab data, and a matrix of spectral data called ‘spc’. It is suggested to save this file as RData so it may be reloaded as needed.</p>
+<div class="figure">
+<img src="images/ref.ALL.png" alt="ref.ALL.RData" />
+<p class="caption">ref.ALL.RData</p>
 </div>
-<div id="select-calibration-set" class="section level2">
-<h2><span class="header-section-number">4.4</span> Select Calibration Set</h2>
-<p>{<strong>OPTIONAL</strong>}</p>
-<p>Once the full dataset is processed, it must be split into calibration and validation sets to that will be used to train and test the model. This process must be repeated for each soil property that is being predicted, since outliers and NA values may vary among the properties. The example below shows this step for a single property, while the RUNFILE code shows it implemented in a loop for several properties.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co">#---Packages---#</span></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw">library</span>(pls) <span class="co">#used for plsr model</span></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw">source</span>(<span class="st">&quot;Single_Lib/reference_files/functions_modelChoice.R&quot;</span>) <span class="co">#used for optimum_sd_outlier()</span></a></code></pre></div>
-<p>Rows that have NA or negative values for the property being predicted (% Organic Carbon) are excluded from the dataset.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">#---Eliminate NA &amp; negative---#</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">all_data &lt;-<span class="st"> </span>all_data[<span class="op">!</span><span class="kw">is.na</span>(all_data[,property]),] <span class="co">#no NAs</span></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">all_data &lt;-<span class="st"> </span>all_data[<span class="kw">which</span>(all_data[,property] <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>),] <span class="co">#no negative values</span></a></code></pre></div>
-<p>A pls model is created from the remaining data to flag outliers. Samples that have inaccurate predictions are excluded. This is measured by regressing the predictions against its associated lab data, and evaluating how many standard deviations each sample is from the best fit line. Those &gt;99th percentile are removed since…</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">#---Remove Outliers---#</span></a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">pls.fit &lt;-<span class="st"> </span><span class="kw">plsr</span>(<span class="kw">sqrt</span>(<span class="kw">get</span>(property))<span class="op">~</span>spc, <span class="dt">ncomp=</span> <span class="dv">20</span>, <span class="dt">data =</span> all_data, <span class="dt">valid=</span><span class="st">&quot;CV&quot;</span>, <span class="dt">segments =</span> <span class="dv">50</span>) <span class="co">#fit a pls model to the data</span></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3">pred &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">predict</span>(pls.fit, <span class="dt">newdata =</span> all_data<span class="op">$</span>spc,<span class="dt">ncomp=</span><span class="dv">20</span>))<span class="op">^</span><span class="dv">2</span> <span class="co">#make predictions</span></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4">sd.outlier &lt;-<span class="st"> </span><span class="kw">optimum_sd_outlier</span>(pred, all_data[,property], <span class="kw">seq</span>(<span class="fl">0.1</span>,<span class="dv">3</span>, <span class="dt">by =</span><span class="fl">0.02</span>)) <span class="co">#flag samples that performed poorly as outliers</span></a>
-<a class="sourceLine" id="cb14-5" data-line-number="5">row.index &lt;-<span class="st"> </span><span class="kw">outlier</span>(pred, all_data[,property], sd.outlier[<span class="dv">1</span>])</a>
-<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="cf">if</span>(<span class="kw">length</span>(row.index) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>){</a>
-<a class="sourceLine" id="cb14-7" data-line-number="7">  all_data &lt;-<span class="st"> </span>all_data[row.index,] <span class="co">#subset non-outliers</span></a>
-<a class="sourceLine" id="cb14-8" data-line-number="8">}</a></code></pre></div>
+</div>
+<div id="refine-reference-set" class="section level2">
+<h2><span class="header-section-number">4.5</span> (Refine Reference Set)</h2>
+<p>If you are preprocessing the reference set, you may want to refine the samples you use to build your models by…</p>
+<ul>
+<li>Subsetting the whole reference set to 15000 samples<br />
+</li>
+<li>Creating separate sets for each property you are predicting for<br />
+</li>
+<li>Spliting the set or property subsets into calibration and validation groups</li>
+</ul>
+<div id="large-sets" class="section level3 unnumbered">
+<h3>Large Sets</h3>
+<p>If you reference set exceeds 15000 samples, you may chose to subset it. We have found that 15000 is optimal for speed and performance of the models, when the reference set is very large. This subset can be performed using <strong>conditional latin hypercube sampling</strong>, with the <code>clhs</code> package.</p>
+<div id="functions" class="section level4 unnumbered">
+<h4>Functions</h4>
+<p>Executed within <code>preprocess_functions.R</code> :</p>
+<ul>
+<li><code>sub_large_set( spectra, subcount)</code>
+<ul>
+<li><code>spectra</code>: <em>matrix</em>- Matrix of spectra</li>
+<li><code>subcount</code>: <em>integer</em>- Number of samples to subset. Default is set to 15000</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">library</span>(clhs)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">sub_large_set &lt;-<span class="st"> </span><span class="cf">function</span>(spectra, <span class="dt">subcount=</span><span class="dv">15000</span>){</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">  <span class="co">#Conditional Latin Hypercube Sampling if the set exceeds 15000 samples</span></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">  subset &lt;-<span class="st"> </span><span class="kw">clhs</span>(spectra, <span class="dt">size =</span> subcount, <span class="dt">progress =</span> <span class="ot">TRUE</span>, <span class="dt">iter =</span> <span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">  spectra &lt;-<span class="st"> </span>spectra[subset,] <span class="co">#double check</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">  <span class="kw">return</span>(spectra)</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">}</a></code></pre></div>
+</div>
+</div>
+<div id="property-subsets" class="section level3 unnumbered">
+<h3>Property Subsets</h3>
+<p>To yield the best models, you will want to exclude rows with faulty lab data (NA, negative, and outlier values). This may vary by soil property, so you should repeat this process separately and save separate reference sets for each property (ie. ref.OC.RData)</p>
+<div id="functions-1" class="section level4 unnumbered">
+<h4>Functions</h4>
+<p>Executed within <code>preprocess_functions.R</code> :</p>
+<ul>
+<li><code>noNA( dataset, column )</code>
+<ul>
+<li><code>dataset</code>: dataframe to eliminate NAs from</li>
+<li><code>column</code>: column to check for NA values</li>
+</ul></li>
+<li><code>noNeg( dataset, column )</code>
+<ul>
+<li><code>dataset</code>: dataframe to eliminate negative values from</li>
+<li><code>column</code>: column to check for negative values</li>
+</ul></li>
+<li><code>noOut( dataset, column )</code>
+<ul>
+<li><code>dataset</code>: dataframe to eliminate outliers from</li>
+<li><code>column</code>: column to check for outliers</li>
+</ul></li>
+</ul>
+<p>Executed within <code>outlier_functions.R</code> :</p>
+<ul>
+<li><code>stdev_outliers( dataset, column )</code>
+<ul>
+<li><code>dataset</code>: dataframe to eliminate standard deviation outliers from</li>
+<li><code>column</code>: column to check for standard deviation outliers</li>
+</ul></li>
+</ul>
+<p>_</p>
+<p>Gets rid of NA values…</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">noNA &lt;-<span class="st"> </span><span class="cf">function</span>(dataset, column){</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">  <span class="kw">return</span>(dataset[<span class="op">!</span><span class="kw">is.na</span>(dataset[,column]),])</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">}</a></code></pre></div>
+<p>Gets rid of Negative values…</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">noNeg &lt;-<span class="st"> </span><span class="cf">function</span>(dataset, column){</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">  <span class="kw">return</span>(dataset[<span class="kw">which</span>(dataset[,column] <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>),])</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">}</a></code></pre></div>
+<p>Gets rid of Outliers…</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw">source</span>(<span class="st">&quot;Functions/outlier_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">noOut &lt;-<span class="st"> </span><span class="cf">function</span>(dataset, column){</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">  outliers &lt;-<span class="st"> </span><span class="kw">stdev_outliers</span>(dataset, column)</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">  <span class="kw">return</span>(dataset[<span class="op">-</span>outliers,])</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">}</a></code></pre></div>
+<p>The <code>noOut()</code> function (above) calls the <code>stdev_outliers()</code> function (below), which is within <code>outlier_functions.R</code>. This outlier detection approach creates a PLS model, and identifies predictions that were that exceed a certain standard deviation threshold. {come back to for more detail}</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">stdev_outliers &lt;-<span class="st"> </span><span class="cf">function</span>(dataset, column){</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">  <span class="co"># Create a PLS model with the data</span></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">  pls.fit &lt;-<span class="st"> </span><span class="kw">plsr</span>(<span class="kw">sqrt</span>(<span class="kw">get</span>(column))<span class="op">~</span>spc, <span class="dt">ncomp=</span> <span class="dv">20</span>, <span class="dt">data =</span> dataset, <span class="dt">valid=</span><span class="st">&quot;CV&quot;</span>, <span class="dt">segments =</span> <span class="dv">50</span>) <span class="co">#y, x, number components, data, cross validation, </span></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">  pred &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">predict</span>(pls.fit, <span class="dt">newdata =</span> dataset<span class="op">$</span>spc,<span class="dt">ncomp=</span><span class="dv">20</span>))<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">  </a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">  <span class="co"># Identify outliers using a standard deviation threshold</span></a>
+<a class="sourceLine" id="cb17-8" data-line-number="8">  sd.outlier &lt;-<span class="st"> </span><span class="kw">optimum_sd_outlier</span>(pred, dataset[,column], <span class="kw">seq</span>(<span class="fl">0.1</span>,<span class="dv">3</span>, <span class="dt">by =</span><span class="fl">0.02</span>))</a>
+<a class="sourceLine" id="cb17-9" data-line-number="9">  outlier.indices &lt;-<span class="st"> </span><span class="kw">outlier_indices</span>(pred, dataset[,column], sd.outlier[<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb17-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb17-11" data-line-number="11">  <span class="kw">return</span>(outlier.indices)</a>
+<a class="sourceLine" id="cb17-12" data-line-number="12">}</a></code></pre></div>
+</div>
+<div id="script" class="section level4 unnumbered">
+<h4>Script</h4>
+<p>Sets the properties you would like make references sets for…</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># Remove rows with poor lab data</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">properties &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;OC&quot;</span>,<span class="st">&quot;SAND&quot;</span>,<span class="st">&quot;SILT&quot;</span>, <span class="st">&quot;CLAY&quot;</span>) <span class="co">#Column names of lab data</span></a></code></pre></div>
+<p>Gets rid of NA, negative and outlier values and saves subsets…</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="cf">for</span>(property <span class="cf">in</span> properties){</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">  prop_refset &lt;-<span class="st"> </span>all_refset</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNA</span>(prop_refset, property) <span class="co"># Remove NAs</span></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNeg</span>(prop_refset, property) <span class="co"># Remove Negative</span></a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">  prop_refset &lt;-<span class="st"> </span><span class="kw">noOut</span>(prop_refset, property) <span class="co"># Remove Outliers*</span></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">  savename &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;refset&quot;</span>, property, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Ex: refset.OC</span></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7">  <span class="kw">assign</span>(savename, prop_refset)</a>
+<a class="sourceLine" id="cb19-8" data-line-number="8">  <span class="kw">save</span>(<span class="dt">list=</span> savename, <span class="dt">file=</span><span class="kw">paste0</span>(<span class="st">&quot;Data_Processed/&quot;</span>, savename, <span class="st">&quot;.RData&quot;</span>))</a>
+<a class="sourceLine" id="cb19-9" data-line-number="9">}</a></code></pre></div>
 <!--Insert plot showing the outlier selection process-->
-<p>Performing kennard stone to separate data into 80% calibration and 20% validation sets. This step can be skipped if using MBL modeling approach which uses the entire dataset. If both modeling approaches are being used, you can load and row bind the calibration and validation sets for MBL.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">#---Kennard Stone---#</span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">ken_stone&lt;-<span class="st"> </span>prospectr<span class="op">::</span><span class="kw">kenStone</span>(<span class="dt">X =</span> all_data<span class="op">$</span>spc, <span class="dt">k =</span> <span class="kw">as.integer</span>(<span class="fl">0.8</span><span class="op">*</span><span class="kw">nrow</span>(all_data)), <span class="dt">metric =</span> <span class="st">&quot;mahal&quot;</span>, <span class="dt">pc =</span> <span class="dv">10</span>) </a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">calib &lt;-<span class="st"> </span>all_data[ken_stone<span class="op">$</span>model, ] <span class="co">#subset calibration set</span></a>
-<a class="sourceLine" id="cb15-4" data-line-number="4">valid &lt;-<span class="st"> </span>all_data[ken_stone<span class="op">$</span>test, ] <span class="co">#subset validation set</span></a></code></pre></div>
-<p>Save calibration and validation set for that particular property</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co">#Save for property</span></a>
-<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw">save</span>(calib, <span class="dt">file=</span><span class="kw">paste</span>(<span class="st">&quot;Single_Lib/calib&quot;</span>,property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>))</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="kw">save</span>(valid, <span class="dt">file=</span><span class="kw">paste</span>(<span class="st">&quot;Single_Lib/valid&quot;</span>,property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>))</a></code></pre></div>
-<p>An alternative to saving the datasets would be to add a column indicating whether a sample falls under the calibration or validation set. This could be used to subset the correct datasets when making predictions. If the full dataset is large and takes a while to load, saving the former approach is preferred. If the set loads relatively quickly, it may be worth it to save storage space and use the latter method.</p>
+</div>
+</div>
+<div id="calval-groups" class="section level3 unnumbered">
+<h3>Cal/Val Groups</h3>
+<p>You may chose to subset a portion of the reference set as a calibration group which will be used to build the models- leaving the remaining samples as the validation set to test the model.</p>
+<p>Kennard Stone is a method for performing this type of separation while ensuring each group is representative of the set.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
+<div id="functions-2" class="section level4 unnumbered">
+<h4>Functions</h4>
+<p>Executed within <code>preprocess_functions.R</code> :</p>
+<ul>
+<li><code>calValSplit( dataset, column )</code>
+<ul>
+<li><code>dataset</code>: <em>dataframe</em>- The reference dataset with a ‘spc’ column containing the spectral matrix</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">library</span>(prospectr)</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">calValSplit &lt;-<span class="st"> </span><span class="cf">function</span>(dataset){</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">  <span class="co">#perform kennard stone to separate data into 80% calibration and 20% validation sets</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">  ken_stone&lt;-<span class="st"> </span>prospectr<span class="op">::</span><span class="kw">kenStone</span>(<span class="dt">X =</span> dataset<span class="op">$</span>spc, </a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">                                  <span class="dt">k =</span> <span class="kw">as.integer</span>(<span class="fl">0.8</span><span class="op">*</span><span class="kw">nrow</span>(dataset)), </a>
+<a class="sourceLine" id="cb20-6" data-line-number="6">                                  <span class="dt">metric =</span> <span class="st">&quot;mahal&quot;</span>, <span class="dt">pc =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">  calib &lt;-<span class="st"> </span>dataset[ken_stone<span class="op">$</span>model, ]</a>
+<a class="sourceLine" id="cb20-8" data-line-number="8">  valid &lt;-<span class="st"> </span>dataset[ken_stone<span class="op">$</span>test, ]</a>
+<a class="sourceLine" id="cb20-9" data-line-number="9">  </a>
+<a class="sourceLine" id="cb20-10" data-line-number="10">  <span class="kw">return</span>(<span class="kw">c</span>(calib, valid))</a>
+<a class="sourceLine" id="cb20-11" data-line-number="11">}</a></code></pre></div>
+<!--An alternative to saving the datasets would be to add a column indicating whether a sample falls under the calibration or validation set. This could be used to subset the correct datasets when making predictions. If the full dataset is large and takes a while to load, saving the former approach is preferred. If the set loads relatively quickly, it may be worth it to save storage space and use the latter method.-->
+</div>
+<div id="script-1" class="section level4 unnumbered">
+<h4>Script</h4>
+<p>To split the reference set into calibration and validation groups…</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">split &lt;-<span class="st"> </span><span class="kw">calValSplit</span>(all_refset, property) </a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">calib &lt;-<span class="st"> </span>split[<span class="dv">1</span>]; valid &lt;-<span class="st"> </span>split[<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="kw">save</span>(calib, <span class="dt">file=</span><span class="st">&quot;Data_Processed/calib.ALL.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"><span class="kw">save</span>(valid, <span class="dt">file=</span><span class="st">&quot;Data_Processed/valid.ALL.RData&quot;</span>)</a></code></pre></div>
+<p>To split the property subsets into calibration and validation groups…</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">properties &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;OC&quot;</span>,<span class="st">&quot;SAND&quot;</span>,<span class="st">&quot;SILT&quot;</span>, <span class="st">&quot;CLAY&quot;</span>) <span class="co">#Column names of lab data</span></a>
+<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="cf">for</span>(property <span class="cf">in</span> properties){</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">  <span class="co"># Remove</span></a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">  prop_refset &lt;-<span class="st"> </span>all_refset</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNA</span>(prop_refset, property) <span class="co"># Remove NAs</span></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNeg</span>(prop_refset, property) <span class="co"># Remove Negative</span></a>
+<a class="sourceLine" id="cb22-8" data-line-number="8">  prop_refset &lt;-<span class="st"> </span><span class="kw">noOut</span>(prop_refset, property) <span class="co"># Remove Outliers*</span></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9">  savename &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;refset&quot;</span>, property, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Ex: refset.OC</span></a>
+<a class="sourceLine" id="cb22-10" data-line-number="10">  <span class="kw">assign</span>(savename, prop_refset)</a>
+<a class="sourceLine" id="cb22-11" data-line-number="11">  <span class="kw">save</span>(<span class="dt">list=</span> savename, <span class="dt">file=</span><span class="kw">paste0</span>(<span class="st">&quot;Data_Processed/&quot;</span>, savename, <span class="st">&quot;.RData&quot;</span>))</a>
+<a class="sourceLine" id="cb22-12" data-line-number="12">  </a>
+<a class="sourceLine" id="cb22-13" data-line-number="13">  <span class="co"># Split Calibration &amp; Validation Sets</span></a>
+<a class="sourceLine" id="cb22-14" data-line-number="14">  split &lt;-<span class="st"> </span><span class="kw">calValSplit</span>(prop_refset, property) </a>
+<a class="sourceLine" id="cb22-15" data-line-number="15">  calib &lt;-<span class="st"> </span>split[<span class="dv">1</span>]; valid &lt;-<span class="st"> </span>split[<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb22-16" data-line-number="16">  <span class="kw">save</span>(calib, <span class="dt">file=</span><span class="kw">paste</span>(<span class="st">&quot;Data_Processed/calib&quot;</span>, property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>))</a>
+<a class="sourceLine" id="cb22-17" data-line-number="17">  <span class="kw">save</span>(valid, <span class="dt">file=</span><span class="kw">paste</span>(<span class="st">&quot;Data_Processed/valid&quot;</span>, property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>))</a>
+<a class="sourceLine" id="cb22-18" data-line-number="18">}</a></code></pre></div>
 
 </div>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>prediction set preprocessing skips step 4.5 Select Calibration Set<a href="data-preprocessing.html#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p><a href="https://github.com/philipp-baumann/simplerspec" class="uri">https://github.com/philipp-baumann/simplerspec</a><a href="data-preprocessing.html#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>sample_ids that are numeric may cause issues while merging so a string ID is advised<a href="data-preprocessing.html#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>This step can be skipped if using MBL modeling approach which uses the entire dataset. If both modeling approaches are being used, you can load and row bind the calibration and validation sets for MBL<a href="data-preprocessing.html#fnref4" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
             </section>
 

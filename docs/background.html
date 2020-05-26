@@ -135,12 +135,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3" data-path="code-overview.html"><a href="code-overview.html"><i class="fa fa-check"></i><b>3</b> Code Overview</a><ul>
 <li class="chapter" data-level="3.1" data-path="code-overview.html"><a href="code-overview.html#file-structure"><i class="fa fa-check"></i><b>3.1</b> File Structure</a></li>
 <li class="chapter" data-level="3.2" data-path="code-overview.html"><a href="code-overview.html#required-packages"><i class="fa fa-check"></i><b>3.2</b> Required Packages</a></li>
+<li class="chapter" data-level="3.3" data-path="code-overview.html"><a href="code-overview.html#full-script"><i class="fa fa-check"></i><b>3.3</b> Full Script</a></li>
+<li class="chapter" data-level="3.4" data-path="code-overview.html"><a href="code-overview.html#getting-started"><i class="fa fa-check"></i><b>3.4</b> Getting Started</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="data-preprocessing.html"><a href="data-preprocessing.html"><i class="fa fa-check"></i><b>4</b> Data Preprocessing</a><ul>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#script-overview"><i class="fa fa-check"></i>Script Overview</a></li>
 <li class="chapter" data-level="4.1" data-path="data-preprocessing.html"><a href="data-preprocessing.html#extract-opus-files"><i class="fa fa-check"></i><b>4.1</b> Extract OPUS files</a></li>
-<li class="chapter" data-level="4.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#process-spectra"><i class="fa fa-check"></i><b>4.2</b> Process Spectra</a></li>
-<li class="chapter" data-level="4.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>4.3</b> Merge with Lab Data</a></li>
-<li class="chapter" data-level="4.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#select-calibration-set"><i class="fa fa-check"></i><b>4.4</b> Select Calibration Set</a></li>
+<li class="chapter" data-level="4.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#subset-spectral-range"><i class="fa fa-check"></i><b>4.2</b> Subset Spectral Range</a></li>
+<li class="chapter" data-level="4.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#baseline-transformation"><i class="fa fa-check"></i><b>4.3</b> Baseline Transformation</a></li>
+<li class="chapter" data-level="4.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>4.4</b> Merge with Lab Data</a></li>
+<li class="chapter" data-level="4.5" data-path="data-preprocessing.html"><a href="data-preprocessing.html#refine-reference-set"><i class="fa fa-check"></i><b>4.5</b> (Refine Reference Set)</a><ul>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#large-sets"><i class="fa fa-check"></i>Large Sets</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#property-subsets"><i class="fa fa-check"></i>Property Subsets</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#split-to-groups"><i class="fa fa-check"></i>Split to Groups</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="plsr-models.html"><a href="plsr-models.html"><i class="fa fa-check"></i><b>5</b> PLSR Models</a><ul>
 <li class="chapter" data-level="5.1" data-path="plsr-models.html"><a href="plsr-models.html#model-theory"><i class="fa fa-check"></i><b>5.1</b> Model Theory</a></li>
@@ -184,7 +192,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="background" class="section level1">
 <h1><span class="header-section-number">2</span> Background</h1>
-<p>Mid-Infrared (MIR) spectroscopy is a quick, cost effective technique for predicting a variety of soil health properties.</p>
 <p>“Diffuse reflectance spectroscopy (DRS) has been demonstrated to be a viable alternative for rapidly characterizing and measuring soil properties compared with time-consuming and expensive conventional soil laboratory analysis [6]. Visible (vis; 400–700 nm), near-infrared (NIR; 700–2500 nm), and mid-infrared (MIR; 2500–25,000 nm) regions have been used widely to characterize soil minerals and organic matter at the global [5,7,8], regional [9,10], national [11,12] and local scale [13]. Vis–NIR can be preferable to MIR due to its low instrumental cost and potential for field deployment [14]. Therefore, for soil surveys that require high sampling density with basic soil properties measurement (for, e.g., organic carbon, soil texture), vis–NIR may be preferable. In contrast, the MIR region contains strong molecular vibrations of most important soil minerals and organic components [7,15]. As a result, models built using MIR databases often perform better compared with the vis–NIR database for many soil properties, particularly for more minor soil constituents [6,16]” (soil systems paper)</p>
 <div class="figure">
 <img src="images/spectra_properties.png" alt="https://www.researchgate.net/figure/Representative-soil-mid-IR-spectrum-showing-absorptions-related-to-the-mineral-and_fig1_282420764" />

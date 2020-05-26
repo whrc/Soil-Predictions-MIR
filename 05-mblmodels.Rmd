@@ -24,7 +24,8 @@ The animation below illustrates how local modeling works in MBL. It is shown in 
 knitr::include_graphics(path="./images/mbl_vid.gif")
 ```
 
-**A** Shows all the samples in the prediction set (red), overlaying all the samples in the reference set (gray)             
+**A** Shows all the samples in the prediction set (red), overlaying all the samples in the reference set (gray)     
+
 **B** Shows a circle indicating the nearest neighbors of a sample being predicted       
 
 **C** Shows all the samples of the prediction set with their respective nearest neighbors     
@@ -72,7 +73,7 @@ mblControl(sm = "pc",
 ```
 
 ### Modeling Parameters {-}
-This section explains some of the main ways to customize and optimize mbl models using `mbl()` in the resemble package. Below is an example workflow for modeling with MBL:     
+This section explains some of the main ways to customize and optimize mbl models using `mbl()` in the resemble package. Below is an example workflow for modeling with MBL after the preprocessing steps have been completed:   
 
 ![](./images/mbl_step.png)   
 
@@ -123,7 +124,7 @@ This section explains some of the main ways to customize and optimize mbl models
     + `gpr` for gaussian process with dot product covariance
 * `pls.c` allows you to set the number of pls components to be used if either "pls" or "wasp1" is used.
     + A single number if `pls` is used
-    + A vector containing the minimum and maximum number of components to be used
+    + A vector containing the minimum and maximum number of components to be used, if `wasp1` is used
 
 #### Validation Method {-}
 * You can specify the validation method by setting the parameter `valMethod` within the `mblControl()` function.
@@ -182,3 +183,19 @@ best.kdiss.ca <- mbl.sqrt$nnValStats$k.diss[idx.best.ca]
 predVals <- c(getPredictions(mbl.sqrt)[, idx.best.ca])^2
 
 ```
+
+#### Model Output {-}
+
+* Cross Validation Statistics    
+```{r eval=FALSE}
+mbl.sqrt$localCrossValStats
+index_best_model <- which.min(mbl.sqrt$localCrossValStats$st.rmse)
+```
+
+* Prediction Statistics     
+    + If Yu, lab data for the prediction set is provided, it will calculate how well the models predicted in terms of rmse, st.rmse and r2    
+
+```{r eval=FALSE}
+mbl.sqrt$YuPredictionStats
+```
+

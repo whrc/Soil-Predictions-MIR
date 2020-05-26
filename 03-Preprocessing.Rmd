@@ -1,23 +1,84 @@
 # Data Preprocessing
 
+## Script Overview {-}
+* Data Preprocessing must be performed for the **reference set**, used to create the models, as well as the dataset you are making predictions from, the **prediction set**^[prediction set preprocessing skips step 4.5 Select Calibration Set]   
+* The prediction set and reference set will be the same dataset if you are just using a **single spectral library**, but can be different if you are using models from one set to make predictions on another.
+* Data preprocesing is executed by the functions within `preprocess_functions.R`    
+* The code shown below is the section of the `RUNFILE.R` script which calls the preprocessing functions to preprocess the reference set.     * Subsections 4.1-4.4 in this guide explain the steps and their respective functions in more detail    
+
+
+```{r, eval=FALSE}
+#----------------------------------------------#
+      # Reference Set Preprocessing #
+#----------------------------------------------#
+source("Functions/preprocess_functions.R")
+
+# Process Reference Set Spectra 
+spectra <- opus_to_dataset("/Data_Raw/ref-SPECTRA")
+spectra$spc <- subset_spectral_range(spectra$spc)
+spectra$spc <- base_offset(spectra$spc)
+
+# Merge with Reference Set Lab Data
+library(readr)
+lab <- data.frame(read_csv("Data_Raw/ref-LAB_DATA.csv"))
+all_refset <- merge(lab, spectra, all.y=TRUE)
+
+# Save the Full Reference Set after Preprocessing
+if(file.exists("./Predictions")==FALSE){dir.create("./Data_Processed")}
+save(all_refset, file="Data_Processed/refset.ALL.RData")
+write.csv(all_refset, "Data_Processed/refset.ALL.csv", row.names=FALSE)
+
+# Save Reference Sets Optimal for each Property
+properties <- c("OC","SAND","SILT", "CLAY") #Column names of lab data
+for(property in properties){
+  prop_refset <- all_refset
+  prop_refset <- noNA(prop_refset, property) # Remove NAs
+  prop_refset <- noNeg(prop_refset, property) # Remove Negative
+  prop_refset <- noOut(prop_refset, property) # Remove Outliers*
+  savename <- paste("refset", property, sep=".") # Ex: refset.OC
+  assign(savename, prop_refset)
+  save(list= savename, file=paste0("Data_Processed/", savename, ".RData"))
+  
+  #split <- calValSplit(prop_refset, property) # Split Calibration & Validation Sets
+  #calib <- split[1]; valid <- split[2]
+  #save(calib, file=paste("Data_Processed/calib", property,"RData", sep="."))
+  #save(valid, file=paste("Data_Processed/valid", property,"RData", sep="."))
+}
+```
+
+
 ## Extract OPUS files
 
-For Bruker Instruments, an OPUS file containing spectral data, will be output for each sample that is scanned. To compile these separate files into one dataset, we use a couple functions from the ['simplerspec'](https://github.com/philipp-baumann/simplerspec) package by Philip Baumann, as well as the stringr and foreach packages.
+For Bruker Instruments, an **OPUS file** containing spectral data, will be output for each sample that is scanned. To compile these separate files into one dataset, we use a couple functions from the `simplerspc` ^[https://github.com/philipp-baumann/simplerspec] package by Philip Baumann, as well as the `stringr` and `foreach` packages.     
 
+Executed within `preprocess_functions.R` :     
+
+* `opus_to_dataset( SPECPATH, NWAVE, SAVE )`     
+    + `SPECPATH`: *string*- The path to the folder of opus files. Default set to "/Data_Raw/SPECTRA"
+    + `NWAVE`: *integer*- The number of wavelengths to extract. This will be set on the FTIR before running. The default is set to 3017, which we use at WHRC
+    + `SAVE`: *boolean*- Whether or not you would like to save the extracted spectra as a dataframe. Saved to "Data_Preprocessed/Data_Processed/ref-spectra_original.RData" Default is FALSE     
+_  
+
+Loads appropriate packages for opus_to_dataset...
 ```{r eval=FALSE}
 #---Packages---#
 library(stringr) #used for str_sub
 library(foreach) #used within read-opus-universal.R
-source("Single_Lib/reference_files/gather-spc.R") #simplerspec function
-source("Single_Lib/reference_files/read-opus-universal.R") #simplerspec function
+source("Functions/gather-spc.R") #simplerspec function
+source("Functions/read-opus-universal.R") #simplerspec function
 ```
-Gets the paths of all OPUS files...
+Gets the paths of all OPUS files...     
+A single path will look something like this:    
+
+`/Soil-Predictions-Example/Data_Raw/ref-SPECTRA/WHRC03405_S_001_030.0`    
 ```{r, eval=FALSE}
 #---List Files---#
-spectraPath <- "/Single_Lib/SPECTRA" #folder of OPUS files
+spectraPath <- "/Data_Raw/ref-SPECTRA" #folder of OPUS files
 dirs <- list.dirs(paste(getwd(),spectraPath,sep=""), full.names=TRUE)
 all.files <- list.files(dirs, pattern= "*.0", recursive=TRUE,full.names=TRUE)
 ```
+
+
 
 ```{r eval=FALSE, echo=FALSE}
 all.files <- all.files[1:3] #subset for demostration
@@ -32,13 +93,12 @@ soilspec_tbl <- spc_list %>%
 spc <- soilspec_tbl$spc
 ```
 
-Optionally truncates the dataset to ensure the spectra from different samples align. Only necessary if instrument settings are changed between runs. 3017 would be changed to the number of spectral columns (wavelengths collected)
+Truncates the dataset to the number of wavelengths specified, to ensure the spectra from different samples align...
 ```{r eval=FALSE}
-spc <- lapply(1:length(spc),function(x) spc[[x]][,1:3017])
+spc <- lapply(1:length(spc),function(x) spc[[x]][,1:NWAVE])
 ```
 
-Processes spectra into a dataframe and assigns a sample_id, based off the file names...    
-*sample_ids that are numeric may cause issues while merging so a string ID is advised.
+Processes spectra into a dataframe and assigns a `sample_id,` based off the file names ^[sample_ids that are numeric may cause issues while merging so a string ID is advised]...    
 ```{r eval=FALSE}
 spc.df <- as.data.frame(matrix(unlist(spc), nrow=length(spc), byrow=T))
 colnames(spc.df) <- colnames(spc[[1]])
@@ -46,15 +106,21 @@ spc.df <- data.frame(sample_id = soilspec_tbl$sample_id, spc.df)
 spc.df$sample_id <- str_sub(spc.df$sample_id,1,9)
 ```
 
-Optionally saves the spectra as an R dataset or csv file...
+Optionally saves the spectra as an R dataset and csv file...
 ```{r eval=FALSE}
-save(spc.df, file="spectra_original.RData")
-write.csv(spc.df, "spectra_original.csv")
+if(SAVE==TRUE){
+    save(spectra, file="Data_Processed/ref-spectra_original.RData")
+    write.csv(spectra, "Data_Processed/ref-spectra_original.csv", row.names=FALSE)
+}
 ```
 
-## Process Spectra
+## Subset Spectral Range
+Executed within `preprocess_functions.R` :    
 
-We narrow down the regions of the spectra by truncating wavenumbers below 628 and between 2268 to 2389, which is a CO2 sensitive region.
+* `subset_spectral_range( SPECTRA )`    
+    + `SPECTRA`: *matrix*- A matrix of spectral data
+
+Narrows down the regions of the spectra by truncating wavenumbers below 628 and between 2268 to 2389, which is a CO2 sensitive region
 ```{r eval=FALSE}
 #---Edit Spectral Columns---#
 col.names <- colnames(spectra$spc) #get column names which are wavenumbers
@@ -68,33 +134,32 @@ max.index <- which(col.names <= 2268)[1]
 spectra$spc <- spectra$spc[,-c(min.index:max.index)] #remove CO2 region
 ```
 
-We perform a baseline transformation to normalize the spectra
+## Baseline Transformation
+Executed within `preprocess_functions.R` :     
+
+* `base_offset(x)` *
+    + `x`: a matrix
+
+Performs a baseline transformation to normalize the spectra
 ```{r eval=FALSE}
+#---Package: matrixStats---#
+library(matrixStats) # For function rowMins()
+
 #---Baseline Transformation---#
-library(matrixStats)
-base_offset <- function(x){
-  test <- rowMins(x)
-  return(x-test)
-}
-spectra$spc <- base_offset(spectra$spc)
+row_mins <- rowMins(x) 
+return(x-row_mins)
 ```
 
-Optionally saves the processed spectra as an R dataset or csv file...
-```{r eval=FALSE}
-#---Save Spectra---#
-save(spc.df, file="Single_Lib/spectra_processed.RData")
-write.csv(spc.df, "Single_Lib/spectra_processed.csv")
-```
 <!--could show head of the spectra, or a figure showing the dimensions-->
 
 ## Merge with Lab Data
-If there is lab data associated with your soil samples, this can be merged with the spectral data and later used to assess the performance of your models.The example lab dataset below provides information about where the soil sample was taken with the Site_ID and Horizon, as well as the lab measurements for various soil properties including Organic Carbon, Sand, Silt and Clay.
+If there is lab data associated with your soil samples, this can be merged with the spectral data and later used to assess the performance of your models. The example lab dataset below provides information about where the soil sample was taken with the Site_ID and Horizon, as well as the lab measurements for various soil properties including Organic Carbon, Sand, Silt and Clay.
 
 <!--discuss FTIR run-lists and associating IDs -->
 ```{r eval=FALSE}
 #---Read Lab Data---#
 library(readr) #used to open the .csv file
-lab <- data.frame(read_csv("Single_Lib/LAB_DATA.csv", col_types=cols())) #read in the lab data
+lab <- data.frame(read_csv("Data_Raw/ref-LAB_DATA.csv"))
 ```
 
 ```{r eval=FALSE, echo=FALSE}
@@ -107,65 +172,197 @@ The merge() command joins the lab dataset to the spectral dataset. The all.y=TRU
 ```{r eval=FALSE}
 #---Merge Data---#
 all_data <- merge(lab, spectra, all.y=TRUE)
-save(all_data, file="Single_Lib/spectra_lab_merge.RData")
-write.csv(all_data, "Single_Lib/spectra_lab_merge.csv", row.names=FALSE)
-```
-<!-- could show the head of this dataset as well -->
-
-```{r eval=FALSE, echo=FALSE, warning=FALSE}
-load("Single_Lib/spectra_lab_merge.RData")
-kable(all_data[1:3,], caption="All Data")
 ```
 
-The final dataframe contains a unique ID, lab data, and a matrix of spectral data called 'spc'. It is suggested to save this file as RData so it may be reloaded as needed.
-
-
-## Select Calibration Set
-{**OPTIONAL**}    
-
-Once the full dataset is processed, it must be split into calibration and validation sets to that will be used to train and test the model. This process must be repeated for each soil property that is being predicted, since outliers and NA values may vary among the properties. The example below shows this step for a single property, while the RUNFILE code shows it implemented in a loop for several properties.
-
+Save the reference set file after preprocessing...
 ```{r eval=FALSE}
-#---Packages---#
-library(pls) #used for plsr model
-source("Single_Lib/reference_files/functions_modelChoice.R") #used for optimum_sd_outlier()
+#---Save after Preprocessing---#
+if(file.exists("./Data_Processed")==FALSE){dir.create("./Data_Processed")}
+save(all_refset, file="Data_Processed/refset.ALL.RData")
+write.csv(all_refset, "Data_Processed/refset.ALL.csv", row.names=FALSE)
 ```
 
-Rows that have NA or negative values for the property being predicted (% Organic Carbon) are excluded from the dataset.
-```{r eval=FALSE}
-#---Eliminate NA & negative---#
-all_data <- all_data[!is.na(all_data[,property]),] #no NAs
-all_data <- all_data[which(all_data[,property] > 0),] #no negative values
-```
+The final dataframe contains a unique ID, lab data, and a matrix of spectral data called 'spc'. It is suggested to save this file as RData so it may be reloaded as needed.    
 
-A pls model is created from the remaining data to flag outliers. Samples that have inaccurate predictions are excluded. This is measured by regressing the predictions against its associated lab data, and evaluating how many standard deviations each sample is from the best fit line. Those >99th percentile are removed since...
-```{r eval=FALSE}
-#---Remove Outliers---#
-pls.fit <- plsr(sqrt(get(property))~spc, ncomp= 20, data = all_data, valid="CV", segments = 50) #fit a pls model to the data
-pred <- c(predict(pls.fit, newdata = all_data$spc,ncomp=20))^2 #make predictions
-sd.outlier <- optimum_sd_outlier(pred, all_data[,property], seq(0.1,3, by =0.02)) #flag samples that performed poorly as outliers
-row.index <- outlier(pred, all_data[,property], sd.outlier[1])
-if(length(row.index) > 0){
-  all_data <- all_data[row.index,] #subset non-outliers
+![ref.ALL.RData](images/ref.ALL.png)  
+
+## (Refine Reference Set)
+
+If you are preprocessing the reference set, you may want to refine the samples you use to build your models by...     
+
+* Subsetting the whole reference set to 15000 samples    
+* Creating separate sets for each property you are predicting for       
+* Spliting the set or property subsets into calibration and validation groups    
+
+### Large Sets {-}
+If you reference set exceeds 15000 samples, you may chose to subset it. We have found that 15000 is optimal for speed and performance of the models, when the reference set is very large. This subset can be performed using **conditional latin hypercube sampling**, with the `clhs` package. 
+
+#### Functions {-}    
+
+Executed within `preprocess_functions.R` :    
+
+* `sub_large_set( spectra, subcount)`
+    + `spectra`: *matrix*- Matrix of spectra
+    + `subcount`: *integer*- Number of samples to subset. Default is set to 15000    
+    
+```{r, eval=FALSE}
+library(clhs)
+sub_large_set <- function(spectra, subcount=15000){
+  #Conditional Latin Hypercube Sampling if the set exceeds 15000 samples
+  subset <- clhs(spectra, size = subcount, progress = TRUE, iter = 500)
+  spectra <- spectra[subset,] #double check
+  return(spectra)
 }
 ```
+
+### Property Subsets {-}
+To yield the best models, you will want to exclude rows with faulty lab data (NA, negative, and outlier values). This may vary by soil property, so you should repeat this process separately and save separate reference sets for each property (ie. ref.OC.RData)    
+
+#### Functions {-}    
+
+Executed within `preprocess_functions.R` :
+
+* `noNA( dataset, column )`
+    + `dataset`: dataframe to eliminate NAs from
+    + `column`: column to check for NA values    
+    
+* `noNeg( dataset, column )`
+    + `dataset`: dataframe to eliminate negative values from
+    + `column`: column to check for negative values    
+    
+* `noOut( dataset, column )`
+    + `dataset`: dataframe to eliminate outliers from
+    + `column`: column to check for outliers   
+
+
+Executed within `outlier_functions.R` :
+
+* `stdev_outliers( dataset, column )`
+    + `dataset`: dataframe to eliminate standard deviation outliers from
+    + `column`: column to check for standard deviation outliers    
+    
+_
+     
+Gets rid of NA values...
+```{r, eval=FALSE}
+noNA <- function(dataset, column){
+  return(dataset[!is.na(dataset[,column]),])
+}
+```
+
+Gets rid of Negative values...
+```{r, eval=FALSE}
+noNeg <- function(dataset, column){
+  return(dataset[which(dataset[,column] > 0),])
+}
+```
+
+Gets rid of Outliers...
+```{r, eval=FALSE}
+source("Functions/outlier_functions.R")
+noOut <- function(dataset, column){
+  outliers <- stdev_outliers(dataset, column)
+  return(dataset[-outliers,])
+}
+```
+
+The `noOut()` function (above) calls the `stdev_outliers()` function (below), which is within `outlier_functions.R`. This outlier detection approach creates a PLS model, and identifies predictions that were that exceed a certain standard deviation threshold. {come back to for more detail}
+``` {r, eval=FALSE}
+stdev_outliers <- function(dataset, column){
+  
+  # Create a PLS model with the data
+  pls.fit <- plsr(sqrt(get(column))~spc, ncomp= 20, data = dataset, valid="CV", segments = 50) #y, x, number components, data, cross validation, 
+  pred <- c(predict(pls.fit, newdata = dataset$spc,ncomp=20))^2
+  
+  # Identify outliers using a standard deviation threshold
+  sd.outlier <- optimum_sd_outlier(pred, dataset[,column], seq(0.1,3, by =0.02))
+  outlier.indices <- outlier_indices(pred, dataset[,column], sd.outlier[1])
+
+  return(outlier.indices)
+}
+```
+
+
+#### Script {-}    
+
+Sets the properties you would like make references sets for...
+```{r, eval=FALSE}
+# Remove rows with poor lab data
+properties <- c("OC","SAND","SILT", "CLAY") #Column names of lab data
+```
+
+Gets rid of NA, negative and outlier values and saves subsets...
+```{r, eval=FALSE}
+for(property in properties){
+  prop_refset <- all_refset
+  prop_refset <- noNA(prop_refset, property) # Remove NAs
+  prop_refset <- noNeg(prop_refset, property) # Remove Negative
+  prop_refset <- noOut(prop_refset, property) # Remove Outliers*
+  savename <- paste("refset", property, sep=".") # Ex: refset.OC
+  assign(savename, prop_refset)
+  save(list= savename, file=paste0("Data_Processed/", savename, ".RData"))
+}
+```
+
 <!--Insert plot showing the outlier selection process-->
 
-Performing kennard stone to separate data into 80% calibration and 20% validation sets. This step can be skipped if using MBL modeling approach which uses the entire dataset. If both modeling approaches are being used, you can load and row bind the calibration and validation sets for MBL.
-```{r eval=FALSE}
-#---Kennard Stone---#
-ken_stone<- prospectr::kenStone(X = all_data$spc, k = as.integer(0.8*nrow(all_data)), metric = "mahal", pc = 10) 
-calib <- all_data[ken_stone$model, ] #subset calibration set
-valid <- all_data[ken_stone$test, ] #subset validation set
+### Cal/Val Groups {-}
+
+You may chose to subset a portion of the reference set as a calibration group which will be used to build the models- leaving the remaining samples as the validation set to test the model.
+
+Kennard Stone is a method for performing this type of separation while ensuring each group is representative of the set.^[This step can be skipped if using MBL modeling approach which uses the entire dataset. If both modeling approaches are being used, you can load and row bind the calibration and validation sets for MBL]
+
+#### Functions {-}
+Executed within `preprocess_functions.R` :
+
+* `calValSplit( dataset, column )`
+    + `dataset`: *dataframe*- The reference dataset with a 'spc' column containing the spectral matrix    
+
+```{r, eval=FALSE}  
+library(prospectr)
+calValSplit <- function(dataset){
+  #perform kennard stone to separate data into 80% calibration and 20% validation sets
+  ken_stone<- prospectr::kenStone(X = dataset$spc, 
+                                  k = as.integer(0.8*nrow(dataset)), 
+                                  metric = "mahal", pc = 10)
+  calib <- dataset[ken_stone$model, ]
+  valid <- dataset[ken_stone$test, ]
+  
+  return(c(calib, valid))
+}
 ```
 
-Save calibration and validation set for that particular property
-```{r eval=FALSE}
-#Save for property
-save(calib, file=paste("Single_Lib/calib",property,"RData", sep="."))
-save(valid, file=paste("Single_Lib/valid",property,"RData", sep="."))
+<!--An alternative to saving the datasets would be to add a column indicating whether a sample falls under the calibration or validation set. This could be used to subset the correct datasets when making predictions. If the full dataset is large and takes a while to load, saving the former approach is preferred. If the set loads relatively quickly, it may be worth it to save storage space and use the latter method.-->
+
+#### Script {-}
+
+To split the reference set into calibration and validation groups...
+```{r, eval=FALSE}
+split <- calValSplit(all_refset, property) 
+calib <- split[1]; valid <- split[2]
+save(calib, file="Data_Processed/calib.ALL.RData")
+save(valid, file="Data_Processed/valid.ALL.RData")
 ```
 
-An alternative to saving the datasets would be to add a column indicating whether a sample falls under the calibration or validation set. This could be used to subset the correct datasets when making predictions. If the full dataset is large and takes a while to load, saving the former approach is preferred. If the set loads relatively quickly, it may be worth it to save storage space and use the latter method.
 
-
+To split the property subsets into calibration and validation groups...
+```{r, eval=FALSE}
+properties <- c("OC","SAND","SILT", "CLAY") #Column names of lab data
+for(property in properties){
+  
+  # Remove
+  prop_refset <- all_refset
+  prop_refset <- noNA(prop_refset, property) # Remove NAs
+  prop_refset <- noNeg(prop_refset, property) # Remove Negative
+  prop_refset <- noOut(prop_refset, property) # Remove Outliers*
+  savename <- paste("refset", property, sep=".") # Ex: refset.OC
+  assign(savename, prop_refset)
+  save(list= savename, file=paste0("Data_Processed/", savename, ".RData"))
+  
+  # Split Calibration & Validation Sets
+  split <- calValSplit(prop_refset, property) 
+  calib <- split[1]; valid <- split[2]
+  save(calib, file=paste("Data_Processed/calib", property,"RData", sep="."))
+  save(valid, file=paste("Data_Processed/valid", property,"RData", sep="."))
+}
+```

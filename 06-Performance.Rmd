@@ -16,3 +16,10 @@ names(pred_obs) <- c("ID", "pred", "obs")
 max <- max(pred_obs[,c("pred", "obs")])
 plot.plsr(pred_obs$obs, pred_obs$pred, property, c(0,(1.1*max)),units)
 ```
+
+## Outliers    
+
+### Standard Deviation   
+
+### F-Ratio   
+

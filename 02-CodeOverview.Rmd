@@ -6,10 +6,20 @@ output: html_document
 ---
 
 # Code Overview
+All source code for this guide can be found in the following Github Repository:    
+[**whrc/Soil-Predictions-MIR**](https://github.com/whrc/Soil-Predictions-MIR)
+
+The example script is located in the folder Soil-Predictions-Example found here:    
+[**Soil-Predictions-Example Folder**](https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Example)
 
 ## File Structure
 
 
 ## Required Packages
 
+## Full Script
+
+## Getting Started    
+
+The best way to get started using this code, is by downloading the **Soil-Predictions-Example** folder found in the repository for the p
 
