@@ -1,7 +1,6 @@
 ###---Performance Functions---###
 
-# Get Model Results
-source("Functions/perform_functions.R")
+# Get Model Results (Statistics & Predictions)
 
 getModResults <- function(PROP, MODTYPE, MODNAME=NA, MODPATH=NA, PREDNAME=NA, PREDPATH=NA, SAVEPRED=TRUE, MODPERF=TRUE){
   
@@ -50,6 +49,8 @@ getModResults <- function(PROP, MODTYPE, MODNAME=NA, MODPATH=NA, PREDNAME=NA, PR
 }
 
 
+# Get Model Statistics
+
 getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODTYPE=NA, PREDTYPE=NA, PREDSET=NA, SAVE=FALSE){
   
   print(paste(PROP, "Summary"))
@@ -88,6 +89,8 @@ getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODTYPE=NA, PREDTYPE=NA, PREDSE
 } # End of getModStats
 
 
+# Save Model Statistics
+
 saveModStats <- function(MODSTATS){
   
   if(file.exists("./Predictions")==FALSE){dir.create("./Predictions")}
@@ -103,6 +106,8 @@ saveModStats <- function(MODSTATS){
   
 }
 
+
+# Plot Predictions v Observed (with equation & stats)
 
 plot.plsr <- function(x,y, stats, name=NA, units=NA){
   max <- max(c(x,y))
