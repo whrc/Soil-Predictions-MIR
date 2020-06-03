@@ -6,8 +6,11 @@
 #----------------------------------------------#
 # Install Packages
 #----------------------------------------------#
-#install.packages(stringr) # preprocessing
-#install.packages(foreach) # preprocessing
+#install.packages(stringr) # processing spectra
+#install.packages(foreach) # processing spectra
+#install.packages(prospectr) # processing spectral set
+#install.packages(clhs) # processing large sets
+#install.packages(matrixStats) # preprocessing baseline transformation
 #install.packages(pls) # pls models
 #install.packages(resemble) # mbl models
 
