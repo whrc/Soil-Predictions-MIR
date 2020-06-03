@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Getting Started | Soil Predictions using MIR-Spectroscopy</title>
+  <meta name="description" content="3 Getting Started | Soil Predictions using MIR-Spectroscopy" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Getting Started | Soil Predictions using MIR-Spectroscopy" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Getting Started | Soil Predictions using MIR-Spectroscopy" />
+  
+  
+  
+
+<meta name="author" content="Charlotte Rivard" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="background.html"/>
+<link rel="next" href="data-preprocessing.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Soil Predictions using MIR-Spectroscopy</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i><b>2</b> Background</a></li>
+<li class="chapter" data-level="3" data-path="getting-started.html"><a href="getting-started.html"><i class="fa fa-check"></i><b>3</b> Getting Started</a><ul>
+<li class="chapter" data-level="3.1" data-path="getting-started.html"><a href="getting-started.html#file-walkthrough"><i class="fa fa-check"></i><b>3.1</b> File Walkthrough</a></li>
+<li class="chapter" data-level="3.2" data-path="getting-started.html"><a href="getting-started.html#required-packages"><i class="fa fa-check"></i><b>3.2</b> Required Packages</a></li>
+<li class="chapter" data-level="3.3" data-path="getting-started.html"><a href="getting-started.html#full-script"><i class="fa fa-check"></i><b>3.3</b> Full Script</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-preprocessing.html"><a href="data-preprocessing.html"><i class="fa fa-check"></i><b>4</b> Data Preprocessing</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-preprocessing.html"><a href="data-preprocessing.html#extract-opus-files"><i class="fa fa-check"></i><b>4.1</b> Extract OPUS files</a></li>
+<li class="chapter" data-level="4.2" data-path="data-preprocessing.html"><a href="data-preprocessing.html#process-spectra"><i class="fa fa-check"></i><b>4.2</b> Process Spectra</a><ul>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#subset-spectral-range"><i class="fa fa-check"></i>Subset Spectral Range</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#baseline-transformation"><i class="fa fa-check"></i>Baseline Transformation</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#other-transformations"><i class="fa fa-check"></i>Other Transformations</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#calibration-transfer"><i class="fa fa-check"></i>(Calibration Transfer)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data-preprocessing.html"><a href="data-preprocessing.html#merge-with-lab-data"><i class="fa fa-check"></i><b>4.3</b> Merge with Lab Data</a></li>
+<li class="chapter" data-level="4.4" data-path="data-preprocessing.html"><a href="data-preprocessing.html#refine-reference-set"><i class="fa fa-check"></i><b>4.4</b> (Refine Reference Set)</a><ul>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#large-sets"><i class="fa fa-check"></i>Large Sets</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#faulty-lab-data"><i class="fa fa-check"></i>Faulty Lab Data</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#outliers"><i class="fa fa-check"></i>Outliers</a></li>
+<li class="chapter" data-level="" data-path="data-preprocessing.html"><a href="data-preprocessing.html#calval-groups"><i class="fa fa-check"></i>Cal/Val Groups</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="plsr-models.html"><a href="plsr-models.html"><i class="fa fa-check"></i><b>5</b> PLSR Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="plsr-models.html"><a href="plsr-models.html#model-theory"><i class="fa fa-check"></i><b>5.1</b> Model Theory</a></li>
+<li class="chapter" data-level="5.2" data-path="plsr-models.html"><a href="plsr-models.html#making-plsr-models"><i class="fa fa-check"></i><b>5.2</b> Making PLSR Models</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>6</b> MBL Models</a><ul>
+<li class="chapter" data-level="6.1" data-path="mbl-models.html"><a href="mbl-models.html#model-theory-1"><i class="fa fa-check"></i><b>6.1</b> Model Theory</a><ul>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#animation"><i class="fa fa-check"></i>Animation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="mbl-models.html"><a href="mbl-models.html#making-mbl-predictions"><i class="fa fa-check"></i><b>6.2</b> Making MBL Predictions</a><ul>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#mbl-functions"><i class="fa fa-check"></i>MBL Functions</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#modeling-parameters"><i class="fa fa-check"></i>Modeling Parameters</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#sample-code"><i class="fa fa-check"></i>Sample Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>7</b> Model Performance</a><ul>
+<li class="chapter" data-level="7.1" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i><b>7.1</b> Statistics</a></li>
+<li class="chapter" data-level="7.2" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i><b>7.2</b> Plots</a></li>
+<li class="chapter" data-level="7.3" data-path="model-performance.html"><a href="model-performance.html#outliers-1"><i class="fa fa-check"></i><b>7.3</b> Outliers</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="model-performance.html"><a href="model-performance.html#standard-deviation"><i class="fa fa-check"></i><b>7.3.1</b> Standard Deviation</a></li>
+<li class="chapter" data-level="7.3.2" data-path="model-performance.html"><a href="model-performance.html#f-ratio"><i class="fa fa-check"></i><b>7.3.2</b> F-Ratio</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Soil Predictions using MIR-Spectroscopy</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="getting-started" class="section level1">
+<h1><span class="header-section-number">3</span> Getting Started</h1>
+<p>The best way to get started using this code, is by downloading the <code>Soil-Predictions-Example</code> folder found here:<br />
+<a href="https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Example"><strong>Soil-Predictions-Example Folder</strong></a></p>
+<p>This folder, along with all source code for this guide, can be found in the following Github Repository:<br />
+<a href="https://github.com/whrc/Soil-Predictions-MIR"><strong>whrc/Soil-Predictions-MIR</strong></a></p>
+<div id="file-walkthrough" class="section level2">
+<h2><span class="header-section-number">3.1</span> File Walkthrough</h2>
+<ol style="list-style-type: decimal">
+<li>Within the <code>Soil-Predictions-Example</code> folder, you will find the following folders and files:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">[<span class="dv">1</span>] <span class="st">&quot;Data_Raw&quot;</span>                      </a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">[<span class="dv">2</span>] <span class="st">&quot;Functions&quot;</span>                     </a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">[<span class="dv">3</span>] <span class="st">&quot;RUNFILE.R&quot;</span>                     </a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">[<span class="dv">4</span>] <span class="st">&quot;Soil-Predictions-Example.Rproj&quot;</span></a></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Double click <code>Soil-Predictions-Example.Rproj</code> to open up the <strong>R-project</strong>. Within a project, the working directory is set to the project’s folder.
+<!-- Add picture when possible --></p></li>
+<li><p>Open up <code>RUNFILE.R</code> in the project environment. This is an example script of how to make soil predictions using spectral data. It includes the use of both <strong>PLSR</strong> models and <strong>MBL</strong> models, which are both explained in this guide.</p></li>
+<li><p>Navigate to the <code>Functions</code> folder. Within this folder are R files containing functions useful for MIR soil predictions. These files will be sourced by each other, and <code>RUNFILE.R</code></p></li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">[<span class="dv">1</span>] <span class="st">&quot;caltransfer_functions.R&quot;</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">[<span class="dv">2</span>] <span class="st">&quot;gather-spc.R&quot;</span> <span class="co"># from &#39;simplerspc&#39; package         </span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">[<span class="dv">3</span>] <span class="st">&quot;outlier_functions.R&quot;</span> </a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">[<span class="dv">4</span>] <span class="st">&quot;plsr_functions.R&quot;</span>  </a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">[<span class="dv">5</span>] <span class="st">&quot;preprocess_functions.R&quot;</span> </a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">[<span class="dv">6</span>] <span class="st">&quot;read-opus-universal.R&quot;</span> <span class="co"># from &#39;simplerspc&#39; package</span></a></code></pre></div>
+<ol start="5" style="list-style-type: decimal">
+<li>Navigate to the <code>Data_Raw</code> folder. This should contain:
+<ul>
+<li><code>ref-LAB_DATA.csv</code>: A ‘.csv’ file of the lab data; <code>sample_id</code> column and column lab data for a given property, at a minimum.</li>
+<li><code>ref-SPECTRA</code>: A folder of OPUS files containing the spectral data for each sample</li>
+</ul></li>
+</ol>
+</div>
+<div id="required-packages" class="section level2">
+<h2><span class="header-section-number">3.2</span> Required Packages</h2>
+<p>Open up <code>RUNFILE.R</code> and install the packages listed at the top:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#install.packages(readr)</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#install.packages(pls)</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#install.packages(&quot;miceadds&quot;)</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw">library</span>(miceadds) <span class="co">#used for the load as this variable thing</span></a></code></pre></div>
+</div>
+<div id="full-script" class="section level2">
+<h2><span class="header-section-number">3.3</span> Full Script</h2>
+<p>Run the <code>RUNFILE.R</code> script. This will create…</p>
+<ol style="list-style-type: decimal">
+<li><code>Data_Processed</code>: A folder containing the processed data, used to build the model and make predictions<br />
+</li>
+<li><code>Models</code>: A folder containing the plsr and mbl models made. As well as a summary of their performance, <code>model_performance.csv</code><br />
+</li>
+<li><code>Predictions</code>: A folder containing the predictions output by the script</li>
+</ol>
+<p>To modify for your own spectral library….</p>
+<ol style="list-style-type: decimal">
+<li>Change the spectral files in <code>Data_Raw/ref-SPECTRA</code><br />
+</li>
+<li>Change the lab data in <code>Data_Raw/ref-LAB_DATA.csv</code></li>
+<li>Update the variable <code>properties</code> throughout <code>RUNFILE.R</code>, to contain the column names of the properties in your lab dataset. (Right now it is set to c(“OC”, “SAND”, “SILT”,&quot;CLAY))</li>
+</ol>
+<p>Below is the full <code>RUNFILE.R</code> script, organized with 3 main sections:</p>
+<ol style="list-style-type: decimal">
+<li>Data Preprocessing<br />
+</li>
+<li>PLSR Models<br />
+</li>
+<li>MBL Models</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">#Title: RUNFILE- Soil-Predictions-Example</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co">#Authors: Charlotte Rivard &amp; Shree Dangal</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#Date: 5/8/20</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#Summary: #The following script predicts values for several soil properties</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">          <span class="co">#from spectral data, using the following machine learning models:</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">          <span class="co">#1- Partial Least Squares Regression</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">          <span class="co">#2- Memory Based Learner</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">            <span class="co"># Install Packages</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#install.packages(readr)</span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#install.packages(pls)</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#install.packages(&quot;miceadds&quot;)</span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="kw">library</span>(miceadds) <span class="co">#used for the load as this variable thing</span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19">      <span class="co"># Reference Set Preprocessing #</span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="kw">source</span>(<span class="st">&quot;Functions/preprocess_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co"># Process Reference Set Spectra </span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24">spectra &lt;-<span class="st"> </span><span class="kw">opus_to_dataset</span>(<span class="st">&quot;/Data_Raw/ref-SPECTRA&quot;</span>)</a>
+<a class="sourceLine" id="cb4-25" data-line-number="25">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span><span class="kw">subset_spectral_range</span>(spectra<span class="op">$</span>spc)</a>
+<a class="sourceLine" id="cb4-26" data-line-number="26">spectra<span class="op">$</span>spc &lt;-<span class="st"> </span><span class="kw">base_offset</span>(spectra<span class="op">$</span>spc)</a>
+<a class="sourceLine" id="cb4-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co"># Merge with Reference Set Lab Data</span></a>
+<a class="sourceLine" id="cb4-29" data-line-number="29"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb4-30" data-line-number="30">lab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">read_csv</span>(<span class="st">&quot;Data_Raw/ref-LAB_DATA.csv&quot;</span>))</a>
+<a class="sourceLine" id="cb4-31" data-line-number="31">all_refset &lt;-<span class="st"> </span><span class="kw">merge</span>(lab, spectra, <span class="dt">all.y=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb4-33" data-line-number="33"><span class="co"># Save refset.ALL file after preprocessing</span></a>
+<a class="sourceLine" id="cb4-34" data-line-number="34"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Data_Processed&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Data_Processed&quot;</span>)}</a>
+<a class="sourceLine" id="cb4-35" data-line-number="35"><span class="kw">save</span>(all_refset, <span class="dt">file=</span><span class="st">&quot;Data_Processed/refset.ALL.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb4-36" data-line-number="36"><span class="kw">write.csv</span>(all_refset, <span class="st">&quot;Data_Processed/refset.ALL.csv&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb4-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb4-38" data-line-number="38"><span class="co"># Remove rows with poor lab data</span></a>
+<a class="sourceLine" id="cb4-39" data-line-number="39">properties &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;OC&quot;</span>,<span class="st">&quot;SAND&quot;</span>,<span class="st">&quot;SILT&quot;</span>, <span class="st">&quot;CLAY&quot;</span>) <span class="co">#Column names of lab data</span></a>
+<a class="sourceLine" id="cb4-40" data-line-number="40"></a>
+<a class="sourceLine" id="cb4-41" data-line-number="41"><span class="cf">for</span>(property <span class="cf">in</span> properties){</a>
+<a class="sourceLine" id="cb4-42" data-line-number="42">  </a>
+<a class="sourceLine" id="cb4-43" data-line-number="43">  prop_refset &lt;-<span class="st"> </span>all_refset</a>
+<a class="sourceLine" id="cb4-44" data-line-number="44">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNA</span>(prop_refset, property) <span class="co"># Remove NAs</span></a>
+<a class="sourceLine" id="cb4-45" data-line-number="45">  prop_refset &lt;-<span class="st"> </span><span class="kw">noNeg</span>(prop_refset, property) <span class="co"># Remove Negative</span></a>
+<a class="sourceLine" id="cb4-46" data-line-number="46">  prop_refset &lt;-<span class="st"> </span><span class="kw">noOut</span>(prop_refset, property) <span class="co"># Remove Outliers*</span></a>
+<a class="sourceLine" id="cb4-47" data-line-number="47">  </a>
+<a class="sourceLine" id="cb4-48" data-line-number="48">  <span class="co">#prop_refset$spc &lt;- sub_large_set(prop_refset) # Subset to 15000 if large</span></a>
+<a class="sourceLine" id="cb4-49" data-line-number="49">  </a>
+<a class="sourceLine" id="cb4-50" data-line-number="50">  savename &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;refset&quot;</span>, property, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Ex: refset.OC</span></a>
+<a class="sourceLine" id="cb4-51" data-line-number="51">  <span class="kw">assign</span>(savename, prop_refset)</a>
+<a class="sourceLine" id="cb4-52" data-line-number="52">  <span class="kw">save</span>(<span class="dt">list=</span> savename, <span class="dt">file=</span><span class="kw">paste0</span>(<span class="st">&quot;Data_Processed/&quot;</span>, savename, <span class="st">&quot;.RData&quot;</span>))</a>
+<a class="sourceLine" id="cb4-53" data-line-number="53">  </a>
+<a class="sourceLine" id="cb4-54" data-line-number="54">  <span class="co">#split &lt;- calValSplit(prop_refset, property) # Split Calibration &amp; Validation Sets</span></a>
+<a class="sourceLine" id="cb4-55" data-line-number="55">  <span class="co">#calib &lt;- split[1]; valid &lt;- split[2]</span></a>
+<a class="sourceLine" id="cb4-56" data-line-number="56">  <span class="co">#save(calib, file=paste(&quot;Data_Processed/calib&quot;, property,&quot;RData&quot;, sep=&quot;.&quot;))</span></a>
+<a class="sourceLine" id="cb4-57" data-line-number="57">  <span class="co">#save(valid, file=paste(&quot;Data_Processed/valid&quot;, property,&quot;RData&quot;, sep=&quot;.&quot;))</span></a>
+<a class="sourceLine" id="cb4-58" data-line-number="58">}</a>
+<a class="sourceLine" id="cb4-59" data-line-number="59"></a>
+<a class="sourceLine" id="cb4-60" data-line-number="60"></a>
+<a class="sourceLine" id="cb4-61" data-line-number="61"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-62" data-line-number="62"><span class="co"># Prediction Set Preprocessing #</span></a>
+<a class="sourceLine" id="cb4-63" data-line-number="63"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-64" data-line-number="64"></a>
+<a class="sourceLine" id="cb4-65" data-line-number="65"><span class="co"># Spectral Processing: Prediction Set</span></a>
+<a class="sourceLine" id="cb4-66" data-line-number="66"><span class="co">#spectra &lt;- opus_to_dataset(&quot;/Data_Raw/PRED-SPECTRA&quot;)</span></a>
+<a class="sourceLine" id="cb4-67" data-line-number="67"><span class="co">#{where pds would happen}</span></a>
+<a class="sourceLine" id="cb4-68" data-line-number="68"><span class="co">#spectra &lt;- subset_spectral_range(spectra)</span></a>
+<a class="sourceLine" id="cb4-69" data-line-number="69"><span class="co">#spectra &lt;- base_offset(spectra)</span></a>
+<a class="sourceLine" id="cb4-70" data-line-number="70"></a>
+<a class="sourceLine" id="cb4-71" data-line-number="71"></a>
+<a class="sourceLine" id="cb4-72" data-line-number="72"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-73" data-line-number="73">    <span class="co"># Partial Least Squares Regression #</span></a>
+<a class="sourceLine" id="cb4-74" data-line-number="74"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-75" data-line-number="75"><span class="kw">library</span>(pls)</a>
+<a class="sourceLine" id="cb4-76" data-line-number="76"><span class="kw">source</span>(<span class="st">&quot;Functions/plsr_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb4-77" data-line-number="77"></a>
+<a class="sourceLine" id="cb4-78" data-line-number="78"><span class="co">#------ CREATE MODELS -------#</span></a>
+<a class="sourceLine" id="cb4-79" data-line-number="79"></a>
+<a class="sourceLine" id="cb4-80" data-line-number="80"><span class="co"># Create Folder to Save Models</span></a>
+<a class="sourceLine" id="cb4-81" data-line-number="81"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Models&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Models&quot;</span>)}</a>
+<a class="sourceLine" id="cb4-82" data-line-number="82"></a>
+<a class="sourceLine" id="cb4-83" data-line-number="83"><span class="co"># List Properties to Make Models For</span></a>
+<a class="sourceLine" id="cb4-84" data-line-number="84">properties &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;OC&quot;</span>, <span class="st">&quot;SAND&quot;</span>,<span class="st">&quot;SILT&quot;</span>, <span class="st">&quot;CLAY&quot;</span>)</a>
+<a class="sourceLine" id="cb4-85" data-line-number="85"></a>
+<a class="sourceLine" id="cb4-86" data-line-number="86"><span class="cf">for</span>(property <span class="cf">in</span> properties){</a>
+<a class="sourceLine" id="cb4-87" data-line-number="87">  </a>
+<a class="sourceLine" id="cb4-88" data-line-number="88">  <span class="co"># Load Data</span></a>
+<a class="sourceLine" id="cb4-89" data-line-number="89">  refSetPath &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;./Data_Processed/refset&quot;</span>,property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Ex: refset.OC.RData</span></a>
+<a class="sourceLine" id="cb4-90" data-line-number="90">  <span class="kw">load.Rdata</span>(refSetPath, <span class="st">&quot;refSet&quot;</span>) <span class="co"># load as variable refSet</span></a>
+<a class="sourceLine" id="cb4-91" data-line-number="91">  </a>
+<a class="sourceLine" id="cb4-92" data-line-number="92">  <span class="co"># Create Model</span></a>
+<a class="sourceLine" id="cb4-93" data-line-number="93">  validType &lt;-<span class="st"> &quot;CV&quot;</span> <span class="co"># &quot;CV&quot;, &quot;LOO&quot;, or &quot;none&quot;</span></a>
+<a class="sourceLine" id="cb4-94" data-line-number="94">  plsr.model &lt;-<span class="st"> </span><span class="kw">plsr</span>(<span class="kw">sqrt</span>(<span class="kw">get</span>(property))<span class="op">~</span>spc, <span class="dt">ncomp=</span><span class="dv">20</span>, <span class="dt">data =</span> refSet , <span class="dt">valid=</span>validType) </a>
+<a class="sourceLine" id="cb4-95" data-line-number="95">  </a>
+<a class="sourceLine" id="cb4-96" data-line-number="96">  <span class="co"># Save Model</span></a>
+<a class="sourceLine" id="cb4-97" data-line-number="97">  modelName &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;plsr&quot;</span>, property, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>)</a>
+<a class="sourceLine" id="cb4-98" data-line-number="98">  <span class="kw">assign</span>(modelName, plsr.model)</a>
+<a class="sourceLine" id="cb4-99" data-line-number="99">  <span class="kw">save</span>(<span class="dt">list=</span> modelName, <span class="dt">file =</span> <span class="kw">paste</span>(<span class="st">&quot;./Models/plsr&quot;</span>, property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>)) <span class="co">#Ex: plsr.OC.RData</span></a>
+<a class="sourceLine" id="cb4-100" data-line-number="100">  </a>
+<a class="sourceLine" id="cb4-101" data-line-number="101">}</a>
+<a class="sourceLine" id="cb4-102" data-line-number="102"></a>
+<a class="sourceLine" id="cb4-103" data-line-number="103"><span class="co">#------ Apply Models -------#</span></a>
+<a class="sourceLine" id="cb4-104" data-line-number="104"></a>
+<a class="sourceLine" id="cb4-105" data-line-number="105"><span class="co"># Load Prediction Set</span></a>
+<a class="sourceLine" id="cb4-106" data-line-number="106"><span class="co">#predSetPath &lt;- &quot;./Data_Processed/refset.ALL.RData&quot;</span></a>
+<a class="sourceLine" id="cb4-107" data-line-number="107">predSetPath &lt;-<span class="st"> &quot;./Data_Processed/predset.TEST.RData&quot;</span></a>
+<a class="sourceLine" id="cb4-108" data-line-number="108"><span class="kw">load.Rdata</span>(predSetPath, <span class="st">&quot;predSet&quot;</span>) <span class="co"># variable predSet</span></a>
+<a class="sourceLine" id="cb4-109" data-line-number="109"></a>
+<a class="sourceLine" id="cb4-110" data-line-number="110"><span class="co"># Load/Create File to Save Predictions</span></a>
+<a class="sourceLine" id="cb4-111" data-line-number="111">predSavePath &lt;-<span class="st"> &quot;./Predictions/predset.TEST.predictions.RData&quot;</span></a>
+<a class="sourceLine" id="cb4-112" data-line-number="112"><span class="cf">if</span>(<span class="kw">file.exists</span>(predSavePath) ){</a>
+<a class="sourceLine" id="cb4-113" data-line-number="113">  <span class="kw">load</span>( predSavePath)</a>
+<a class="sourceLine" id="cb4-114" data-line-number="114">}<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb4-115" data-line-number="115">  all_predictions &lt;-<span class="st"> </span>predSet[,<span class="op">-</span><span class="kw">ncol</span>(predSet)] <span class="co"># remove spectra, last column</span></a>
+<a class="sourceLine" id="cb4-116" data-line-number="116">}</a>
+<a class="sourceLine" id="cb4-117" data-line-number="117"></a>
+<a class="sourceLine" id="cb4-118" data-line-number="118"><span class="co"># Make and Save Predictions</span></a>
+<a class="sourceLine" id="cb4-119" data-line-number="119"><span class="cf">for</span>(property <span class="cf">in</span> properties){</a>
+<a class="sourceLine" id="cb4-120" data-line-number="120">  <span class="co"># Load Model (Ex: plsr.OC.RData, variable= plsr.model)</span></a>
+<a class="sourceLine" id="cb4-121" data-line-number="121">  model.name &lt;-<span class="st"> </span><span class="kw">load</span>(<span class="kw">paste</span>(<span class="st">&quot;./Models/plsr&quot;</span>, property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>), <span class="dt">verbose=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-122" data-line-number="122">  plsr.model &lt;-<span class="st"> </span><span class="kw">get</span>(model)</a>
+<a class="sourceLine" id="cb4-123" data-line-number="123">  </a>
+<a class="sourceLine" id="cb4-124" data-line-number="124">  <span class="co"># Load Reference Set (Ex: ref.OC.RData, variable= prop.data)</span></a>
+<a class="sourceLine" id="cb4-125" data-line-number="125">  <span class="kw">load</span>(<span class="kw">paste</span>(<span class="st">&quot;./Data_Processed/ref&quot;</span>,property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>), <span class="dt">verbose=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-126" data-line-number="126">  </a>
+<a class="sourceLine" id="cb4-127" data-line-number="127">  <span class="co"># Find Optimal Number of Components</span></a>
+<a class="sourceLine" id="cb4-128" data-line-number="128">  ncomp_onesigma &lt;-<span class="st"> </span><span class="kw">selectNcomp</span>(plsr.model, <span class="dt">method =</span> <span class="st">&quot;onesigma&quot;</span>, <span class="dt">plot=</span><span class="ot">TRUE</span>, <span class="dt">main=</span><span class="kw">paste</span>(property,<span class="st">&quot;Validation&quot;</span>))</a>
+<a class="sourceLine" id="cb4-129" data-line-number="129">  </a>
+<a class="sourceLine" id="cb4-130" data-line-number="130">  <span class="co"># Get Predictions</span></a>
+<a class="sourceLine" id="cb4-131" data-line-number="131">  predType &lt;-<span class="st"> &quot;predict&quot;</span> <span class="co"># &quot;fitted&quot;, &quot;valid&quot;, &quot;predict&quot;</span></a>
+<a class="sourceLine" id="cb4-132" data-line-number="132">  predictions &lt;-<span class="st"> </span><span class="kw">getPredictions</span>(plsr.model, ncomp_onesigma, predType, predSet)</a>
+<a class="sourceLine" id="cb4-133" data-line-number="133">  </a>
+<a class="sourceLine" id="cb4-134" data-line-number="134">  <span class="co"># Save Predictions</span></a>
+<a class="sourceLine" id="cb4-135" data-line-number="135">  <span class="co">#sample_id &lt;- getSampleID(prop.data, get(predSet), predType) # reference set, prediction set, prediction type</span></a>
+<a class="sourceLine" id="cb4-136" data-line-number="136">  samp_id &lt;-<span class="st"> </span><span class="kw">getSample</span>(property, predType)</a>
+<a class="sourceLine" id="cb4-137" data-line-number="137">  </a>
+<a class="sourceLine" id="cb4-138" data-line-number="138">  predTable &lt;-<span class="st"> </span><span class="kw">data.frame</span>(sample_id, predictions)</a>
+<a class="sourceLine" id="cb4-139" data-line-number="139">  <span class="kw">names</span>(predTable) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sample_id&quot;</span>, <span class="kw">paste</span>(property, predType, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>))</a>
+<a class="sourceLine" id="cb4-140" data-line-number="140">  all_predictions &lt;-<span class="st"> </span><span class="kw">merge</span>(all_predictions, predTable, <span class="dt">all.X=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-141" data-line-number="141">  </a>
+<a class="sourceLine" id="cb4-142" data-line-number="142">  <span class="co"># Save Model Performance</span></a>
+<a class="sourceLine" id="cb4-143" data-line-number="143">  lab_data &lt;-<span class="st"> </span><span class="kw">getLabData</span>(plsr.model, predType, predSet, property) <span class="co"># get lab data to compare</span></a>
+<a class="sourceLine" id="cb4-144" data-line-number="144">  <span class="kw">saveModStats</span>(predictions, lab_data, property, ncomp_onesigma, <span class="st">&quot;PLSR&quot;</span>, predType, predSet)</a>
+<a class="sourceLine" id="cb4-145" data-line-number="145">  </a>
+<a class="sourceLine" id="cb4-146" data-line-number="146">}</a>
+<a class="sourceLine" id="cb4-147" data-line-number="147"></a>
+<a class="sourceLine" id="cb4-148" data-line-number="148"><span class="co"># Save All Predictions</span></a>
+<a class="sourceLine" id="cb4-149" data-line-number="149"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Predictions&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Predictions&quot;</span>)}</a>
+<a class="sourceLine" id="cb4-150" data-line-number="150"><span class="kw">save</span>(all_predictions, <span class="dt">file=</span><span class="st">&quot;./Predictions/all_predictions.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb4-151" data-line-number="151"><span class="kw">write.csv</span>(all_predictions, <span class="st">&quot;./Predictions/all_predictions.csv&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb4-152" data-line-number="152"></a>
+<a class="sourceLine" id="cb4-153" data-line-number="153"></a>
+<a class="sourceLine" id="cb4-154" data-line-number="154"><span class="co">#outlier flagging</span></a>
+<a class="sourceLine" id="cb4-155" data-line-number="155"><span class="co">#output.pred &lt;- data.frame(output.pred)</span></a>
+<a class="sourceLine" id="cb4-156" data-line-number="156"><span class="co">#output.pred$outlier &lt;- 0</span></a>
+<a class="sourceLine" id="cb4-157" data-line-number="157"><span class="co">#oc &lt;- read.csv(&quot;/mnt/data2/disk1/soilcarbon/crivard/predEnsemble/output/indigo_output/fratio/bd.anal4.csv&quot;)</span></a>
+<a class="sourceLine" id="cb4-158" data-line-number="158"><span class="co">#outs &lt;- c(oc$x) </span></a>
+<a class="sourceLine" id="cb4-159" data-line-number="159"><span class="co">#outs &lt;- outs[outs&gt;10363]</span></a>
+<a class="sourceLine" id="cb4-160" data-line-number="160"><span class="co">#outs &lt;- outs-10363</span></a>
+<a class="sourceLine" id="cb4-161" data-line-number="161"><span class="co">#output.pred$outlier[outs] &lt;- 1</span></a>
+<a class="sourceLine" id="cb4-162" data-line-number="162"><span class="co">#output.pred &lt;- cbind(TERR_ID,output.pred)</span></a>
+<a class="sourceLine" id="cb4-163" data-line-number="163"></a>
+<a class="sourceLine" id="cb4-164" data-line-number="164"><span class="co">#write.csv(output.pred, file =&quot;/mnt/data2/disk1/soilcarbon/crivard/predEnsemble/output/indigo_output/all-predictions/pred.bd.anal4.csv&quot;)</span></a>
+<a class="sourceLine" id="cb4-165" data-line-number="165"></a>
+<a class="sourceLine" id="cb4-166" data-line-number="166"></a>
+<a class="sourceLine" id="cb4-167" data-line-number="167"></a>
+<a class="sourceLine" id="cb4-168" data-line-number="168"><span class="kw">library</span>(miceadds)</a>
+<a class="sourceLine" id="cb4-169" data-line-number="169"></a>
+<a class="sourceLine" id="cb4-170" data-line-number="170"><span class="co">#Create / Load File to Save Predictions</span></a>
+<a class="sourceLine" id="cb4-171" data-line-number="171">predSet &lt;-<span class="st"> </span><span class="kw">get</span>(<span class="kw">load</span>(<span class="st">&quot;./Data_Processed/ref.ALL.RData&quot;</span>))</a>
+<a class="sourceLine" id="cb4-172" data-line-number="172"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Predictions/all_predictions.RData&quot;</span>)){</a>
+<a class="sourceLine" id="cb4-173" data-line-number="173">  <span class="kw">load</span>(<span class="st">&quot;./Predictions/all_predictions.RData&quot;</span>, <span class="dt">verbose=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-174" data-line-number="174">}<span class="cf">else</span>{all_predictions &lt;-<span class="st"> </span>all_data[,<span class="op">-</span><span class="kw">ncol</span>(all_data)]}<span class="co"># remove spectra, last column</span></a>
+<a class="sourceLine" id="cb4-175" data-line-number="175"></a>
+<a class="sourceLine" id="cb4-176" data-line-number="176"><span class="cf">for</span>(property <span class="cf">in</span> properties){</a>
+<a class="sourceLine" id="cb4-177" data-line-number="177">  <span class="co"># Load Model (Ex: plsr.OC.RData, variable= plsr.model)</span></a>
+<a class="sourceLine" id="cb4-178" data-line-number="178">  <span class="kw">load</span>(<span class="kw">paste</span>(<span class="st">&quot;./Models/plsr&quot;</span>, property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>), <span class="dt">verbose=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-179" data-line-number="179">  </a>
+<a class="sourceLine" id="cb4-180" data-line-number="180">  <span class="co"># Load Reference Set (Ex: ref.OC.RData, variable= prop.data)</span></a>
+<a class="sourceLine" id="cb4-181" data-line-number="181">  <span class="kw">load</span>(<span class="kw">paste</span>(<span class="st">&quot;./Data_Processed/ref&quot;</span>,property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>), <span class="dt">verbose=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-182" data-line-number="182">  </a>
+<a class="sourceLine" id="cb4-183" data-line-number="183">  <span class="co"># Find Optimal Number of Components</span></a>
+<a class="sourceLine" id="cb4-184" data-line-number="184">  ncomp_onesigma &lt;-<span class="st"> </span><span class="kw">selectNcomp</span>(plsr.model, <span class="dt">method =</span> <span class="st">&quot;onesigma&quot;</span>, <span class="dt">plot=</span><span class="ot">TRUE</span>, <span class="dt">main=</span><span class="kw">paste</span>(property,<span class="st">&quot;Validation&quot;</span>))</a>
+<a class="sourceLine" id="cb4-185" data-line-number="185">  </a>
+<a class="sourceLine" id="cb4-186" data-line-number="186">  <span class="co"># Get Predictions</span></a>
+<a class="sourceLine" id="cb4-187" data-line-number="187">  predType &lt;-<span class="st"> &quot;predict&quot;</span> <span class="co"># &quot;fitted&quot;, &quot;valid&quot;, &quot;predict&quot;</span></a>
+<a class="sourceLine" id="cb4-188" data-line-number="188">  predictions &lt;-<span class="st"> </span><span class="kw">getPredictions</span>(plsr.model, ncomp_onesigma, predType, <span class="kw">get</span>(predSet))</a>
+<a class="sourceLine" id="cb4-189" data-line-number="189">  </a>
+<a class="sourceLine" id="cb4-190" data-line-number="190">  <span class="co"># Save Predictions</span></a>
+<a class="sourceLine" id="cb4-191" data-line-number="191">  sample_id &lt;-<span class="st"> </span><span class="kw">getSampleID</span>(prop.data, <span class="kw">get</span>(predSet), predType) <span class="co"># reference set, prediction set, prediction type</span></a>
+<a class="sourceLine" id="cb4-192" data-line-number="192">  predTable &lt;-<span class="st"> </span><span class="kw">data.frame</span>(sample_id, predictions)</a>
+<a class="sourceLine" id="cb4-193" data-line-number="193">  <span class="kw">names</span>(predTable) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sample_id&quot;</span>, <span class="kw">paste</span>(property, predType, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>))</a>
+<a class="sourceLine" id="cb4-194" data-line-number="194">  all_predictions &lt;-<span class="st"> </span><span class="kw">merge</span>(all_predictions, predTable, <span class="dt">all.X=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-195" data-line-number="195">  </a>
+<a class="sourceLine" id="cb4-196" data-line-number="196">  <span class="co"># Save Model Performance</span></a>
+<a class="sourceLine" id="cb4-197" data-line-number="197">  lab_data &lt;-<span class="st"> </span><span class="kw">getLabData</span>(plsr.model, predType, <span class="kw">get</span>(predSet), property) <span class="co"># get lab data to compare</span></a>
+<a class="sourceLine" id="cb4-198" data-line-number="198">  <span class="kw">saveModStats</span>(predictions, lab_data, property, ncomp_onesigma, <span class="st">&quot;PLSR&quot;</span>, predType, predSet)</a>
+<a class="sourceLine" id="cb4-199" data-line-number="199">  </a>
+<a class="sourceLine" id="cb4-200" data-line-number="200">}</a>
+<a class="sourceLine" id="cb4-201" data-line-number="201"></a>
+<a class="sourceLine" id="cb4-202" data-line-number="202"><span class="co"># Save All Predictions</span></a>
+<a class="sourceLine" id="cb4-203" data-line-number="203"><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Predictions&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Predictions&quot;</span>)}</a>
+<a class="sourceLine" id="cb4-204" data-line-number="204"><span class="kw">save</span>(all_predictions, <span class="dt">file=</span><span class="st">&quot;./Predictions/all_predictions.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb4-205" data-line-number="205"><span class="kw">write.csv</span>(all_predictions, <span class="st">&quot;./Predictions/all_predictions.csv&quot;</span>, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb4-206" data-line-number="206"></a>
+<a class="sourceLine" id="cb4-207" data-line-number="207"></a>
+<a class="sourceLine" id="cb4-208" data-line-number="208"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-209" data-line-number="209">        <span class="co"># Memory Based Learner Model #</span></a>
+<a class="sourceLine" id="cb4-210" data-line-number="210"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb4-211" data-line-number="211"><span class="kw">library</span>(miceadds)</a>
+<a class="sourceLine" id="cb4-212" data-line-number="212"><span class="kw">library</span>(resemble)</a>
+<a class="sourceLine" id="cb4-213" data-line-number="213"></a>
+<a class="sourceLine" id="cb4-214" data-line-number="214">property &lt;-<span class="st"> &quot;OC&quot;</span></a>
+<a class="sourceLine" id="cb4-215" data-line-number="215"><span class="co">#for(property in properties){</span></a>
+<a class="sourceLine" id="cb4-216" data-line-number="216"></a>
+<a class="sourceLine" id="cb4-217" data-line-number="217"><span class="co"># Load Reference Set</span></a>
+<a class="sourceLine" id="cb4-218" data-line-number="218">refSetPath &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;./Data_Processed/refset&quot;</span>,property,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Ex: refset.OC.RData</span></a>
+<a class="sourceLine" id="cb4-219" data-line-number="219"><span class="kw">load.Rdata</span>(refSetPath, <span class="st">&quot;refSet&quot;</span>) <span class="co"># load as variable refSet</span></a>
+<a class="sourceLine" id="cb4-220" data-line-number="220"></a>
+<a class="sourceLine" id="cb4-221" data-line-number="221"><span class="co"># Load Prediction Set</span></a>
+<a class="sourceLine" id="cb4-222" data-line-number="222"><span class="co">#predSetPath &lt;- &quot;./Data_Processed/refset.ALL.RData&quot;</span></a>
+<a class="sourceLine" id="cb4-223" data-line-number="223">predSetPath &lt;-<span class="st"> &quot;./Data_Processed/predset.TEST.RData&quot;</span></a>
+<a class="sourceLine" id="cb4-224" data-line-number="224"><span class="kw">load.Rdata</span>(predSetPath, <span class="st">&quot;predSet&quot;</span>) <span class="co"># variable predSet</span></a>
+<a class="sourceLine" id="cb4-225" data-line-number="225"></a>
+<a class="sourceLine" id="cb4-226" data-line-number="226"></a>
+<a class="sourceLine" id="cb4-227" data-line-number="227"><span class="co"># Load/Create File to Save Predictions</span></a>
+<a class="sourceLine" id="cb4-228" data-line-number="228">predSavePath &lt;-<span class="st"> &quot;./Predictions/predset.TEST.predictions.RData&quot;</span></a>
+<a class="sourceLine" id="cb4-229" data-line-number="229"><span class="cf">if</span>(<span class="kw">file.exists</span>(predSavePath) ){</a>
+<a class="sourceLine" id="cb4-230" data-line-number="230">  <span class="kw">load</span>( predSavePath)</a>
+<a class="sourceLine" id="cb4-231" data-line-number="231">}<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb4-232" data-line-number="232">  all_predictions &lt;-<span class="st"> </span>predSet[,<span class="op">-</span><span class="kw">ncol</span>(predSet)] <span class="co"># remove spectral matrix</span></a>
+<a class="sourceLine" id="cb4-233" data-line-number="233">}</a>
+<a class="sourceLine" id="cb4-234" data-line-number="234"></a>
+<a class="sourceLine" id="cb4-235" data-line-number="235"><span class="co"># Set Input Datasets</span></a>
+<a class="sourceLine" id="cb4-236" data-line-number="236">Xu &lt;-<span class="st"> </span>predSet<span class="op">$</span>spc</a>
+<a class="sourceLine" id="cb4-237" data-line-number="237">Yu &lt;-<span class="st"> </span><span class="kw">sqrt</span>(predSet[,property]) </a>
+<a class="sourceLine" id="cb4-238" data-line-number="238">Yr &lt;-<span class="st"> </span><span class="kw">sqrt</span>(refSet[,property])</a>
+<a class="sourceLine" id="cb4-239" data-line-number="239">Xr &lt;-<span class="st"> </span>refSet<span class="op">$</span>spc</a>
+<a class="sourceLine" id="cb4-240" data-line-number="240"></a>
+<a class="sourceLine" id="cb4-241" data-line-number="241">ctrl &lt;-<span class="st"> </span><span class="kw">mblControl</span>(<span class="dt">sm =</span> <span class="st">&#39;pc&#39;</span>, <span class="dt">pcSelection =</span> <span class="kw">list</span>(<span class="st">&#39;opc&#39;</span>, <span class="dv">50</span>),</a>
+<a class="sourceLine" id="cb4-242" data-line-number="242">                      <span class="dt">valMethod =</span> <span class="st">&#39;loc_crossval&#39;</span>,<span class="dt">center=</span><span class="ot">TRUE</span>,<span class="dt">scale=</span><span class="ot">FALSE</span>,<span class="dt">allowParallel=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb4-243" data-line-number="243"></a>
+<a class="sourceLine" id="cb4-244" data-line-number="244">mbl.sqrt &lt;-<span class="st"> </span><span class="kw">mbl</span>(<span class="dt">Yr =</span> Yr, <span class="dt">Xr =</span> Xr, <span class="dt">Yu =</span> Yu, <span class="dt">Xu =</span> Xu, <span class="dt">mblCtrl =</span> ctrl,</a>
+<a class="sourceLine" id="cb4-245" data-line-number="245">                    <span class="dt">dissUsage =</span> <span class="st">&#39;none&#39;</span>,</a>
+<a class="sourceLine" id="cb4-246" data-line-number="246">                    <span class="dt">k =</span> <span class="kw">seq</span>(<span class="dv">40</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>),</a>
+<a class="sourceLine" id="cb4-247" data-line-number="247">                    <span class="dt">method =</span> <span class="st">&#39;pls&#39;</span>, <span class="dt">pls.c =</span> <span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb4-248" data-line-number="248"></a>
+<a class="sourceLine" id="cb4-249" data-line-number="249"><span class="co"># Get Best Predictions</span></a>
+<a class="sourceLine" id="cb4-250" data-line-number="250">index_best_model &lt;-<span class="st"> </span><span class="kw">which.min</span>(mbl.sqrt<span class="op">$</span>localCrossValStats<span class="op">$</span>st.rmse)</a>
+<a class="sourceLine" id="cb4-251" data-line-number="251">best_model_name &lt;-<span class="st"> </span><span class="kw">names</span>(mbl.sqrt<span class="op">$</span>results)[<span class="dv">3</span>]</a>
+<a class="sourceLine" id="cb4-252" data-line-number="252">predictions &lt;-<span class="st"> </span><span class="kw">eval</span>(<span class="kw">parse</span>( <span class="dt">text=</span><span class="kw">paste0</span>(<span class="st">&quot;mbl.sqrt$results$&quot;</span>,best_model_name,<span class="st">&quot;$pred&quot;</span> )))</a>
+<a class="sourceLine" id="cb4-253" data-line-number="253"></a>
+<a class="sourceLine" id="cb4-254" data-line-number="254"><span class="co"># Save Model Performance</span></a>
+<a class="sourceLine" id="cb4-255" data-line-number="255">lab_data &lt;-<span class="st"> </span>predSet[,property] <span class="co"># get lab data to compare</span></a>
+<a class="sourceLine" id="cb4-256" data-line-number="256"><span class="kw">saveModStats</span>(predictions, lab_data, property, <span class="ot">NA</span>, <span class="st">&quot;MBL&quot;</span>, <span class="ot">NA</span>, predSetPath)</a></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="background.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-preprocessing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "sepia",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -1,28 +1,41 @@
 ###--- Outlier Functions ---###
 
-#getOutliers <- function(dataset, column, method){
-  #outliers<- NULL
-  #if(method=="stdev"){
-    #outliers <- stdev_outlier(dataset, column)
-  #}
-  #return(outliers)
-#}
+#----------------------------------------------#
+# Standard Deviation Outlier Functions #
+#----------------------------------------------#
 
-# Packages: stdev_outlier
+# Standard Deviation/ Lab Data Outliers
 library(pls)
-stdev_outliers <- function(dataset, column){
-  #remove outliers by selecting using a standard deviaton threshold
-  pls.fit <- plsr(sqrt(get(column))~spc, ncomp= 20, data = dataset, valid="CV", segments = 50) #y, x, number components, data, cross validation, 
-  pred <- c(predict(pls.fit, newdata = dataset$spc,ncomp=20))^2
+
+stdev_outliers <- function(SPECLIB, PROP, SHOW=TRUE, PLOT=TRUE){
   
-  sd.outlier <- optimum_sd_outlier(pred, dataset[,column], seq(0.1,3, by =0.02))
-  outlier.indices <- outlier_indices(pred, dataset[,column], sd.outlier[1])
+  # Create a PLS model with the data
+  pls.fit <- plsr(sqrt(get(PROP))~spc, ncomp= 20, data = SPECLIB, valid="CV", segments = 50) #y, x, number components, data, cross validation, 
+  pred <- c(predict(pls.fit, newdata = SPECLIB$spc,ncomp=20))^2
   
-  print(paste(column,"outliers"))
-  print(outlier.indices)
+  # Identify outliers using a standard deviation threshold
+  sd.outlier <- optimum_sd_outlier(pred, SPECLIB[,PROP], seq(0.1,3, by =0.02))
+  outliers <- outlier_indices(pred, SPECLIB[,PROP], sd.outlier[1])
   
-  return(outlier.indices)
+  # Display outlier identification
+  if(SHOW==TRUE){
+    
+    # Show outlier prediction versus observed values
+    predobs <- data.frame(pred, SPECLIB[,PROP])
+    names(predobs) <- c("pred", "obs")
+    print(predobs[outliers,])
+    
+    # Plot with Outliers
+    plot(pred ~ obs, data=predobs[-outliers,], main="Outliers")
+    points(pred ~ obs, data=predobs[outliers,], col="red", pch=24, bg="red")
+    
+  }
+  
+  return(outliers)
 }
+
+
+# Find Standard Deviation that Gets Outer 1% of samples
 
 optimum_sd_outlier <- function(x,y, temp.sd,.....){
   mod <- lm(y~x)
@@ -44,6 +57,9 @@ optimum_sd_outlier <- function(x,y, temp.sd,.....){
   return(c(sd.value, len.outl[sd.index]))
 }
 
+
+# Get Indices of Outer 1% of Samples
+
 outlier_indices <- function(x,y,sd,.....)
 {
   mod <- lm(y~x)
@@ -55,4 +71,9 @@ outlier_indices <- function(x,y,sd,.....)
   #newd <- datum[datum$sqrt.oc.10.comps<upr & datum$sqrt.oc.10.comps>lwr,]
   return(outlier.rows)
 }
+
+
+#----------------------------------------------#
+# FRatio Outlier Functions #
+#----------------------------------------------#
 
