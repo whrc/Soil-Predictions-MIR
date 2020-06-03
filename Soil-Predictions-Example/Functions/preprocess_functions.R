@@ -5,6 +5,7 @@
 #----------------------------------------------#
 
 # Get Spectral Library
+
 getSpecLib <- function(SPECPATH="/Data_Raw/SPECTRA", LABPATH="Data_Raw/LAB_DATA.csv", SAVENAME="none"){
   # Process Reference Set Spectra 
   spectra <- opus_to_dataset(SPECPATH)
@@ -99,8 +100,8 @@ subset_spectral_range <- function(SPECTRA){
 
 
 # Base Offset
-
 library(matrixStats)
+                     
 base_offset <- function(x){
   row_mins <- rowMins(x)
   return(x-row_mins)
@@ -161,8 +162,8 @@ noNeg <- function(DATASET, column){
 
 
 # Subset Large Datasets
-
 library(clhs)
+                     
 sub_large_set <- function(SPECLIB, subcount=15000){
   #Conditional Latin Hypercube Sampling if the set exceeds 15000 samples
   spectra <- data.frame(SPECLIB$spc)
