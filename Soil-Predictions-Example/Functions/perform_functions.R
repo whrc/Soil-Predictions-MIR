@@ -37,21 +37,21 @@ getModResults <- function(PROP, MODTYPE, MODNAME=NA, MODPATH=NA, PREDNAME=NA, PR
   
   # {Optional} Model Performance
   if(MODPERF==TRUE){
-    modstats <- getModStats(PREDOBS= predobs, PROP=PROP, NCOMP=ncomp_onesigma, MODTYPE=MODNAME, 
-                            PREDTYPE= pred_type, PREDSET=PREDNAME, SAVE=TRUE)
+    modstats <- getModStats(PREDOBS= predobs, PROP=PROP, NCOMP=ncomp_onesigma, MODNAME=MODNAME, 
+                            PREDTYPE= pred_type, PREDNAME=PREDNAME, SAVE=TRUE)
   }
   # {Optional} Save Predictions
   if(SAVEPRED==TRUE){
     savePredictions(predobs, PROP, MODTYPE, PREDNAME)
   }
-  
+  names(predobs) <- c("sample_id", paste0(PROP,".",MODTYPE), PROP)
   return(predobs)
 }
 
 
 # Get Model Statistics
 
-getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODTYPE=NA, PREDTYPE=NA, PREDSET=NA, SAVE=FALSE){
+getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODNAME=NA, PREDTYPE=NA, PREDNAME=NA, SAVE=FALSE){
   
   print(paste(PROP, "Summary"))
   TIME <- as.character(Sys.time()[1])
@@ -72,15 +72,15 @@ getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODTYPE=NA, PREDTYPE=NA, PREDSE
   rpd <- round(std / RMSE,2) # Residual Prediction Deviation
   
   # Assemble Row
-  modStats <- data.frame(Timestamp=TIME, Property=PROP, Mod_Type=MODTYPE, Pred_Type=PREDTYPE,
-                         Pred_Data=PREDSET, ncomp=NCOMP, R2=R2, R2_Adj=R2_adj, Y_Int=b0, Slope=b1,
+  modStats <- data.frame(Timestamp=TIME, Property=PROP, Mod_Name=MODNAME, Pred_Type=PREDTYPE,
+                         Pred_Data=PREDNAME, ncomp=NCOMP, R2=R2, R2_Adj=R2_adj, Y_Int=b0, Slope=b1,
                          RMSE=RMSE, bias=bias,STD=std, RPD=rpd)
   
   # Write Row 
-  if(SAVE==TRUE){saveModStats(MODSTATS)}
+  if(SAVE==TRUE){saveModStats(modStats)}
   
   # Plot Pred Obs
-  plot.plsr(PREDOBS$obs, PREDOBS$pred, modStats, paste(PROP,MODTYPE), "")
+  plotPred(PREDOBS$obs, PREDOBS$pred, modStats, paste(MODNAME,PREDNAME,"Predictions"), "")
   
   # Print Statistics
   print(t(modStats))
@@ -95,7 +95,7 @@ saveModStats <- function(MODSTATS){
   
   if(file.exists("./Predictions")==FALSE){dir.create("./Predictions")}
   
-  modStats_file <- "./Predictions/prediction_performance.csv"
+  modStats_file <- "Predictions/prediction_performance.csv"
   if(file.exists(modStats_file)==FALSE){
     write.csv(MODSTATS, file = modStats_file, row.names=FALSE)
   }else{
@@ -103,13 +103,13 @@ saveModStats <- function(MODSTATS){
     save_table <- rbind(save_table,MODSTATS)
     write.csv(save_table, modStats_file, row.names=FALSE)
   }
-  
+  print(paste("Statistics saved to", modStats_file))
 }
 
 
 # Plot Predictions v Observed (with equation & stats)
 
-plot.plsr <- function(x,y, stats, name=NA, units=NA){
+plotPred <- function(x,y, stats, name=NA, units=NA){
   max <- max(c(x,y))
   lims = c(0,(1.1*max))
   plot(y ~ x, 
@@ -140,7 +140,6 @@ getSavePredTable <- function(PREDNAME){
   if(file.exists(predSavePath) ){
     all_predictions <- read.csv(predSavePath)
   }else{
-    load(paste0("Data_Processed/",PREDNAME,".RData"))
     predSet <- get(PREDNAME)
     all_predictions <- predSet[,-ncol(predSet)] # remove spectra, last column
   }
@@ -153,10 +152,22 @@ getSavePredTable <- function(PREDNAME){
 
 savePredictions <- function(PREDOBS, PROP, MODTYPE, PREDNAME){
   all_predictions <- getSavePredTable(PREDNAME) # Make/Load file to save predictions
-  all_predictions <- merge(all_predictions, PREDOBS[,1:2] , all.X=TRUE)
-  ncolm <- ncol(all_predictions)
-  names(all_predictions)[ncolm] <- paste(PROP,MODTYPE,sep=".")
-  write.csv(all_predictions, file=paste0("./Predictions/", PREDNAME,"_predictions.csv"), row.names=FALSE)
+  savename <- paste(PROP,MODTYPE,sep=".") # Ex: OC.PLSR
+  
+  if(!(savename %in% names(all_predictions))){
+    
+    all_predictions <- merge(all_predictions, PREDOBS[,1:2] , all.X=TRUE) # Merge with all_predictions
+    ncolm <- ncol(all_predictions)
+    names(all_predictions)[ncolm] <- savename
+    savefile <- paste0("Predictions/", PREDNAME,"_predictions.csv") # Set file savename
+    write.csv(all_predictions, file=savefile, row.names=FALSE) # Save
+    
+    print(paste("Predictions saved to", savefile)) # Print save location
+    
+  }else{
+    print("Column already exists")
+  }
+  
   View(all_predictions)
 }
   

@@ -24,9 +24,8 @@ This guide documents the use of MIR-spectroscopy at the **Woods Hole Research Ce
 
 Questions and comments can be sent to jsanderman@whrc.org or crivard@whrc.org    
 
-![Jonathan Sanderman](./images/jsanderman.png)
-![Shree Dangal](./images/sdangal.png)
-![Charlotte Rivard](./images/crivard.png)
+![Jonathan Sanderman](./images/jsanderman.png)     ![Shree Dangal](./images/sdangal.png)     ![Charlotte Rivard](./images/crivard.png)
+
 
 **Woods Hole Research Center**    
 Website: [whrc.org](https://whrc.org/)    

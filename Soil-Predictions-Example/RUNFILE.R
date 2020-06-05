@@ -6,59 +6,56 @@
 #----------------------------------------------#
 # Install Packages
 #----------------------------------------------#
-#install.packages(stringr) # processing spectra
-#install.packages(foreach) # processing spectra
-#install.packages(prospectr) # processing spectral set
-#install.packages(clhs) # processing large sets
-#install.packages(matrixStats) # preprocessing baseline transformation
-#install.packages(pls) # pls models
-#install.packages(resemble) # mbl models
+#install.packages(stringr)      # processing spectra
+#install.packages(foreach)      # processing spectra
+#install.packages(prospectr)    # processing spectral set
+#install.packages(clhs)         # processing large sets
+#install.packages(matrixStats)  # preprocessing baseline transformation
+#install.packages(pls)          # pls models
+#install.packages(resemble)     # mbl models
 
 
 #----------------------------------------------#
-# Reference Set Preprocessing #
+# Data Preprocessing #
 #----------------------------------------------#
 source("Functions/preprocess_functions.R")
 
 # Get Spectral Library Set
-all_data <- getSpecLib(SAVENAME="ALL_DATA")
-View(all_data)
-
-# Split into Reference Set and Prediction Set
-split <- calValSplit(SPECLIB=all_data) 
-refSet <- split$calib # Reference Set
-predSet <- split$valid # Prediction Set
+ALL_data <- getSpecLib(SAVENAME="ALL_data")
 
 # Refine Spectral Library
-refSet <- refineSpecLib(SPECLIB=refSet, PROP="OC", SAVENAME="refSet.OC")
+OC_data <- refineSpecLib(SPECLIB=ALL_data, PROP="OC", CALVAL=TRUE, OUTLIER=c("fratio"), SAVENAME="OC_data")
 
+# Define Reference and Prediction Sets
+#load("Data_Processed/OC_data.RData")
+refSet <- OC_data[OC_data$calib==1,]
+predSet <- OC_data[OC_data$calib==0,]
 
 #----------------------------------------------#
 # Partial Least Squares Regression #
 #----------------------------------------------#
-source("Functions/runfile_functions.R")
+source("Functions/plsr_functions.R")
+source("Functions/perform_functions.R")
 
-# Make or Load Model
-plsr.model <- makePLSModel(PROP="OC", REFSET=refSet)
-#plsr.model <- makePLSModel(PROP="OC", REFPATH="Data_Processed/refSet.OC.RData")
+# Make Model
+plsr.OC <- makePLSModel(PROP="OC", REFNAME="refSet")
 
 # Make Predictions
-pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.model", PREDNAME= "predSet")
-#pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME="plsr.model", PREDPATH="./Data_Processed/valid.ALL.RData")
-
+#load("Models/plsr.OC.RData")
+pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", PREDNAME= "predSet")
 
 #----------------------------------------------#
 # Memory Based Learner Model #
 #----------------------------------------------#
-source("Functions/runfile_functions.R")
+source("Functions/mbl_functions.R")
+source("Functions/perform_functions.R")
 
-# Make or Load Model
-mbl.sqrt <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
-#mbl.sqrt <- runMBL(PROP="OC", REFPATH="Data_Processed/refSet.OC.RData", PREDPATH="Data_Processed/valid.ALL.RData")
+# Make Model
+mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
 
 # Extract Predictions
-mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME= "mbl.sqrt", PREDNAME= "predSet")
-#mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME="mbl.sqrt", PREDPATH="Data_Processed/valid.ALL.RData")
+#load("Models/mbl.OC.RData")
+mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME= "mbl.OC", PREDNAME= "predSet")
 
 
 

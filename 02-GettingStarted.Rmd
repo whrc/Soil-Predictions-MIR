@@ -13,14 +13,9 @@ The best way to get started using this code, is by downloading the `Soil-Predict
 This folder, along with all source code for this guide, can be found in the following Github Repository:    
 [**whrc/Soil-Predictions-MIR**](https://github.com/whrc/Soil-Predictions-MIR)
 
-## File Walkthrough
+## File Walkthrough {-}
 1. Within the `Soil-Predictions-Example` folder, you will find the following folders and files:     
-```{r, eval=FALSE}
-[1] "Data_Raw"                      
-[2] "Functions"                     
-[3] "RUNFILE.R"                     
-[4] "Soil-Predictions-Example.Rproj"
-```
+![](images/demo-folder.png)
 
 2. Double click `Soil-Predictions-Example.Rproj` to open up the **R-project**. Within a project, the working directory is set to the project's folder.
 <!-- Add picture when possible -->
@@ -28,40 +23,84 @@ This folder, along with all source code for this guide, can be found in the foll
 3. Open up `RUNFILE.R` in the project environment. This is an example script of how to make soil predictions using spectral data. It includes the use of both **PLSR** models and **MBL** models, which are both explained in this guide. 
 
 4. Navigate to the `Functions` folder. Within this folder are R files containing functions useful for MIR soil predictions. These files will be sourced by each other, and `RUNFILE.R`
-```{r, eval=FALSE}
-[1] "caltransfer_functions.R"
-[2] "gather-spc.R" # from 'simplerspc' package         
-[3] "outlier_functions.R" 
-[4] "plsr_functions.R"  
-[5] "preprocess_functions.R" 
-[6] "read-opus-universal.R" # from 'simplerspc' package
-```
+![](images/functions_files.png)
 
-5. Navigate to the `Data_Raw` folder. This should contain:
-    + `ref-LAB_DATA.csv`: A '.csv' file of the lab data; `sample_id` column and column lab data for a given property, at a minimum.
-    + `ref-SPECTRA`: A folder of OPUS files containing the spectral data for each sample    
+5. Navigate to the `Data_Raw` folder. This should contain:    
+    + `LAB_DATA.csv`: A '.csv' file of the lab data; At a minimum,  it should have a `sample_id` column and the lab data for a given property
+    + `SPECTRA`: A folder of OPUS files containing the spectral data for each sample   
+![](images/data-raw.png)
     
-## Required Packages
-Open up `RUNFILE.R` and install the packages listed at the top:
+## Required Packages {-}
+Open up `RUNFILE.R` and install the packages listed at the top:    
+
 ```{r, eval=FALSE}
-#install.packages(readr)
-#install.packages(pls)
-#install.packages("miceadds")
-library(miceadds) #used for the load as this variable thing
+install.packages(stringr)      # processing spectra
+install.packages(foreach)      # processing spectra
+install.packages(prospectr)    # processing spectral set
+install.packages(clhs)         # processing large sets {optional}
+install.packages(matrixStats)  # preprocessing baseline transformation
+install.packages(plot3D)       # preprocessing plotting spectral outliers {optional}
+install.packages(pls)          # pls models
+install.packages(resemble)     # mbl models
 ```
 
-## Full Script
+### simplerspec {-}
+[***simplerspec documentation***](https://github.com/philipp-baumann/simplerspec) 
+`simplerspec` is a package that streamlines the process of making models from FT-IR data. However, we were unable to install it and ended up just manually saving the functions `read-opus-universal` and `gather-spc` to the folder `Functions/simplerspec`    
+  
+![](images/simplerspec-logo.png)
+
+### stringr {-}
+[***stringr documentation***](https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html)
+`stringr` is used in the processing spectra portion of the code for subsetting strings with the `str_sub` function    
+
+### foreach {-}
+[***foreach documentation***](https://cran.r-project.org/web/packages/foreach/vignettes/foreach.html)
+`foreach` is in the processing spectra portion of the code within the simplrspec function `read-opus-universal`    
+
+### prospectr {-}
+[***prospectr documentation***](https://github.com/l-ramirez-lopez/prospectr) 
+`prospectr` is used in the processing portion of the code to split it into calibration and validation sets using the function `kenStone()`    
+
+![](images/prospectR.png)
+
+
+### clhs {-}
+[***clhs documentation***](https://cran.r-project.org/web/packages/clhs/clhs.pdf)
+`clhs` or Conditional Latin Hypercube Sampling is used in the processing portion of the code to subset large datasets that exceed 15000 samples    
+
+
+
+### matrixStats {-}
+[***matrixStats documentation***](https://cran.rstudio.com/web/packages/matrixStats/index.html)
+`matrixStats` is used in the `base_offset` function in the preprocessing portion of the code.    
+
+### plot3D {-}
+[**plot3D documentation**](http://www.sthda.com/english/wiki/impressive-package-for-3d-and-4d-graph-r-software-and-data-visualization)
+`plot3D` is used within the `fratio_outliers` function to show spectral outliers in 3D principal component space.    
+
+### pls {-}
+[***pls documentation***](https://cran.r-project.org/web/packages/pls/vignettes/pls-manual.pdf)
+`pls` is used to create partial least squares regression models.  
+
+### resemble {-}
+[***resemble documentation***](https://github.com/l-ramirez-lopez/resemble)
+`resemble` is used to create memory based learner models.    
+
+![](images/resemble_logo.png)
+
+## Demo Script {-}
 Run the `RUNFILE.R` script. This will create...     
 
 1. `Data_Processed`: A folder containing the processed data, used to build the model and make predictions     
-2. `Models`: A folder containing the plsr and mbl models made. As well as a summary of their performance, `model_performance.csv`    
-3. `Predictions`: A folder containing the predictions output by the script     
+2. `Models`: A folder containing the plsr and mbl models made    
+3. `Predictions`: A folder containing the predictions output by the script and a prediction performance log   
 
 To modify for your own spectral library....
 
-1. Change the spectral files in `Data_Raw/ref-SPECTRA`    
-2. Change the lab data in `Data_Raw/ref-LAB_DATA.csv`
-3. Update the variable `properties` throughout `RUNFILE.R`, to contain the column names of the properties in your lab dataset. (Right now it is set to c("OC", "SAND", "SILT","CLAY))
+1. Change the spectral files in `Data_Raw/SPECTRA`    
+2. Change the lab data in `Data_Raw/LAB_DATA.csv`
+3. Update the name of the property in `RUNFILE.R`, to match the column name of the property you would like to predict. Currently, we are predicted for "OC".
 
 
 Below is the full `RUNFILE.R` script, organized with 3 main sections:
@@ -70,262 +109,46 @@ Below is the full `RUNFILE.R` script, organized with 3 main sections:
 2. PLSR Models    
 3. MBL Models    
 ```{r, eval=FALSE}
-#Title: RUNFILE- Soil-Predictions-Example
-#Authors: Charlotte Rivard & Shree Dangal
-#Date: 5/8/20
-#Summary: #The following script predicts values for several soil properties
-          #from spectral data, using the following machine learning models:
-          #1- Partial Least Squares Regression
-          #2- Memory Based Learner
-
 #----------------------------------------------#
-            # Install Packages
-#----------------------------------------------#
-#install.packages(readr)
-#install.packages(pls)
-#install.packages("miceadds")
-library(miceadds) #used for the load as this variable thing
-
-
-#----------------------------------------------#
-      # Reference Set Preprocessing #
+# Data Preprocessing #
 #----------------------------------------------#
 source("Functions/preprocess_functions.R")
 
-# Process Reference Set Spectra 
-spectra <- opus_to_dataset("/Data_Raw/ref-SPECTRA")
-spectra$spc <- subset_spectral_range(spectra$spc)
-spectra$spc <- base_offset(spectra$spc)
+# Get Spectral Library Set
+ALL_data <- getSpecLib(SAVENAME="ALL_data")
 
-# Merge with Reference Set Lab Data
-library(readr)
-lab <- data.frame(read_csv("Data_Raw/ref-LAB_DATA.csv"))
-all_refset <- merge(lab, spectra, all.y=TRUE)
+# Refine Spectral Library
+OC_data <- refineSpecLib(SPECLIB=ALL_data, PROP="OC", CALVAL=TRUE, SAVENAME="OC_data")
 
-# Save refset.ALL file after preprocessing
-if(file.exists("./Data_Processed")==FALSE){dir.create("./Data_Processed")}
-save(all_refset, file="Data_Processed/refset.ALL.RData")
-write.csv(all_refset, "Data_Processed/refset.ALL.csv", row.names=FALSE)
-
-# Remove rows with poor lab data
-properties <- c("OC","SAND","SILT", "CLAY") #Column names of lab data
-
-for(property in properties){
-  
-  prop_refset <- all_refset
-  prop_refset <- noNA(prop_refset, property) # Remove NAs
-  prop_refset <- noNeg(prop_refset, property) # Remove Negative
-  prop_refset <- noOut(prop_refset, property) # Remove Outliers*
-  
-  #prop_refset$spc <- sub_large_set(prop_refset) # Subset to 15000 if large
-  
-  savename <- paste("refset", property, sep=".") # Ex: refset.OC
-  assign(savename, prop_refset)
-  save(list= savename, file=paste0("Data_Processed/", savename, ".RData"))
-  
-  #split <- calValSplit(prop_refset, property) # Split Calibration & Validation Sets
-  #calib <- split[1]; valid <- split[2]
-  #save(calib, file=paste("Data_Processed/calib", property,"RData", sep="."))
-  #save(valid, file=paste("Data_Processed/valid", property,"RData", sep="."))
-}
-
+# Define Reference and Prediction Sets
+#load("Data_Processed/OC_data.RData")
+refSet <- OC_data[OC_data$calib==1,]
+predSet <- OC_data[OC_data$calib==0,]
 
 #----------------------------------------------#
-# Prediction Set Preprocessing #
+# Partial Least Squares Regression #
 #----------------------------------------------#
-
-# Spectral Processing: Prediction Set
-#spectra <- opus_to_dataset("/Data_Raw/PRED-SPECTRA")
-#{where pds would happen}
-#spectra <- subset_spectral_range(spectra)
-#spectra <- base_offset(spectra)
-
-
-#----------------------------------------------#
-    # Partial Least Squares Regression #
-#----------------------------------------------#
-library(pls)
 source("Functions/plsr_functions.R")
+source("Functions/perform_functions.R")
 
-#------ CREATE MODELS -------#
+# Make Model
+plsr.OC <- makePLSModel(PROP="OC", REFNAME="refSet")
 
-# Create Folder to Save Models
-if(file.exists("./Models")==FALSE){dir.create("./Models")}
-
-# List Properties to Make Models For
-properties <- c("OC", "SAND","SILT", "CLAY")
-
-for(property in properties){
-  
-  # Load Data
-  refSetPath <- paste("./Data_Processed/refset",property,"RData", sep=".") # Ex: refset.OC.RData
-  load.Rdata(refSetPath, "refSet") # load as variable refSet
-  
-  # Create Model
-  validType <- "CV" # "CV", "LOO", or "none"
-  plsr.model <- plsr(sqrt(get(property))~spc, ncomp=20, data = refSet , valid=validType) 
-  
-  # Save Model
-  modelName <- paste("plsr", property, sep=".")
-  assign(modelName, plsr.model)
-  save(list= modelName, file = paste("./Models/plsr", property,"RData", sep=".")) #Ex: plsr.OC.RData
-  
-}
-
-#------ Apply Models -------#
-
-# Load Prediction Set
-#predSetPath <- "./Data_Processed/refset.ALL.RData"
-predSetPath <- "./Data_Processed/predset.TEST.RData"
-load.Rdata(predSetPath, "predSet") # variable predSet
-
-# Load/Create File to Save Predictions
-predSavePath <- "./Predictions/predset.TEST.predictions.RData"
-if(file.exists(predSavePath) ){
-  load( predSavePath)
-}else{
-  all_predictions <- predSet[,-ncol(predSet)] # remove spectra, last column
-}
-
-# Make and Save Predictions
-for(property in properties){
-  # Load Model (Ex: plsr.OC.RData, variable= plsr.model)
-  model.name <- load(paste("./Models/plsr", property,"RData", sep="."), verbose=TRUE)
-  plsr.model <- get(model)
-  
-  # Load Reference Set (Ex: ref.OC.RData, variable= prop.data)
-  load(paste("./Data_Processed/ref",property,"RData", sep="."), verbose=TRUE)
-  
-  # Find Optimal Number of Components
-  ncomp_onesigma <- selectNcomp(plsr.model, method = "onesigma", plot=TRUE, main=paste(property,"Validation"))
-  
-  # Get Predictions
-  predType <- "predict" # "fitted", "valid", "predict"
-  predictions <- getPredictions(plsr.model, ncomp_onesigma, predType, predSet)
-  
-  # Save Predictions
-  #sample_id <- getSampleID(prop.data, get(predSet), predType) # reference set, prediction set, prediction type
-  samp_id <- getSample(property, predType)
-  
-  predTable <- data.frame(sample_id, predictions)
-  names(predTable) <- c("sample_id", paste(property, predType, sep="."))
-  all_predictions <- merge(all_predictions, predTable, all.X=TRUE)
-  
-  # Save Model Performance
-  lab_data <- getLabData(plsr.model, predType, predSet, property) # get lab data to compare
-  saveModStats(predictions, lab_data, property, ncomp_onesigma, "PLSR", predType, predSet)
-  
-}
-
-# Save All Predictions
-if(file.exists("./Predictions")==FALSE){dir.create("./Predictions")}
-save(all_predictions, file="./Predictions/all_predictions.RData")
-write.csv(all_predictions, "./Predictions/all_predictions.csv", row.names=FALSE)
-
-
-#outlier flagging
-#output.pred <- data.frame(output.pred)
-#output.pred$outlier <- 0
-#oc <- read.csv("/mnt/data2/disk1/soilcarbon/crivard/predEnsemble/output/indigo_output/fratio/bd.anal4.csv")
-#outs <- c(oc$x) 
-#outs <- outs[outs>10363]
-#outs <- outs-10363
-#output.pred$outlier[outs] <- 1
-#output.pred <- cbind(TERR_ID,output.pred)
-
-#write.csv(output.pred, file ="/mnt/data2/disk1/soilcarbon/crivard/predEnsemble/output/indigo_output/all-predictions/pred.bd.anal4.csv")
-
-
-
-library(miceadds)
-
-#Create / Load File to Save Predictions
-predSet <- get(load("./Data_Processed/ref.ALL.RData"))
-if(file.exists("./Predictions/all_predictions.RData")){
-  load("./Predictions/all_predictions.RData", verbose=TRUE)
-}else{all_predictions <- all_data[,-ncol(all_data)]}# remove spectra, last column
-
-for(property in properties){
-  # Load Model (Ex: plsr.OC.RData, variable= plsr.model)
-  load(paste("./Models/plsr", property,"RData", sep="."), verbose=TRUE)
-  
-  # Load Reference Set (Ex: ref.OC.RData, variable= prop.data)
-  load(paste("./Data_Processed/ref",property,"RData", sep="."), verbose=TRUE)
-  
-  # Find Optimal Number of Components
-  ncomp_onesigma <- selectNcomp(plsr.model, method = "onesigma", plot=TRUE, main=paste(property,"Validation"))
-  
-  # Get Predictions
-  predType <- "predict" # "fitted", "valid", "predict"
-  predictions <- getPredictions(plsr.model, ncomp_onesigma, predType, get(predSet))
-  
-  # Save Predictions
-  sample_id <- getSampleID(prop.data, get(predSet), predType) # reference set, prediction set, prediction type
-  predTable <- data.frame(sample_id, predictions)
-  names(predTable) <- c("sample_id", paste(property, predType, sep="."))
-  all_predictions <- merge(all_predictions, predTable, all.X=TRUE)
-  
-  # Save Model Performance
-  lab_data <- getLabData(plsr.model, predType, get(predSet), property) # get lab data to compare
-  saveModStats(predictions, lab_data, property, ncomp_onesigma, "PLSR", predType, predSet)
-  
-}
-
-# Save All Predictions
-if(file.exists("./Predictions")==FALSE){dir.create("./Predictions")}
-save(all_predictions, file="./Predictions/all_predictions.RData")
-write.csv(all_predictions, "./Predictions/all_predictions.csv", row.names=FALSE)
-
+# Make Predictions
+#load("Models/plsr.OC.RData")
+pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", PREDNAME= "predSet")
 
 #----------------------------------------------#
-        # Memory Based Learner Model #
+# Memory Based Learner Model #
 #----------------------------------------------#
-library(miceadds)
-library(resemble)
+source("Functions/mbl_functions.R")
+source("Functions/perform_functions.R")
 
-property <- "OC"
-#for(property in properties){
+# Make Model
+mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
 
-# Load Reference Set
-refSetPath <- paste("./Data_Processed/refset",property,"RData", sep=".") # Ex: refset.OC.RData
-load.Rdata(refSetPath, "refSet") # load as variable refSet
-
-# Load Prediction Set
-#predSetPath <- "./Data_Processed/refset.ALL.RData"
-predSetPath <- "./Data_Processed/predset.TEST.RData"
-load.Rdata(predSetPath, "predSet") # variable predSet
-
-
-# Load/Create File to Save Predictions
-predSavePath <- "./Predictions/predset.TEST.predictions.RData"
-if(file.exists(predSavePath) ){
-  load( predSavePath)
-}else{
-  all_predictions <- predSet[,-ncol(predSet)] # remove spectral matrix
-}
-
-# Set Input Datasets
-Xu <- predSet$spc
-Yu <- sqrt(predSet[,property]) 
-Yr <- sqrt(refSet[,property])
-Xr <- refSet$spc
-
-ctrl <- mblControl(sm = 'pc', pcSelection = list('opc', 50),
-                      valMethod = 'loc_crossval',center=TRUE,scale=FALSE,allowParallel=FALSE)
-
-mbl.sqrt <- mbl(Yr = Yr, Xr = Xr, Yu = Yu, Xu = Xu, mblCtrl = ctrl,
-                    dissUsage = 'none',
-                    k = seq(40, 100, by = 20),
-                    method = 'pls', pls.c = 6)
-
-# Get Best Predictions
-index_best_model <- which.min(mbl.sqrt$localCrossValStats$st.rmse)
-best_model_name <- names(mbl.sqrt$results)[3]
-predictions <- eval(parse( text=paste0("mbl.sqrt$results$",best_model_name,"$pred" )))
-
-# Save Model Performance
-lab_data <- predSet[,property] # get lab data to compare
-saveModStats(predictions, lab_data, property, NA, "MBL", NA, predSetPath)
+# Extract Predictions
+#load("Models/mbl.OC.RData")
+mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME= "mbl.OC", PREDNAME= "predSet")
 ```
-
 

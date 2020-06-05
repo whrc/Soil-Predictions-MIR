@@ -1,6 +1,6 @@
 # MBL Models
 
-## Model Theory
+## Model Theory {-}
 
 ### Overview {-}
 **Memory-Based Learning** (MBL) is a local modeling approach that can be used to predict a given soil property from a set of spectral data, the **prediction set**.    
@@ -35,11 +35,13 @@ knitr::include_graphics(path="./images/mbl_vid.gif")
 Resemble Powerpoint: http://www.fao.org/fileadmin/user_upload/GSP/docs/Spectroscopy_dec13/SSW2013_f.pdf
 
 
-## Making MBL Predictions
+## Making MBL Predictions {-}
 
-### MBL Functions {-}
-Full documentation on the mbl() function of the resemble package can be found below, or by typing ??resemble in r:     
-MBL- https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mbl     
+### Resemble Functions {-}
+Full documentation on the mbl() function of the resemble package is linked below:    
+
+**MBL**- [*Resemble mbl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mbl)    
+
 ```
 mbl(Yr, Xr, Yu = NULL, Xu,    
     mblCtrl = mblControl(),      
@@ -52,7 +54,8 @@ mbl(Yr, Xr, Yu = NULL, Xu,
     noise.v = 0.001,     
     ...)
 ```
-MBL Control- https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mblControl  
+**MBL Control**- [*Resemble mblControl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mblControl)    
+
 ```
 mblControl(sm = "pc",
            pcSelection = list("opc", 40),
@@ -131,71 +134,158 @@ This section explains some of the main ways to customize and optimize mbl models
     + `NNv` for leave-nearest-neighbour-out cross validation
     + `loc_crossval` for local leave group out cross validation
     + `none` If you chose not to validate the model. This will improve processing speed.
-    
-#### Other {-}
-Should I include this section?  
 
-* `center`   
+### Running MBL {-}
+The following is a wrapper function for running an mbl model, sourced from "Functions/mbl_functions.R". It takes in the names of the property, prediction and reference sets and returns an mbl model, using the functions mbl() and mblControl() from the resemble package. It is called directly in the RUNFILE script:    
 
-* `scaled`
-    
-### Sample Code {-}
-#### Define Input Data {-}
+```{r, eval=FALSE}
+source("Functions/mbl_functions.R")
+mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
+```
+
+#### `runMBL()` {-}
+
+* `runMBL( {see below} )`
+    + `PROP`: *string*- The column name of the soil property of interest.
+    + `REFNAME`: *string*- The name of the reference set variable, if it is already loaded into the R environment. Use REFNAME or REFPATH
+    + `REFPATH`: *string*- The path of the RData file containing your reference set, if the reference set is not already loaded. Use REFNAME or REFPATH
+    + `PREDNAME`: *string*- The name of the prediction set variable, if it is already loaded into the R environment. Use PREDNAME or PREDPATH
+    + `PREDPATH`: *string*- The path of the RData file containing your prediction set, if the prediction set is not already loaded. Use PREDNAME or PREDPATH
+    + `SAVENAME`: *string*- The name assigned to the model when it is saved. Default is set to paste0("mbl.",PROP) which would save "mbl.OC.RData" for example in the "Models" folder    
+
+_
+
+* Load the resemble package
+```{r, eval=FALSE}
+# Run MBL Model
+library(resemble)
+```
+
+* Load the data
+    + If `REFPATH` is not NA, it will load the reference set at the path passed. Otherwise, it assumes you have passed in `REFNAME`, the variable name of a reference set already loaded. We use the `get()` command, rather than the variable itself, so that the name of the variable can be saved with our prediction performance. The same applies to the prediction set.   
+
+```{r, eval=FALSE}
+# Load Reference Set
+if(!is.na(REFPATH)){
+  REFNAME <- load(REFPATH) # If REFPATH is given
+}
+refset <- get(REFNAME) # load as variable REFSET
+
+# Load Prediction Set
+if(!is.na(PREDPATH)){
+  PREDNAME <- load(PREDPATH)
+}
+predSet <- get(PREDNAME)
+```
+
+
+* Define inputs and eliminate rows with NA values
 ```{r eval=FALSE}
-Xu <- predDat$spc
-Yu <- sqrt(predDat[,property]) 
-Yr <- sqrt(calib[,property])
-Xr <- calib$spc
-
+# Define Input Datasets
+Xu <- predSet$spc          # Prediction Spectra 
+Yu <- sqrt(predSet[,PROP]) # Prediction Lab Data
+Yr <- sqrt(refSet[,PROP])  # Reference Spectra
+Xr <- refSet$spc           # Reference Lab Data
+  
+# Get Rid of NAs
 Xu <- Xu[!is.na(Yu),]
-Yu <- Yu[!is.na(Yu)]
 Xr <- Xr[!is.na(Yr),]
+Yu <- Yu[!is.na(Yu)]
 Yr <- Yr[!is.na(Yr)]
 ```
 
-#### Example 1 {-}
-```{r eval=FALSE}
 
+* Set Control Parameters
+    + In this example, nearest neighbors will be determined in principal component space (`sm='pc'`), the optimal number of principal components will be used and up to 50 components will be tested (`pcSelection = list('opc',50)`), and nearest neighbor validation will be used (`valMethod = 'NNv'`)- meaning for each prediction, a model will be built will all but the nearest neighbor of the sample being predicted.   
+    
+```{r, eval=FALSE}
 ctrl <- mblControl(sm = 'pc', pcSelection = list('opc', 50),
-                    valMethod = 'loc_crossval',center=TRUE,scale=FALSE,allowParallel=FALSE)
-mbl.sqrt <- mbl(Yr = Yr, Xr = Xr, Yu = Yu, Xu = Xu, mblCtrl = ctrl, dissUsage = 'none',
-                    k = seq(40, 100, by = 20),
-                    method = 'pls', pls.c = 6)
-    
-predVals <- c(mbl.sqrt$results$Nearest_neighbours_40$pred)^2
+                    valMethod = 'NNv',center=TRUE,scale=FALSE,allowParallel=FALSE)
 ```
 
-#### Example 2 {-}
-```{r eval=FALSE}
+* Run MBL Model 
+    + **Option 1** - Will make local partial least squares regression models using 40, 60, 80 and 100 nearest neighbors (`k= seq(40, 100, by = 20)`) and using 6 components (`pls.c = 6`) to make predictions. Will not use the dissimilarity matrx (`dissUsage = 'none'`).
+    + **Option 2**- Will create weighted partial least squares regression models (`method = "wapls1"`) using the neighbors within 0.3, 0.4,...1 distance from the sample being predicted (`k.diss = seq(0.3, 1, by=0.1)`), with a minimum of 20 neighbors used (`k.range = c(20, nrow(refSet))`) and predicting with 3 to 20 of the components of the model (`pls.c = c(minpls=3, maxpls=20)`)
 
-diss2test <- seq(0.3, 1, by=0.1)
-kminmax <- c(10, nrow(calib$spc))
-pls.f <- c(minpls=3, maxpls=20)
-    
-ctrl <- mblControl(sm = pls, pcSelection = list("opc", 50), valMethod = "NNv", 
-                       returnDiss = TRUE, scaled = FALSE, center = TRUE)
-    
-mbl.sqrt <- mbl(Yr = Yr, Xr = Xr, Xu = Xu, mblCtrl = ctrl, dissUsage = "none", k.diss = diss2test, k.range = kminmax, pls.c = pls.f, method = "wapls1")
-    
-idx.best.ca <- which.min(mbl.sqrt$nnValStats$st.rmse)
-best.kdiss.ca <- mbl.sqrt$nnValStats$k.diss[idx.best.ca]
-    
-predVals <- c(getPredictions(mbl.sqrt)[, idx.best.ca])^2
-
+Option 1
+```{r, eval=FALSE}
+  mbl.sqrt <- mbl(Yr = Yr, Xr = Xr, Yu = Yu, Xu = Xu, mblCtrl = ctrl, dissUsage = 'none',
+                  k = seq(40, 100, by = 20), method = 'pls', pls.c = 6)
 ```
 
-#### Model Output {-}
-
-* Cross Validation Statistics    
-```{r eval=FALSE}
-mbl.sqrt$localCrossValStats
-index_best_model <- which.min(mbl.sqrt$localCrossValStats$st.rmse)
+Option 2
+```{r, eval=FALSE}
+mbl.sqrt <- mbl(Yr = Yr, Xr = Xr, Xu = Xu, mblCtrl = ctrl, dissUsage = "none", k.diss = seq(0.3, 1, by=0.1), k.range = c(20, nrow(refSet)), pls.c = c(minpls=3, maxpls=20), method = "wapls1")
+``` 
+  
+* Save the model
+```{r, eval=FALSE}
+if(SAVENAME != "none"){
+  modelName <- paste("mbl", PROP, sep=".")
+  assign(modelName, mbl.sqrt)
+  savefile <- paste("./Models/mbl", PROP,"RData", sep=".")
+  save(list= modelName, file = savefile)
+  print(paste(modelName, "saved to", savefile))
+}
 ```
 
-* Prediction Statistics     
-    + If Yu, lab data for the prediction set is provided, it will calculate how well the models predicted in terms of rmse, st.rmse and r2    
 
-```{r eval=FALSE}
-mbl.sqrt$YuPredictionStats
+### Getting MBL Predictions {-}
+MBL predictions are stored in the mbl model as `MODEL$results$model-name$pred`. Since you can run the MBL model with different numbers of nearest neighbors or different dissimilarity thresholds, there can be sets of predictions stored. To choose the best model, we look for the model with the minimum standardized rmse with the function `bestModMBL()` and extract predictions from this model with `getPredMBL()`
+
+#### `getPredMBL()` {-}
+```{r, eval=FALSE}
+getPredMBL <- function(mbl.sqrt, model_name=NULL){
+  
+  if(is.null(model_name)){
+    model_name <- bestModMBL(mbl.sqrt)
+  }
+  sqrt_preds <- eval(parse( text=paste0("mbl.sqrt$results$", model_name,"$pred" )))
+  
+  predictions <- c(sqrt_preds)^2
+  
+  return(predictions)
+}
+```
+
+#### `bestModMBL()` {-}
+```{r, eval=FALSE}
+bestModMBL <- function(mbl.sqrt){
+  
+  valType <- mbl.sqrt$cntrlParam$valMethod
+  
+  if(valType=="NNv"){
+    index_best_model <- which.min(mbl.sqrt$nnValStats$st.rmse)
+  }
+  if(valType=="loc_crossval"){
+    index_best_model <- which.min(mbl.sqrt$localCrossValStats$st.rmse)
+  }
+  
+  best_model_name <- names(mbl.sqrt$results)[index_best_model]
+  
+  return(best_model_name)
+}
+```
+
+
+#### `getLabMBL()` {-}
+If lab data was input when building the model as Yu, it will be stored at `MODEL$results$model-name$yu.obs`. Otherwise, you will have to get it from your original prediction dataset 
+
+```{r, eval=FALSE}
+getLabMBL <- function(mbl.sqrt){
+  
+  Yu <- mbl.sqrt$call$Yu
+  
+  if(!is.null(Yu)){
+    sqrt_lab <- eval(parse( text=paste0("mbl.sqrt$results$",best_model_name,"$yu.obs" )))
+  }else{
+    sqrt_lab <- NULL
+  }
+  
+  lab <- c(sqrt_lab)^2
+  
+  return(lab)
+  
+}
 ```
 

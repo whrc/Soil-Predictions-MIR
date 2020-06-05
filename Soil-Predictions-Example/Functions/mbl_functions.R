@@ -2,9 +2,6 @@
 
 # Run MBL Model
 library(resemble)
-library(prospectr)
-source("Functions/mbl_functions.R")
-
 runMBL <- function(PROP, REFNAME=NA, REFPATH=NA, PREDNAME=NA, PREDPATH=NA, SAVENAME=paste0("mbl.",PROP)){
   
   # Load Reference Set
@@ -47,7 +44,9 @@ runMBL <- function(PROP, REFNAME=NA, REFPATH=NA, PREDNAME=NA, PREDPATH=NA, SAVEN
   if(SAVENAME != "none"){
     modelName <- paste("mbl", PROP, sep=".")
     assign(modelName, mbl.sqrt)
-    save(list= modelName, file = paste("./Models/mbl", PROP,"RData", sep="."))
+    savefile <- paste("./Models/mbl", PROP,"RData", sep=".")
+    save(list= modelName, file = savefile)
+    print(paste(modelName, "saved to", savefile))
   }
   
   return(mbl.sqrt)

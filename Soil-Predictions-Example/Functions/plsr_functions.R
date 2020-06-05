@@ -3,45 +3,52 @@
 # Make PLS Model
 library(pls)
 
-makePLSModel <- function(PROP, REFSET=NA, REFPATH=NA, VAL_TYPE="CV", SAVENAME=paste0("plsr.",PROP)){
-  print(SAVENAME)
+makePLSModel <- function(PROP, REFNAME=NA, REFPATH=NA, VALTYPE="CV", SAVENAME=paste0("plsr.",PROP)){
+  
   # Load Data
-  if(!is.na(REFPATH)){ 
-    refSet.name <- load(REFPATH) # If REFPATH is given
-    REFSET <- get(refSet.name) # load as variable refSet
+  if(!is.na(REFPATH)){
+    REFNAME <- load(REFPATH) # If REFPATH is given
   }
-  
+  refset <- get(REFNAME) # load as variable REFSET
+
   # Create Model
-  model <- plsr(sqrt(get(PROP))~spc, ncomp=20, data = REFSET , valid=VAL_TYPE) 
-  
+  model <- plsr(sqrt(get(PROP))~spc, ncomp=20, data = refset , valid=VALTYPE)
+
   # Save Model
   if(SAVENAME != "none"){
     if(file.exists("./Models")==FALSE){dir.create("./Models")} # Create Folder to Save Models
     assign(SAVENAME, model)
-    save(list= SAVENAME, file = paste0("./Models/",SAVENAME,".RData")) #Ex: plsr.OC.RData
+    savefile <- paste0("Models/",SAVENAME,".RData")
+    save(list= SAVENAME, file = savefile) #Ex: plsr.OC.RData
+    print(paste("Model saved to",savefile))
   }
-  
+
   return(model)
 }
 
 
 # Get PLS Predictions
 
-getPredPLS <- function(MODEL, NCOMP, PREDTYPE="fitted", PREDSET=NULL){
+getPredPLS <- function(MODEL, NCOMP=ncompOneSigma(MODEL), PREDTYPE="fitted", PREDSET=NULL){
   if(PREDTYPE=="valid"){
     sqrt_pred <- unlist(data.frame(MODEL$validation$pred)[NCOMP])
   }
   if(PREDTYPE == "fitted"){
     sqrt_pred <- unlist(data.frame(MODEL$fitted.values)[NCOMP])
   }
-  
+
   if(PREDTYPE == "predict"){
     sqrt_pred <- c(predict(MODEL, newdata = PREDSET$spc, ncomp=NCOMP))
   }
   predictions <- c(sqrt_pred^2)
   names(predictions) <- c(seq(1:length(predictions)))
-  
+
   return(predictions)
+}
+
+ncompOneSigma <- function(MODEL){
+  ncomp <- selectNcomp(MODEL, method = "onesigma", plot = TRUE, ylim = c(0, 50))
+  return(ncomp)
 }
 
 
@@ -75,7 +82,7 @@ getLabPLS<- function(MODEL, PREDTYPE="fitted", PREDSET=NULL, PROP=NULL){
     #lab_data <- data.frame(MODEL$model$`sqrt(get(property))`^2)
     lab_data <- c(sqrt_lab)^2
   }
-  
+
   return(lab_data)
 }
 

@@ -6,26 +6,30 @@
 
 # Get Spectral Library
 
-getSpecLib <- function(SPECPATH="/Data_Raw/SPECTRA", LABPATH="Data_Raw/LAB_DATA.csv", SAVENAME="none"){
-  # Process Reference Set Spectra 
+getSpecLib <- function(SPECPATH="/Data_Raw/SPECTRA", 
+                       LABPATH="Data_Raw/LAB_DATA.csv", SAVENAME="none"){
+  # Extract OPUS Files
   spectra <- opus_to_dataset(SPECPATH)
+  
+  # Subset Spectral Range
   spectra$spc <- subset_spectral_range(spectra$spc)
-  # (Where calibration transfer would occur)
+  
+  # Where calibration transfer would occur
+  
+  # Baseline Transformation
   spectra$spc <- base_offset(spectra$spc)
   
-  # Merge with Reference Set Lab Data
+  # Merge with Lab Data
   lab <- data.frame(read.csv(LABPATH))
   speclib <- merge(lab, spectra, all.y=TRUE)
   
-  # Save speclib after preprocessing
+  # Optional Save after Processing
   if(SAVENAME!= "none"){
     assign(SAVENAME,speclib)
-    speclib <- get(SAVENAME)
     if(file.exists("./Data_Processed")==FALSE){dir.create("./Data_Processed")}
-    savepath <- paste0("Data_Processed/",SAVENAME,".RData")
-    save(speclib, file=savepath)
-    write.csv(speclib, savepath, row.names=FALSE)
-    
+    savepath <- paste0("./Data_Processed/",SAVENAME,".RData")
+    save(list=SAVENAME, file=savepath)
+    write.csv(get(SAVENAME), savepath, row.names=FALSE)
   }
   return(speclib)
 }
@@ -34,45 +38,46 @@ getSpecLib <- function(SPECPATH="/Data_Raw/SPECTRA", LABPATH="Data_Raw/LAB_DATA.
 # Opus to Dataset
 library(stringr) #used for str_sub
 library(foreach)
-source("Functions/simplerspc/gather-spc.R")
-source("Functions/simplerspc/read-opus-universal.R")
+source("Functions/simplerspec/gather-spc.R")
+source("Functions/simplerspec/read-opus-universal.R")
 
-opus_to_dataset <- function(SPECPATH ="/Data_Raw/SPECTRA", NWAVE=3017, SAVE=FALSE){
+opus_to_dataset <- function(SPECPATH ="/Data_Raw/SPECTRA", NWAVE=3017, SAVENAME="none"){
   #--- Converts OPUS files to RData ---#
   
-  # List directory and files containing MIR in opus format
+  #---List Files---#
   dirs <- list.dirs(paste(getwd(),SPECPATH,sep=""), full.names=TRUE)
   all.files <- list.files(dirs, pattern= "*.0", recursive=TRUE,full.names=TRUE)
-  all.files[1]
   
-  # Read opus format files as list and gather spc
+  #---Extract Spectra---#
   spc_list <- read_opus_univ(fnames = all.files, extract = c("spc"))
   soilspec_tbl <- spc_list %>%
     gather_spc() # Gather list of spectra data into tibble data frame
-  
-  # Process to output spectra in desired format
   spc <- soilspec_tbl$spc
-  spc.trun <- lapply(1:length(spc),function(x) spc[[x]][,1:NWAVE]) # Truncate at 3017, the minimal number of wavenumbers of spectra
-  spc.df <- as.data.frame(matrix(unlist(spc.trun), nrow=length(spc.trun), byrow=T)) # Convert to dataframe
   
-  # Assigns wavenumbers as column names
+  #---Truncate Spectra---#
+  spc.trun <- lapply(1:length(spc),function(x) spc[[x]][,1:NWAVE]) # Truncate at 3017 by default
+  
+  #---Process to Dataframe---#
+  spc.df <- as.data.frame(matrix(unlist(spc.trun), nrow=length(spc.trun), byrow=T))
   colnames(spc.df) <- colnames(spc.trun[[1]]) 
   rownames(spc.df) <- as.character(seq(1,nrow(spc.df)))
   
-  # Assigns sample_id from opus file names
+  #---Assign sample_ids---#
   spc.df <- data.frame(sample_id = soilspec_tbl$sample_id, spc.df)
   spc.df$sample_id <- str_sub(spc.df$sample_id,1,str_length(spc.df$sample_id)-10)
   #spc.avg.df <- aggregate(.~sample_id, data = spc.df, FUN=mean, na.rm=TRUE)
   
-  # Reformates dataframe with spectral matrix column
+  #---Reformat w/ Spectral Matrix Column---#
   spectra <- data.frame(spc.df[,1])
   spectra$spc <- as.matrix(spc.df[,2:ncol(spc.df)])
   colnames(spectra) <- c("sample_id", "spc")
   
-  if(SAVE==TRUE){
-    ##optional save the spectra here
-    save(spectra, file="Data_Processed/ref-spectra_original.RData")
-    write.csv(spectra, "Data_Processed/ref-spectra_original.csv", row.names=FALSE)
+  #---Optionally Saves---#
+  if(SAVENAME != "none"){
+    assign(SAVENAME, spectra)
+    savefile <- paste0("Data_Processed/", SAVENAME, ".RData")
+    save(list= SAVENAME, file= savefile)
+    print(SAVENAME,"saved to", savefile)
   }
   
   return(spectra)
@@ -115,7 +120,7 @@ base_offset <- function(x){
 # Refine Spectral Library
 source("Functions/outlier_functions.R")
 
-refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev"), LARGE=FALSE, SAVENAME=paste0("sub.", PROP)){
+refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev"), LARGE=FALSE, CALVAL=FALSE, SAVENAME="none"){
   
   # Remove rows with faulty lab data
   if(!is.na(PROP)){
@@ -128,7 +133,7 @@ refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev"), LARGE=FALSE, SAV
   
   # Remove spectral outliers
   if(!("fratio" %in% OUTLIER)){
-    #SPECLIB  <- SPECLIB[-fratio_outliers(SPECLIB),] # Identified with fratio
+    SPECLIB  <- SPECLIB[-fratio_outliers(SPECLIB),] # Identified with fratio
   } 
   
   # Subset a large dataset to 15000
@@ -136,13 +141,19 @@ refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev"), LARGE=FALSE, SAV
     SPECLIB$spc <- sub_large_set(SPECLIB) # Subset to 15000 samples
   }
   
+  # Split calibration/validation sets
+  if(CALVAL==TRUE){
+    SPECLIB <- calValSplit(SPECLIB)
+  }
+  
   # Save the refined reference set for OC
   if(SAVENAME != "none"){
     if(file.exists("./Data_Processed")==FALSE){dir.create("./Data_Processed")}
     assign(SAVENAME, SPECLIB)
-    save(list= SAVENAME, file=paste0("Data_Processed/", SAVENAME, ".RData"))
+    savefile <- paste0("Data_Processed/", SAVENAME, ".RData")
+    save(list= SAVENAME, file= savefile)
+    print(paste(SAVENAME,"saved to", savefile))
   }
-  
   return(SPECLIB)
 }
 
@@ -164,10 +175,10 @@ noNeg <- function(DATASET, column){
 # Subset Large Datasets
 library(clhs)
                      
-sub_large_set <- function(SPECLIB, subcount=15000){
+sub_large_set <- function(SPECLIB, SUBCOUNT=15000){
   #Conditional Latin Hypercube Sampling if the set exceeds 15000 samples
   spectra <- data.frame(SPECLIB$spc)
-  subset <- clhs(spectra, size = subcount, progress = TRUE, iter = 500)
+  subset <- clhs(spectra, size = SUBCOUNT, progress = TRUE, iter = 500)
   SPECLIB <- SPECLIB[subset,] #double check
   
   return(SPECLIB)
@@ -176,32 +187,19 @@ sub_large_set <- function(SPECLIB, subcount=15000){
 
 # Split into Calibration and Validation Sets
 library(prospectr)
-calValSplit <- function(SPECLIB, PROP=NA, SAVEDIR="Data_Processed", FRAC=0.8){
+calValSplit <- function(SPECLIB, FRAC=0.8){
   
   #perform kennard stone to separate data into 80% calibration and 20% validation sets
   ken_stone<- prospectr::kenStone(X = SPECLIB$spc, 
                                   k = as.integer(FRAC*nrow(SPECLIB)), 
                                   metric = "mahal", pc = 10)
-  calib <- SPECLIB[ken_stone$model, ]
-  valid <- SPECLIB[ken_stone$test, ]
   
-  # {Optional} Save the Sets
-  if(SAVEDIR != "none"){
-    if(file.exists(SAVEDIR)==FALSE){dir.create(SAVEDIR)}
-    if(!is.na(PROP)){
-      cal_savename <- paste("calib", property, sep=".") # Ex: calib.OC
-      val_savename <- paste("valid", property, sep=".") # Ex: valid.OC
-    }else{
-      cal_savename <- "calib.ALL"
-      val_savename <- "valid.ALL"
-    }
-    assign(cal_savename, calib)
-    save(list=cal_savename, file=paste0(SAVEDIR,"/", cal_savename,".RData"))
-    assign(val_savename, valid)
-    save(list=val_savename, file=paste0(SAVEDIR,"/", val_savename,".RData"))
-  }
+  subset <- data.frame(SPECLIB[,1, drop=F])
+  subset$calib <- 0
+  subset[ken_stone$model, "calib"] <- 1
+  SPECLIB <- data.frame(subset,SPECLIB[,2:ncol(SPECLIB),drop=F])
   
-  return(list(calib=get(cal_savename), valid=get(val_savename)))
+  return(SPECLIB)
 }
 
 
