@@ -46,7 +46,7 @@ runMBL <- function(PROP, REFNAME=NA, REFPATH=NA, PREDNAME=NA, PREDPATH=NA, SAVEN
     assign(modelName, mbl.sqrt)
     savefile <- paste("./Models/mbl", PROP,"RData", sep=".")
     save(list= modelName, file = savefile)
-    print(paste(modelName, "saved to", savefile))
+    cat(paste("\nModel",modelName, "saved to", savefile))
   }
   
   return(mbl.sqrt)

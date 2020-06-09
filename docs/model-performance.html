@@ -176,19 +176,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#overview"><i class="fa fa-check"></i>Overview</a></li>
 <li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#animation"><i class="fa fa-check"></i>Animation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#making-mbl-predictions"><i class="fa fa-check"></i>Making MBL Predictions</a><ul>
-<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#mbl-functions"><i class="fa fa-check"></i>MBL Functions</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#running-mbl"><i class="fa fa-check"></i>Running MBL</a><ul>
+<li><a href="mbl-models.html#runmbl"><code>runMBL()</code></a></li>
 <li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#modeling-parameters"><i class="fa fa-check"></i>Modeling Parameters</a></li>
-<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#sample-code"><i class="fa fa-check"></i>Sample Code</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#getting-mbl-predictions"><i class="fa fa-check"></i>Getting MBL Predictions</a><ul>
+<li><a href="mbl-models.html#bestmodmbl"><code>bestModMBL()</code></a></li>
+<li><a href="mbl-models.html#getpredmbl"><code>getPredMBL()</code></a></li>
+<li><a href="mbl-models.html#getlabmbl"><code>getLabMBL()</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>7</b> Model Performance</a><ul>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#get-results"><i class="fa fa-check"></i>Get Results</a><ul>
 <li><a href="model-performance.html#getmodresults"><code>getModResults()</code></a></li>
-<li class="chapter" data-level="7.1" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i><b>7.1</b> Statistics</a><ul>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#predictions"><i class="fa fa-check"></i>Predictions</a><ul>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#getsavepredtable"><i class="fa fa-check"></i>getSavePredTable()</a></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#savepredictions"><i class="fa fa-check"></i>savePredictions()</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i>Statistics</a><ul>
 <li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#getmodstats"><i class="fa fa-check"></i>getModStats()</a></li>
 <li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#savemodstats"><i class="fa fa-check"></i>saveModStats()</a></li>
 </ul></li>
-<li class="chapter" data-level="7.2" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i><b>7.2</b> Plots</a></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i>Plots</a><ul>
+<li><a href="model-performance.html#plotpred"><code>plotPred()</code></a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -213,12 +225,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="model-performance" class="section level1">
 <h1><span class="header-section-number">7</span> Model Performance</h1>
-<div id="getmodresults" class="section level2 unnumbered">
-<h2><code>getModResults()</code></h2>
+<p>The following section describes the function <code>getModResults()</code> which coordinates the steps after your pls or mbl model is created:
+1. Getting Predictions<br />
+2. Generating Summary Statistics
+3. Displaying plots</p>
+<p>This allows us to assess the performance of the model. How close are the predictions to the observed lab data? If you do not have lab data to compare your predictions to, you should simply use the functions <code>getPredPLS()</code> and <code>getPredMBL()</code></p>
+<div id="get-results" class="section level2 unnumbered">
+<h2>Get Results</h2>
+<p>The following function returns the results for either pls or mbl models.
+It takes in the model as either a path, <code>MODPATH</code>, or the name of the object, <code>MODNAME</code>. The type of model, pls or mbl, must be specified with <code>MODTYPE</code>. It also requires the prediction set as a path, <code>PREDPATH</code>, or an object name, <code>PREDNAME</code>, as well as the name of the soil property column you are predicting for. This allows it to query the corresponding lab data and save predictions in a comprehensive file, while <code>SAVEPRED=TRUE</code>. Model performance is also generated by default, but can be shut off with <code>MODPERF=FALSE</code></p>
+<div id="getmodresults" class="section level3 unnumbered">
+<h3><code>getModResults()</code></h3>
 <ul>
 <li><code>getModResults( {see below} )</code>
 <ul>
-<li><code>PROP</code>: <em>string</em>- The column name of the soil property of interest.</li>
+<li><code>PROP</code>: <em>string</em>- The column name of the soil property of interest. Ex: “OC”</li>
 <li><code>MODTYPE</code>: <em>string</em>- “MBL” or “PLS”</li>
 <li><code>MODNAME</code>: <em>string</em>- The name of the model variable, if it is already loaded into the R environment. Use MODNAME or MODPATH</li>
 <li><code>MODPATH</code>: <em>string</em>- The path the the RData file containing your model, if the model is not already loaded. Use MODNAME or MODPATH</li>
@@ -228,123 +249,204 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>MODPERF</code>: <em>boolean</em>- Whether or not to generate and show the prediction performance statistics. If TRUE, these statistics will be generated by the <code>getModStats()</code> function, and saved in the folder ‘Predictions’ in the performance log.</li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">getModResults &lt;-<span class="st"> </span><span class="cf">function</span>(PROP, MODTYPE, <span class="dt">MODNAME=</span><span class="ot">NA</span>, <span class="dt">MODPATH=</span><span class="ot">NA</span>, <span class="dt">PREDNAME=</span><span class="ot">NA</span>, <span class="dt">PREDPATH=</span><span class="ot">NA</span>, <span class="dt">SAVEPRED=</span><span class="ot">TRUE</span>, <span class="dt">MODPERF=</span><span class="ot">TRUE</span>){</a>
-<a class="sourceLine" id="cb43-2" data-line-number="2">  </a>
-<a class="sourceLine" id="cb43-3" data-line-number="3">  <span class="co"># Load Model</span></a>
-<a class="sourceLine" id="cb43-4" data-line-number="4">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(MODPATH)){</a>
-<a class="sourceLine" id="cb43-5" data-line-number="5">    MODNAME &lt;-<span class="st"> </span><span class="kw">load</span>(MODPATH)</a>
-<a class="sourceLine" id="cb43-6" data-line-number="6">  }</a>
-<a class="sourceLine" id="cb43-7" data-line-number="7">  model &lt;-<span class="st"> </span><span class="kw">get</span>(MODNAME)</a>
-<a class="sourceLine" id="cb43-8" data-line-number="8">  </a>
-<a class="sourceLine" id="cb43-9" data-line-number="9">  <span class="co"># Extract Predictions</span></a>
-<a class="sourceLine" id="cb43-10" data-line-number="10">  <span class="cf">if</span>(MODTYPE<span class="op">==</span><span class="st">&quot;MBL&quot;</span>){</a>
-<a class="sourceLine" id="cb43-11" data-line-number="11">    ncomp_onesigma &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb43-12" data-line-number="12">    pred_type &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb43-13" data-line-number="13">    predictions &lt;-<span class="st"> </span><span class="kw">getPredMBL</span>(model)</a>
-<a class="sourceLine" id="cb43-14" data-line-number="14">  }</a>
-<a class="sourceLine" id="cb43-15" data-line-number="15">  </a>
-<a class="sourceLine" id="cb43-16" data-line-number="16">  <span class="co"># Load Prediction Set</span></a>
-<a class="sourceLine" id="cb43-17" data-line-number="17">  <span class="cf">if</span>(MODTYPE<span class="op">==</span><span class="st">&quot;PLS&quot;</span>){</a>
-<a class="sourceLine" id="cb43-18" data-line-number="18">    predType &lt;-<span class="st"> &quot;predict&quot;</span></a>
-<a class="sourceLine" id="cb43-19" data-line-number="19">    <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(PREDNAME)){</a>
-<a class="sourceLine" id="cb43-20" data-line-number="20">      predSet &lt;-<span class="st"> </span><span class="kw">get</span>(PREDNAME)</a>
-<a class="sourceLine" id="cb43-21" data-line-number="21">    }</a>
-<a class="sourceLine" id="cb43-22" data-line-number="22">    <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(PREDPATH)){</a>
-<a class="sourceLine" id="cb43-23" data-line-number="23">      PREDNAME &lt;-<span class="st"> </span><span class="kw">load</span>(PREDPATH)</a>
-<a class="sourceLine" id="cb43-24" data-line-number="24">      predSet &lt;-<span class="st"> </span><span class="kw">get</span>(PREDNAME)</a>
-<a class="sourceLine" id="cb43-25" data-line-number="25">    }<span class="cf">else</span>{</a>
-<a class="sourceLine" id="cb43-26" data-line-number="26">      predType &lt;-<span class="st"> &quot;fitted&quot;</span></a>
-<a class="sourceLine" id="cb43-27" data-line-number="27">    }</a>
-<a class="sourceLine" id="cb43-28" data-line-number="28">  </a>
-<a class="sourceLine" id="cb43-29" data-line-number="29">  </a>
-<a class="sourceLine" id="cb43-30" data-line-number="30">    <span class="co"># Find Optimal Number of Components</span></a>
-<a class="sourceLine" id="cb43-31" data-line-number="31">    ncomp_onesigma &lt;-<span class="st"> </span><span class="kw">selectNcomp</span>(model, <span class="dt">method =</span> <span class="st">&quot;onesigma&quot;</span>, <span class="dt">plot=</span><span class="ot">TRUE</span>, <span class="dt">main=</span>PROP)</a>
-<a class="sourceLine" id="cb43-32" data-line-number="32">    <span class="co"># Get Predictions</span></a>
-<a class="sourceLine" id="cb43-33" data-line-number="33">    predictions &lt;-<span class="st"> </span><span class="kw">getPredPLS</span>(model, ncomp_onesigma, predType, predSet)</a>
-<a class="sourceLine" id="cb43-34" data-line-number="34">  }</a>
-<a class="sourceLine" id="cb43-35" data-line-number="35">  </a>
-<a class="sourceLine" id="cb43-36" data-line-number="36">  <span class="co"># Get Pred Versus Observations</span></a>
-<a class="sourceLine" id="cb43-37" data-line-number="37">  lab_data &lt;-<span class="st"> </span>predSet[,PROP] <span class="co"># Lab Data</span></a>
-<a class="sourceLine" id="cb43-38" data-line-number="38">  predobs &lt;-<span class="st"> </span><span class="kw">data.frame</span>(predSet[,<span class="st">&quot;sample_id&quot;</span>], predictions, lab_data)</a>
-<a class="sourceLine" id="cb43-39" data-line-number="39">  <span class="kw">names</span>(predobs) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sample_id&quot;</span>,<span class="st">&quot;pred&quot;</span>,<span class="st">&quot;obs&quot;</span>)</a>
-<a class="sourceLine" id="cb43-40" data-line-number="40">  </a>
-<a class="sourceLine" id="cb43-41" data-line-number="41">  <span class="co"># {Optional} Model Performance</span></a>
-<a class="sourceLine" id="cb43-42" data-line-number="42">  <span class="cf">if</span>(MODPERF<span class="op">==</span><span class="ot">TRUE</span>){</a>
-<a class="sourceLine" id="cb43-43" data-line-number="43">    modstats &lt;-<span class="st"> </span><span class="kw">getModStats</span>(<span class="dt">PREDOBS=</span> predobs, <span class="dt">PROP=</span>PROP, <span class="dt">NCOMP=</span>ncomp_onesigma, <span class="dt">MODNAME=</span>MODNAME, </a>
-<a class="sourceLine" id="cb43-44" data-line-number="44">                            <span class="dt">PREDTYPE=</span> pred_type, <span class="dt">PREDNAME=</span>PREDNAME, <span class="dt">SAVE=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb43-45" data-line-number="45">  }</a>
-<a class="sourceLine" id="cb43-46" data-line-number="46">  <span class="co"># {Optional} Save Predictions</span></a>
-<a class="sourceLine" id="cb43-47" data-line-number="47">  <span class="cf">if</span>(SAVEPRED<span class="op">==</span><span class="ot">TRUE</span>){</a>
-<a class="sourceLine" id="cb43-48" data-line-number="48">    <span class="kw">savePredictions</span>(predobs, PROP, MODTYPE, PREDNAME)</a>
-<a class="sourceLine" id="cb43-49" data-line-number="49">  }</a>
-<a class="sourceLine" id="cb43-50" data-line-number="50">  <span class="kw">names</span>(predobs) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sample_id&quot;</span>, <span class="kw">paste0</span>(PROP,<span class="st">&quot;.&quot;</span>,MODTYPE), PROP)</a>
-<a class="sourceLine" id="cb43-51" data-line-number="51">  <span class="kw">return</span>(predobs)</a>
-<a class="sourceLine" id="cb43-52" data-line-number="52">}</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">getModResults &lt;-<span class="st"> </span><span class="cf">function</span>(PROP, MODTYPE, <span class="dt">MODNAME=</span><span class="ot">NA</span>, <span class="dt">MODPATH=</span><span class="ot">NA</span>, <span class="dt">PREDNAME=</span><span class="ot">NA</span>, <span class="dt">PREDPATH=</span><span class="ot">NA</span>, <span class="dt">SAVEPRED=</span><span class="ot">TRUE</span>, <span class="dt">MODPERF=</span><span class="ot">TRUE</span>){</a>
+<a class="sourceLine" id="cb52-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb52-3" data-line-number="3">  <span class="co"># Load Model</span></a>
+<a class="sourceLine" id="cb52-4" data-line-number="4">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(MODPATH)){</a>
+<a class="sourceLine" id="cb52-5" data-line-number="5">    MODNAME &lt;-<span class="st"> </span><span class="kw">load</span>(MODPATH)</a>
+<a class="sourceLine" id="cb52-6" data-line-number="6">  }</a>
+<a class="sourceLine" id="cb52-7" data-line-number="7">  model &lt;-<span class="st"> </span><span class="kw">get</span>(MODNAME)</a>
+<a class="sourceLine" id="cb52-8" data-line-number="8">  </a>
+<a class="sourceLine" id="cb52-9" data-line-number="9">  <span class="co"># Load Prediction Set</span></a>
+<a class="sourceLine" id="cb52-10" data-line-number="10">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(PREDPATH)){</a>
+<a class="sourceLine" id="cb52-11" data-line-number="11">    PREDNAME &lt;-<span class="st"> </span><span class="kw">load</span>(PREDPATH)</a>
+<a class="sourceLine" id="cb52-12" data-line-number="12">  }</a>
+<a class="sourceLine" id="cb52-13" data-line-number="13">  predSet &lt;-<span class="st"> </span><span class="kw">get</span>(PREDNAME)</a>
+<a class="sourceLine" id="cb52-14" data-line-number="14">  </a>
+<a class="sourceLine" id="cb52-15" data-line-number="15">  <span class="co"># Extract Predictions</span></a>
+<a class="sourceLine" id="cb52-16" data-line-number="16">  <span class="cf">if</span>(MODTYPE<span class="op">==</span><span class="st">&quot;MBL&quot;</span>){</a>
+<a class="sourceLine" id="cb52-17" data-line-number="17">    ncomp_onesigma &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb52-18" data-line-number="18">    pred_type &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb52-19" data-line-number="19">    predictions &lt;-<span class="st"> </span><span class="kw">getPredMBL</span>(model)</a>
+<a class="sourceLine" id="cb52-20" data-line-number="20">  }</a>
+<a class="sourceLine" id="cb52-21" data-line-number="21">  <span class="cf">if</span>(MODTYPE<span class="op">==</span><span class="st">&quot;PLS&quot;</span>){</a>
+<a class="sourceLine" id="cb52-22" data-line-number="22">    <span class="co"># Find Optimal Number of Components</span></a>
+<a class="sourceLine" id="cb52-23" data-line-number="23">    ncomp_onesigma &lt;-<span class="st"> </span><span class="kw">selectNcomp</span>(model, <span class="dt">method =</span> <span class="st">&quot;onesigma&quot;</span>, <span class="dt">plot=</span><span class="ot">TRUE</span>, <span class="dt">main=</span>PROP)</a>
+<a class="sourceLine" id="cb52-24" data-line-number="24">    <span class="co"># Get Predictions</span></a>
+<a class="sourceLine" id="cb52-25" data-line-number="25">    pred_type &lt;-<span class="st"> &quot;predict&quot;</span></a>
+<a class="sourceLine" id="cb52-26" data-line-number="26">    predictions &lt;-<span class="st"> </span><span class="kw">getPredPLS</span>(model, ncomp_onesigma, pred_type , predSet)</a>
+<a class="sourceLine" id="cb52-27" data-line-number="27">  }</a>
+<a class="sourceLine" id="cb52-28" data-line-number="28">  </a>
+<a class="sourceLine" id="cb52-29" data-line-number="29">  <span class="co"># Get Pred Versus Observations</span></a>
+<a class="sourceLine" id="cb52-30" data-line-number="30">  lab_data &lt;-<span class="st"> </span>predSet[,PROP] <span class="co"># Lab Data</span></a>
+<a class="sourceLine" id="cb52-31" data-line-number="31">  predobs &lt;-<span class="st"> </span><span class="kw">data.frame</span>(predSet[,<span class="st">&quot;sample_id&quot;</span>], predictions, lab_data)</a>
+<a class="sourceLine" id="cb52-32" data-line-number="32">  <span class="kw">names</span>(predobs) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sample_id&quot;</span>,<span class="st">&quot;pred&quot;</span>,<span class="st">&quot;obs&quot;</span>)</a>
+<a class="sourceLine" id="cb52-33" data-line-number="33">  </a>
+<a class="sourceLine" id="cb52-34" data-line-number="34">  <span class="co"># {Optional} Model Performance</span></a>
+<a class="sourceLine" id="cb52-35" data-line-number="35">  <span class="cf">if</span>(MODPERF<span class="op">==</span><span class="ot">TRUE</span>){</a>
+<a class="sourceLine" id="cb52-36" data-line-number="36">    modstats &lt;-<span class="st"> </span><span class="kw">getModStats</span>(<span class="dt">PREDOBS=</span> predobs, <span class="dt">PROP=</span>PROP, <span class="dt">NCOMP=</span>ncomp_onesigma, <span class="dt">MODNAME=</span>MODNAME, </a>
+<a class="sourceLine" id="cb52-37" data-line-number="37">                            <span class="dt">PREDTYPE=</span> pred_type, <span class="dt">PREDNAME=</span>PREDNAME, <span class="dt">SAVE=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb52-38" data-line-number="38">  }</a>
+<a class="sourceLine" id="cb52-39" data-line-number="39">  <span class="co"># {Optional} Save Predictions</span></a>
+<a class="sourceLine" id="cb52-40" data-line-number="40">  <span class="cf">if</span>(SAVEPRED<span class="op">==</span><span class="ot">TRUE</span>){</a>
+<a class="sourceLine" id="cb52-41" data-line-number="41">    <span class="kw">savePredictions</span>(predobs, PROP, MODTYPE, predSet, <span class="kw">paste0</span>(PREDNAME,<span class="st">&quot;_predictions.csv&quot;</span>))</a>
+<a class="sourceLine" id="cb52-42" data-line-number="42">  }</a>
+<a class="sourceLine" id="cb52-43" data-line-number="43">  <span class="kw">names</span>(predobs) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sample_id&quot;</span>, <span class="kw">paste0</span>(PROP,<span class="st">&quot;.&quot;</span>,MODTYPE), PROP)</a>
+<a class="sourceLine" id="cb52-44" data-line-number="44">  <span class="kw">return</span>(predobs)</a>
+<a class="sourceLine" id="cb52-45" data-line-number="45">}</a></code></pre></div>
 </div>
-<div id="statistics" class="section level2">
-<h2><span class="header-section-number">7.1</span> Statistics</h2>
+</div>
+<div id="predictions" class="section level2 unnumbered">
+<h2>Predictions</h2>
+<p>Predictions are extracting using either <code>getPredPLS()</code> or <code>getPredMBL()</code>. These are called within <code>getModResults()</code> before being saved. The following functions save predictions to a file unique to each prediction set. If this file already exists, it simply adds another column of predictions. If it does not, it will create the file to save predictions in from the original prediction set.</p>
+<div id="getsavepredtable" class="section level3 unnumbered">
+<h3>getSavePredTable()</h3>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1">getSavePredTable &lt;-<span class="st"> </span><span class="cf">function</span>(PREDSET, SAVENAME){</a>
+<a class="sourceLine" id="cb53-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb53-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Predictions&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Predictions&quot;</span>)}</a>
+<a class="sourceLine" id="cb53-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb53-5" data-line-number="5">  predSavePath &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;./Predictions/&quot;</span>, SAVENAME)</a>
+<a class="sourceLine" id="cb53-6" data-line-number="6">  <span class="cf">if</span>(<span class="kw">file.exists</span>(predSavePath) ){</a>
+<a class="sourceLine" id="cb53-7" data-line-number="7">    all_predictions &lt;-<span class="st"> </span><span class="kw">read.csv</span>(predSavePath)</a>
+<a class="sourceLine" id="cb53-8" data-line-number="8">  }<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb53-9" data-line-number="9">    all_predictions &lt;-<span class="st"> </span>PREDSET[,<span class="op">-</span><span class="kw">ncol</span>(PREDSET)] <span class="co"># remove spectra, last column</span></a>
+<a class="sourceLine" id="cb53-10" data-line-number="10">  }</a>
+<a class="sourceLine" id="cb53-11" data-line-number="11">  </a>
+<a class="sourceLine" id="cb53-12" data-line-number="12">  <span class="kw">return</span>(all_predictions)</a>
+<a class="sourceLine" id="cb53-13" data-line-number="13">}</a></code></pre></div>
+</div>
+<div id="savepredictions" class="section level3 unnumbered">
+<h3>savePredictions()</h3>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">savePredictions &lt;-<span class="st"> </span><span class="cf">function</span>(PREDOBS, PROP, MODTYPE, PREDSET, SAVENAME){</a>
+<a class="sourceLine" id="cb54-2" data-line-number="2">  all_predictions &lt;-<span class="st"> </span><span class="kw">getSavePredTable</span>(PREDSET, SAVENAME) <span class="co"># Make/Load file to save predictions</span></a>
+<a class="sourceLine" id="cb54-3" data-line-number="3">  savename &lt;-<span class="st"> </span><span class="kw">paste</span>(PROP,MODTYPE,<span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Ex: OC.PLSR column name</span></a>
+<a class="sourceLine" id="cb54-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb54-5" data-line-number="5">  <span class="cf">if</span>(<span class="op">!</span>(savename <span class="op">%in%</span><span class="st"> </span><span class="kw">names</span>(all_predictions))){</a>
+<a class="sourceLine" id="cb54-6" data-line-number="6">    </a>
+<a class="sourceLine" id="cb54-7" data-line-number="7">    all_predictions &lt;-<span class="st"> </span><span class="kw">merge</span>(all_predictions, PREDOBS[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] , <span class="dt">all.X=</span><span class="ot">TRUE</span>) <span class="co"># Merge with all_predictions</span></a>
+<a class="sourceLine" id="cb54-8" data-line-number="8">    ncolm &lt;-<span class="st"> </span><span class="kw">ncol</span>(all_predictions)</a>
+<a class="sourceLine" id="cb54-9" data-line-number="9">    <span class="kw">names</span>(all_predictions)[ncolm] &lt;-<span class="st"> </span>savename</a>
+<a class="sourceLine" id="cb54-10" data-line-number="10">    savefile &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Predictions/&quot;</span>, SAVENAME) <span class="co"># Set file savename</span></a>
+<a class="sourceLine" id="cb54-11" data-line-number="11">    <span class="kw">write.csv</span>(all_predictions, <span class="dt">file=</span>savefile, <span class="dt">row.names=</span><span class="ot">FALSE</span>) <span class="co"># Save</span></a>
+<a class="sourceLine" id="cb54-12" data-line-number="12">    </a>
+<a class="sourceLine" id="cb54-13" data-line-number="13">    <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Predictions saved to&quot;</span>, savefile)) <span class="co"># Print save location</span></a>
+<a class="sourceLine" id="cb54-14" data-line-number="14">    </a>
+<a class="sourceLine" id="cb54-15" data-line-number="15">  }<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb54-16" data-line-number="16">    <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Prediction column already exists&quot;</span>)</a>
+<a class="sourceLine" id="cb54-17" data-line-number="17">  }</a>
+<a class="sourceLine" id="cb54-18" data-line-number="18">  </a>
+<a class="sourceLine" id="cb54-19" data-line-number="19">  <span class="kw">View</span>(all_predictions)</a>
+<a class="sourceLine" id="cb54-20" data-line-number="20">}</a></code></pre></div>
+</div>
+</div>
+<div id="statistics" class="section level2 unnumbered">
+<h2>Statistics</h2>
+<p>After making predictions using either of the modeling methods, various summary statistics can help test the accuracy of those predictions.</p>
 <div id="getmodstats" class="section level3 unnumbered">
 <h3>getModStats()</h3>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">getModStats &lt;-<span class="st"> </span><span class="cf">function</span>(PREDOBS, PROP, <span class="dt">NCOMP=</span><span class="ot">NA</span>, <span class="dt">MODNAME=</span><span class="ot">NA</span>, <span class="dt">PREDTYPE=</span><span class="ot">NA</span>, <span class="dt">PREDNAME=</span><span class="ot">NA</span>, <span class="dt">SAVE=</span><span class="ot">FALSE</span>){</a>
-<a class="sourceLine" id="cb44-2" data-line-number="2">  </a>
-<a class="sourceLine" id="cb44-3" data-line-number="3">  <span class="kw">print</span>(<span class="kw">paste</span>(PROP, <span class="st">&quot;Summary&quot;</span>))</a>
-<a class="sourceLine" id="cb44-4" data-line-number="4">  TIME &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">Sys.time</span>()[<span class="dv">1</span>])</a>
-<a class="sourceLine" id="cb44-5" data-line-number="5">  </a>
-<a class="sourceLine" id="cb44-6" data-line-number="6">  <span class="co"># Regress predicted versus observed</span></a>
-<a class="sourceLine" id="cb44-7" data-line-number="7">  PREDOBS &lt;-<span class="st"> </span><span class="kw">na.omit</span>(PREDOBS)</a>
-<a class="sourceLine" id="cb44-8" data-line-number="8">  reg_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(PREDOBS<span class="op">$</span>pred <span class="op">~</span><span class="st"> </span>PREDOBS<span class="op">$</span>obs)</a>
-<a class="sourceLine" id="cb44-9" data-line-number="9">  sum_perf &lt;-<span class="st"> </span><span class="kw">summary</span>(reg_mod)</a>
-<a class="sourceLine" id="cb44-10" data-line-number="10">  </a>
-<a class="sourceLine" id="cb44-11" data-line-number="11">  <span class="co"># Get statistics</span></a>
-<a class="sourceLine" id="cb44-12" data-line-number="12">  R2 &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>r.squared,<span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb44-13" data-line-number="13">  R2_adj &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>adj.r.squared,<span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb44-14" data-line-number="14">  b0 &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dv">2</span>) <span class="co"># Y-Intercept</span></a>
-<a class="sourceLine" id="cb44-15" data-line-number="15">  b1 &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>coefficients[<span class="dv">2</span>],<span class="dv">2</span>) <span class="co"># Slope</span></a>
-<a class="sourceLine" id="cb44-16" data-line-number="16">  RMSE &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">sqrt</span>(<span class="kw">mean</span>((PREDOBS<span class="op">$</span>pred <span class="op">-</span><span class="st"> </span>PREDOBS<span class="op">$</span>obs)<span class="op">^</span><span class="dv">2</span>)),<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb44-17" data-line-number="17">  bias &lt;-<span class="st"> </span><span class="kw">round</span>((<span class="kw">sum</span>(PREDOBS<span class="op">$</span>pred, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)<span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(PREDOBS<span class="op">$</span>obs, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))<span class="op">/</span><span class="kw">length</span>(PREDOBS<span class="op">$</span>obs),<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb44-18" data-line-number="18">  std &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">sd</span>(PREDOBS<span class="op">$</span>pred, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),<span class="dv">2</span>) <span class="co"># Standard Deviation</span></a>
-<a class="sourceLine" id="cb44-19" data-line-number="19">  rpd &lt;-<span class="st"> </span><span class="kw">round</span>(std <span class="op">/</span><span class="st"> </span>RMSE,<span class="dv">2</span>) <span class="co"># Residual Prediction Deviation</span></a>
-<a class="sourceLine" id="cb44-20" data-line-number="20">  </a>
-<a class="sourceLine" id="cb44-21" data-line-number="21">  <span class="co"># Assemble Row</span></a>
-<a class="sourceLine" id="cb44-22" data-line-number="22">  modStats &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Timestamp=</span>TIME, <span class="dt">Property=</span>PROP, <span class="dt">Mod_Name=</span>MODNAME, <span class="dt">Pred_Type=</span>PREDTYPE,</a>
-<a class="sourceLine" id="cb44-23" data-line-number="23">                         <span class="dt">Pred_Data=</span>PREDNAME, <span class="dt">ncomp=</span>NCOMP, <span class="dt">R2=</span>R2, <span class="dt">R2_Adj=</span>R2_adj, <span class="dt">Y_Int=</span>b0, <span class="dt">Slope=</span>b1,</a>
-<a class="sourceLine" id="cb44-24" data-line-number="24">                         <span class="dt">RMSE=</span>RMSE, <span class="dt">bias=</span>bias,<span class="dt">STD=</span>std, <span class="dt">RPD=</span>rpd)</a>
-<a class="sourceLine" id="cb44-25" data-line-number="25">  </a>
-<a class="sourceLine" id="cb44-26" data-line-number="26">  <span class="co"># Write Row </span></a>
-<a class="sourceLine" id="cb44-27" data-line-number="27">  <span class="cf">if</span>(SAVE<span class="op">==</span><span class="ot">TRUE</span>){<span class="kw">saveModStats</span>(modStats)}</a>
-<a class="sourceLine" id="cb44-28" data-line-number="28">  </a>
-<a class="sourceLine" id="cb44-29" data-line-number="29">  <span class="co"># Plot Pred Obs</span></a>
-<a class="sourceLine" id="cb44-30" data-line-number="30">  <span class="kw">plot.plsr</span>(PREDOBS<span class="op">$</span>obs, PREDOBS<span class="op">$</span>pred, modStats, <span class="kw">paste</span>(MODNAME,PREDNAME,<span class="st">&quot;Predictions&quot;</span>), <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb44-31" data-line-number="31">  </a>
-<a class="sourceLine" id="cb44-32" data-line-number="32">  <span class="co"># Print Statistics</span></a>
-<a class="sourceLine" id="cb44-33" data-line-number="33">  <span class="kw">print</span>(<span class="kw">t</span>(modStats))</a>
-<a class="sourceLine" id="cb44-34" data-line-number="34">  </a>
-<a class="sourceLine" id="cb44-35" data-line-number="35">  <span class="kw">return</span>(modStats)</a>
-<a class="sourceLine" id="cb44-36" data-line-number="36">} <span class="co"># End of getModStats</span></a></code></pre></div>
+<p>The getModStats function returns the following statistics in a dataframe:</p>
+<ul>
+<li>R2<br />
+</li>
+<li>R2 adjusted<br />
+</li>
+<li>Slope<br />
+</li>
+<li>Y-Intercept<br />
+</li>
+<li>RMSE<br />
+</li>
+<li>Bias<br />
+</li>
+<li>Standard deviation (of predictions)<br />
+</li>
+<li>Residual prediction deviation</li>
+</ul>
+<p>The minimum input is the PREDOBS table containing a column ‘pred’, containing the predictions and a column ‘obs’, its corresponding lab data.
+The remaining parameters</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1">getModStats &lt;-<span class="st"> </span><span class="cf">function</span>(PREDOBS, <span class="dt">PROP=</span><span class="ot">NA</span>, <span class="dt">NCOMP=</span><span class="ot">NA</span>, <span class="dt">MODNAME=</span><span class="ot">NA</span>, <span class="dt">PREDTYPE=</span><span class="ot">NA</span>, <span class="dt">PREDNAME=</span><span class="ot">NA</span>, <span class="dt">SAVE=</span><span class="ot">FALSE</span>){</a>
+<a class="sourceLine" id="cb55-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb55-3" data-line-number="3">  <span class="kw">print</span>(<span class="kw">paste</span>(PROP, <span class="st">&quot;Summary&quot;</span>))</a>
+<a class="sourceLine" id="cb55-4" data-line-number="4">  TIME &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">Sys.time</span>()[<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb55-5" data-line-number="5">  </a>
+<a class="sourceLine" id="cb55-6" data-line-number="6">  <span class="co"># Regress predicted versus observed</span></a>
+<a class="sourceLine" id="cb55-7" data-line-number="7">  PREDOBS &lt;-<span class="st"> </span><span class="kw">na.omit</span>(PREDOBS)</a>
+<a class="sourceLine" id="cb55-8" data-line-number="8">  reg_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(PREDOBS<span class="op">$</span>pred <span class="op">~</span><span class="st"> </span>PREDOBS<span class="op">$</span>obs)</a>
+<a class="sourceLine" id="cb55-9" data-line-number="9">  sum_perf &lt;-<span class="st"> </span><span class="kw">summary</span>(reg_mod)</a>
+<a class="sourceLine" id="cb55-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb55-11" data-line-number="11">  <span class="co"># Get statistics</span></a>
+<a class="sourceLine" id="cb55-12" data-line-number="12">  R2 &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>r.squared,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb55-13" data-line-number="13">  R2_adj &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>adj.r.squared,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb55-14" data-line-number="14">  b0 &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dv">2</span>) <span class="co"># Y-Intercept</span></a>
+<a class="sourceLine" id="cb55-15" data-line-number="15">  b1 &lt;-<span class="st"> </span><span class="kw">round</span>(sum_perf<span class="op">$</span>coefficients[<span class="dv">2</span>],<span class="dv">2</span>) <span class="co"># Slope</span></a>
+<a class="sourceLine" id="cb55-16" data-line-number="16">  RMSE &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">sqrt</span>(<span class="kw">mean</span>((PREDOBS<span class="op">$</span>pred <span class="op">-</span><span class="st"> </span>PREDOBS<span class="op">$</span>obs)<span class="op">^</span><span class="dv">2</span>)),<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb55-17" data-line-number="17">  bias &lt;-<span class="st"> </span><span class="kw">round</span>((<span class="kw">sum</span>(PREDOBS<span class="op">$</span>pred, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)<span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(PREDOBS<span class="op">$</span>obs, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))<span class="op">/</span><span class="kw">length</span>(PREDOBS<span class="op">$</span>obs),<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb55-18" data-line-number="18">  std &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">sd</span>(PREDOBS<span class="op">$</span>pred, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),<span class="dv">2</span>) <span class="co"># Standard Deviation</span></a>
+<a class="sourceLine" id="cb55-19" data-line-number="19">  rpd &lt;-<span class="st"> </span><span class="kw">round</span>(std <span class="op">/</span><span class="st"> </span>RMSE,<span class="dv">2</span>) <span class="co"># Residual Prediction Deviation</span></a>
+<a class="sourceLine" id="cb55-20" data-line-number="20">  </a>
+<a class="sourceLine" id="cb55-21" data-line-number="21">  <span class="co"># Assemble Row</span></a>
+<a class="sourceLine" id="cb55-22" data-line-number="22">  modStats &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Timestamp=</span>TIME, <span class="dt">Property=</span>PROP, <span class="dt">Mod_Name=</span>MODNAME, <span class="dt">Pred_Type=</span>PREDTYPE,</a>
+<a class="sourceLine" id="cb55-23" data-line-number="23">                         <span class="dt">Pred_Data=</span>PREDNAME, <span class="dt">ncomp=</span>NCOMP, <span class="dt">R2=</span>R2, <span class="dt">R2_Adj=</span>R2_adj, <span class="dt">Y_Int=</span>b0, <span class="dt">Slope=</span>b1,</a>
+<a class="sourceLine" id="cb55-24" data-line-number="24">                         <span class="dt">RMSE=</span>RMSE, <span class="dt">bias=</span>bias,<span class="dt">STD=</span>std, <span class="dt">RPD=</span>rpd)</a>
+<a class="sourceLine" id="cb55-25" data-line-number="25">  </a>
+<a class="sourceLine" id="cb55-26" data-line-number="26">  <span class="co"># Write Row </span></a>
+<a class="sourceLine" id="cb55-27" data-line-number="27">  <span class="cf">if</span>(SAVE<span class="op">==</span><span class="ot">TRUE</span>){<span class="kw">saveModStats</span>(modStats)}</a>
+<a class="sourceLine" id="cb55-28" data-line-number="28">  </a>
+<a class="sourceLine" id="cb55-29" data-line-number="29">  <span class="co"># Plot Pred Obs</span></a>
+<a class="sourceLine" id="cb55-30" data-line-number="30">  <span class="kw">plot.plsr</span>(PREDOBS<span class="op">$</span>obs, PREDOBS<span class="op">$</span>pred, modStats, <span class="kw">paste</span>(MODNAME,PREDNAME,<span class="st">&quot;Predictions&quot;</span>), <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb55-31" data-line-number="31">  </a>
+<a class="sourceLine" id="cb55-32" data-line-number="32">  <span class="co"># Print Statistics</span></a>
+<a class="sourceLine" id="cb55-33" data-line-number="33">  <span class="kw">print</span>(<span class="kw">t</span>(modStats))</a>
+<a class="sourceLine" id="cb55-34" data-line-number="34">  </a>
+<a class="sourceLine" id="cb55-35" data-line-number="35">  <span class="kw">return</span>(modStats)</a>
+<a class="sourceLine" id="cb55-36" data-line-number="36">} <span class="co"># End of getModStats</span></a></code></pre></div>
 <p><img src="images/stats.png" /></p>
 </div>
 <div id="savemodstats" class="section level3 unnumbered">
 <h3>saveModStats()</h3>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">saveModStats &lt;-<span class="st"> </span><span class="cf">function</span>(MODSTATS){</a>
-<a class="sourceLine" id="cb45-2" data-line-number="2">  </a>
-<a class="sourceLine" id="cb45-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Predictions&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Predictions&quot;</span>)}</a>
-<a class="sourceLine" id="cb45-4" data-line-number="4">  </a>
-<a class="sourceLine" id="cb45-5" data-line-number="5">  modStats_file &lt;-<span class="st"> &quot;Predictions/prediction_performance.csv&quot;</span></a>
-<a class="sourceLine" id="cb45-6" data-line-number="6">  <span class="cf">if</span>(<span class="kw">file.exists</span>(modStats_file)<span class="op">==</span><span class="ot">FALSE</span>){</a>
-<a class="sourceLine" id="cb45-7" data-line-number="7">    <span class="kw">write.csv</span>(MODSTATS, <span class="dt">file =</span> modStats_file, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb45-8" data-line-number="8">  }<span class="cf">else</span>{</a>
-<a class="sourceLine" id="cb45-9" data-line-number="9">    save_table &lt;-<span class="st"> </span><span class="kw">read.csv</span>(modStats_file)</a>
-<a class="sourceLine" id="cb45-10" data-line-number="10">    save_table &lt;-<span class="st"> </span><span class="kw">rbind</span>(save_table,MODSTATS)</a>
-<a class="sourceLine" id="cb45-11" data-line-number="11">    <span class="kw">write.csv</span>(save_table, modStats_file, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb45-12" data-line-number="12">  }</a>
-<a class="sourceLine" id="cb45-13" data-line-number="13">  <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Statistics saved to&quot;</span>, modStats_file))</a>
-<a class="sourceLine" id="cb45-14" data-line-number="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1">saveModStats &lt;-<span class="st"> </span><span class="cf">function</span>(MODSTATS){</a>
+<a class="sourceLine" id="cb56-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb56-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Predictions&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Predictions&quot;</span>)}</a>
+<a class="sourceLine" id="cb56-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb56-5" data-line-number="5">  modStats_file &lt;-<span class="st"> &quot;Predictions/prediction_performance.csv&quot;</span></a>
+<a class="sourceLine" id="cb56-6" data-line-number="6">  <span class="cf">if</span>(<span class="kw">file.exists</span>(modStats_file)<span class="op">==</span><span class="ot">FALSE</span>){</a>
+<a class="sourceLine" id="cb56-7" data-line-number="7">    <span class="kw">write.csv</span>(MODSTATS, <span class="dt">file =</span> modStats_file, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb56-8" data-line-number="8">  }<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb56-9" data-line-number="9">    save_table &lt;-<span class="st"> </span><span class="kw">read.csv</span>(modStats_file)</a>
+<a class="sourceLine" id="cb56-10" data-line-number="10">    save_table &lt;-<span class="st"> </span><span class="kw">rbind</span>(save_table,MODSTATS)</a>
+<a class="sourceLine" id="cb56-11" data-line-number="11">    <span class="kw">write.csv</span>(save_table, modStats_file, <span class="dt">row.names=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb56-12" data-line-number="12">  }</a>
+<a class="sourceLine" id="cb56-13" data-line-number="13">  <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Statistics saved to&quot;</span>, modStats_file))</a>
+<a class="sourceLine" id="cb56-14" data-line-number="14">}</a></code></pre></div>
 </div>
 </div>
-<div id="plots" class="section level2">
-<h2><span class="header-section-number">7.2</span> Plots</h2>
+<div id="plots" class="section level2 unnumbered">
+<h2>Plots</h2>
+<p>The following function creates a scatter plot of the observed lab data against the predictions, showing the line of best fit and its equation, as well as some summary statistics.</p>
+<div id="plotpred" class="section level3 unnumbered">
+<h3><code>plotPred()</code></h3>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1">plotPred &lt;-<span class="st"> </span><span class="cf">function</span>(x,y, stats, <span class="dt">name=</span><span class="ot">NA</span>, <span class="dt">units=</span><span class="ot">NA</span>){</a>
+<a class="sourceLine" id="cb57-2" data-line-number="2">  max &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">c</span>(x,y))</a>
+<a class="sourceLine" id="cb57-3" data-line-number="3">  lims =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,(<span class="fl">1.1</span><span class="op">*</span>max))</a>
+<a class="sourceLine" id="cb57-4" data-line-number="4">  <span class="kw">plot</span>(y <span class="op">~</span><span class="st"> </span>x, </a>
+<a class="sourceLine" id="cb57-5" data-line-number="5">       <span class="dt">ylab =</span> <span class="kw">paste</span>(<span class="st">&quot;Predicted&quot;</span>, units), </a>
+<a class="sourceLine" id="cb57-6" data-line-number="6">       <span class="dt">xlab=</span><span class="kw">paste</span>(<span class="st">&quot;Observed&quot;</span>, units), </a>
+<a class="sourceLine" id="cb57-7" data-line-number="7">       <span class="dt">xlim =</span> lims,</a>
+<a class="sourceLine" id="cb57-8" data-line-number="8">       <span class="dt">ylim=</span>lims,<span class="dt">main =</span> <span class="kw">paste</span>(name))</a>
+<a class="sourceLine" id="cb57-9" data-line-number="9">  </a>
+<a class="sourceLine" id="cb57-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb57-11" data-line-number="11">  reg_model &lt;-<span class="kw">lm</span>(y<span class="op">~</span>x)</a>
+<a class="sourceLine" id="cb57-12" data-line-number="12">  <span class="kw">abline</span>(reg_model)</a>
+<a class="sourceLine" id="cb57-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb57-14" data-line-number="14">  topstats &lt;-<span class="st"> </span><span class="kw">bquote</span>(R<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>R2) <span class="op">*</span><span class="st"> &quot;,&quot;</span> <span class="op">~</span><span class="er">~</span><span class="kw">italic</span>(bias)<span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>bias) <span class="op">*</span><span class="st"> &quot;,&quot;</span> <span class="op">~</span><span class="er">~</span><span class="st"> </span>RMSE <span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>RMSE))</a>
+<a class="sourceLine" id="cb57-15" data-line-number="15">  <span class="kw">text</span>(<span class="kw">min</span>(x,y),<span class="kw">max</span>(x,y), topstats, <span class="dt">pos =</span> <span class="dv">4</span>, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
+<a class="sourceLine" id="cb57-16" data-line-number="16">  </a>
+<a class="sourceLine" id="cb57-17" data-line-number="17">  eqn &lt;-<span class="st"> </span><span class="kw">bquote</span>(y<span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>Slope) <span class="op">*</span><span class="st"> &quot;x&quot;</span>  <span class="op">*</span><span class="st"> &quot; + &quot;</span> <span class="op">*</span><span class="st"> </span>.(stats<span class="op">$</span>Y_Int))</a>
+<a class="sourceLine" id="cb57-18" data-line-number="18">  <span class="kw">text</span>(<span class="kw">min</span>(x,y),<span class="kw">max</span>(x,y)<span class="op">-</span>(<span class="kw">max</span>(x,y)<span class="op">-</span><span class="kw">min</span>(x,y))<span class="op">/</span><span class="dv">10</span>, eqn, <span class="dt">pos =</span> <span class="dv">4</span>, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
+<a class="sourceLine" id="cb57-19" data-line-number="19">}</a></code></pre></div>
 <p><img src="images/predplot.png" /></p>
 
+</div>
 </div>
 </div>
             </section>

@@ -20,7 +20,7 @@ makePLSModel <- function(PROP, REFNAME=NA, REFPATH=NA, VALTYPE="CV", SAVENAME=pa
     assign(SAVENAME, model)
     savefile <- paste0("Models/",SAVENAME,".RData")
     save(list= SAVENAME, file = savefile) #Ex: plsr.OC.RData
-    print(paste("Model saved to",savefile))
+    cat(paste("\nModel saved to",savefile, "\n"))
   }
 
   return(model)

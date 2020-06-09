@@ -24,10 +24,9 @@ source("Functions/preprocess_functions.R")
 ALL_data <- getSpecLib(SAVENAME="ALL_data")
 
 # Refine Spectral Library
-OC_data <- refineSpecLib(SPECLIB=ALL_data, PROP="OC", CALVAL=TRUE, OUTLIER=c("fratio"), SAVENAME="OC_data")
+OC_data <- refineSpecLib(SPECLIB=ALL_data, PROP="OC", CALVAL=TRUE, SAVENAME="OC_data")
 
 # Define Reference and Prediction Sets
-#load("Data_Processed/OC_data.RData")
 refSet <- OC_data[OC_data$calib==1,]
 predSet <- OC_data[OC_data$calib==0,]
 
@@ -41,7 +40,6 @@ source("Functions/perform_functions.R")
 plsr.OC <- makePLSModel(PROP="OC", REFNAME="refSet")
 
 # Make Predictions
-#load("Models/plsr.OC.RData")
 pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", PREDNAME= "predSet")
 
 #----------------------------------------------#
@@ -54,8 +52,6 @@ source("Functions/perform_functions.R")
 mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
 
 # Extract Predictions
-#load("Models/mbl.OC.RData")
 mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME= "mbl.OC", PREDNAME= "predSet")
-
 
 

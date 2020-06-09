@@ -42,7 +42,7 @@ getModResults <- function(PROP, MODTYPE, MODNAME=NA, MODPATH=NA, PREDNAME=NA, PR
   }
   # {Optional} Save Predictions
   if(SAVEPRED==TRUE){
-    savePredictions(predobs, PROP, MODTYPE, PREDNAME)
+    savePredictions(predobs, PROP, MODTYPE, predSet, paste0(PREDNAME,"_predictions.csv"))
   }
   names(predobs) <- c("sample_id", paste0(PROP,".",MODTYPE), PROP)
   return(predobs)
@@ -51,9 +51,9 @@ getModResults <- function(PROP, MODTYPE, MODNAME=NA, MODPATH=NA, PREDNAME=NA, PR
 
 # Get Model Statistics
 
-getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODNAME=NA, PREDTYPE=NA, PREDNAME=NA, SAVE=FALSE){
+getModStats <- function(PREDOBS, PROP=NA, NCOMP=NA, MODNAME=NA, PREDTYPE=NA, PREDNAME=NA, SAVE=FALSE){
   
-  print(paste(PROP, "Summary"))
+  cat(paste("\n", PROP, "Summary:"))
   TIME <- as.character(Sys.time()[1])
   
   # Regress predicted versus observed
@@ -75,6 +75,8 @@ getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODNAME=NA, PREDTYPE=NA, PREDNA
   modStats <- data.frame(Timestamp=TIME, Property=PROP, Mod_Name=MODNAME, Pred_Type=PREDTYPE,
                          Pred_Data=PREDNAME, ncomp=NCOMP, R2=R2, R2_Adj=R2_adj, Y_Int=b0, Slope=b1,
                          RMSE=RMSE, bias=bias,STD=std, RPD=rpd)
+  # Print Statistics
+  print(t(modStats))
   
   # Write Row 
   if(SAVE==TRUE){saveModStats(modStats)}
@@ -82,10 +84,8 @@ getModStats <- function(PREDOBS, PROP, NCOMP=NA, MODNAME=NA, PREDTYPE=NA, PREDNA
   # Plot Pred Obs
   plotPred(PREDOBS$obs, PREDOBS$pred, modStats, paste(MODNAME,PREDNAME,"Predictions"), "")
   
-  # Print Statistics
-  print(t(modStats))
-  
   return(modStats)
+  
 } # End of getModStats
 
 
@@ -103,7 +103,7 @@ saveModStats <- function(MODSTATS){
     save_table <- rbind(save_table,MODSTATS)
     write.csv(save_table, modStats_file, row.names=FALSE)
   }
-  print(paste("Statistics saved to", modStats_file))
+  cat(paste("\nStatistics saved to", modStats_file))
 }
 
 
@@ -116,7 +116,7 @@ plotPred <- function(x,y, stats, name=NA, units=NA){
        ylab = paste("Predicted", units), 
        xlab=paste("Observed", units), 
        xlim = lims,
-       ylim=lims,main = paste(name))
+       ylim=lims,main = name)
   
   
   reg_model <-lm(y~x)
@@ -132,16 +132,15 @@ plotPred <- function(x,y, stats, name=NA, units=NA){
 
 # Make/Load Table to Save Predictions
 
-getSavePredTable <- function(PREDNAME){
+getSavePredTable <- function(PREDSET, SAVENAME){
   
   if(file.exists("./Predictions")==FALSE){dir.create("./Predictions")}
   
-  predSavePath <- paste0("./Predictions/", PREDNAME, "_predictions.csv")
+  predSavePath <- paste0("./Predictions/", SAVENAME)
   if(file.exists(predSavePath) ){
     all_predictions <- read.csv(predSavePath)
   }else{
-    predSet <- get(PREDNAME)
-    all_predictions <- predSet[,-ncol(predSet)] # remove spectra, last column
+    all_predictions <- PREDSET[,-ncol(PREDSET)] # remove spectra, last column
   }
   
   return(all_predictions)
@@ -150,22 +149,22 @@ getSavePredTable <- function(PREDNAME){
 
 # Save Predictions
 
-savePredictions <- function(PREDOBS, PROP, MODTYPE, PREDNAME){
-  all_predictions <- getSavePredTable(PREDNAME) # Make/Load file to save predictions
-  savename <- paste(PROP,MODTYPE,sep=".") # Ex: OC.PLSR
+savePredictions <- function(PREDOBS, PROP, MODTYPE, PREDSET, SAVENAME){
+  all_predictions <- getSavePredTable(PREDSET, SAVENAME) # Make/Load file to save predictions
+  savename <- paste(PROP,MODTYPE,sep=".") # Ex: OC.PLSR column name
   
   if(!(savename %in% names(all_predictions))){
     
     all_predictions <- merge(all_predictions, PREDOBS[,1:2] , all.X=TRUE) # Merge with all_predictions
     ncolm <- ncol(all_predictions)
     names(all_predictions)[ncolm] <- savename
-    savefile <- paste0("Predictions/", PREDNAME,"_predictions.csv") # Set file savename
+    savefile <- paste0("Predictions/", SAVENAME) # Set file savename
     write.csv(all_predictions, file=savefile, row.names=FALSE) # Save
     
-    print(paste("Predictions saved to", savefile)) # Print save location
+    cat(paste("\nPredictions saved to", savefile)) # Print save location
     
   }else{
-    print("Column already exists")
+    cat("\nPrediction column already exists")
   }
   
   View(all_predictions)

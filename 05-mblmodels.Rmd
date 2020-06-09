@@ -1,4 +1,18 @@
 # MBL Models
+This section of the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) creates MBL models and gets predictions from them:   
+```{r, eval=FALSE}
+#----------------------------------------------#
+# Memory Based Learner Model #
+#----------------------------------------------#
+source("Functions/mbl_functions.R")
+source("Functions/perform_functions.R")
+
+# Make Model
+mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
+
+# Extract Predictions
+mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME= "mbl.OC", PREDNAME= "predSet")
+```
 
 ## Model Theory {-}
 
@@ -35,115 +49,16 @@ knitr::include_graphics(path="./images/mbl_vid.gif")
 Resemble Powerpoint: http://www.fao.org/fileadmin/user_upload/GSP/docs/Spectroscopy_dec13/SSW2013_f.pdf
 
 
-## Making MBL Predictions {-}
+## Running MBL {-}
 
-### Resemble Functions {-}
-Full documentation on the mbl() function of the resemble package is linked below:    
-
-**MBL**- [*Resemble mbl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mbl)    
-
-```
-mbl(Yr, Xr, Yu = NULL, Xu,    
-    mblCtrl = mblControl(),      
-    dissimilarityM,     
-    group = NULL,     
-    dissUsage = "predictors",      
-    k, k.diss, k.range,     
-    method,      
-    pls.c, pls.max.iter = 1, pls.tol = 1e-6,     
-    noise.v = 0.001,     
-    ...)
-```
-**MBL Control**- [*Resemble mblControl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mblControl)    
-
-```
-mblControl(sm = "pc",
-           pcSelection = list("opc", 40),
-           pcMethod = "svd",
-           ws = if(sm == "movcor") 41,
-           k0,
-           returnDiss = FALSE,
-           center = TRUE,
-           scaled = TRUE,
-           valMethod = c("NNv", "loc_crossval"),
-           localOptimization = TRUE,
-           resampling = 10, 
-           p = 0.75,
-           range.pred.lim = TRUE,
-           progress = TRUE,
-           cores = 1,            
-           allowParallel = TRUE)
-```
-
-### Modeling Parameters {-}
-This section explains some of the main ways to customize and optimize mbl models using `mbl()` in the resemble package. Below is an example workflow for modeling with MBL after the preprocessing steps have been completed:   
-
-![](./images/mbl_step.png)   
-
-#### Input Datasets {-}
-* The `mbl()` function accepts 4 different data products, `Xu` `Xr` `Yu` and `Yr`, summarized in the table below:    
-![](./images/mbl_input_data.png)    
-* Both ***X***s are matrices with spectral data and both ***Y***s are vectors with lab data for the property of interest.   
-* ***u*** indicates "uncertain" for our prediction set, and ***r*** indicates "reference" for our reference set.   
-* `Yu` is optional, since not all prediction sets will have associated lab data. If this is the case, set `Yu` to `NULL`.
-* See the data preprocessing tab to prepare these datasets prior to modeling. In addition, it is necessary to remove all rows in the reference set inputs (`Yr` and `Xr`) that have `NA` values. If you would like to include `Yu` but there are missing values, you must also remove those rows in both prediction set inputs (`Yu` and `Xu`).    
-    + Number of columns in `Xr` must equal that of `Xu`.
-    + Number of rows in `Yr` must equal that of `Yu`, if provided.
-
-#### Matrix of Spectral Neighbors {-}    
-* When selecting nearest neighbors to build a local model, the `mbl()` function references a **spectral dissimilarity matrix**, which relates samples in the prediction and reference sets.
-
-* This matrix can be created by setting the `sm` parameter in `mblControl()`, or can be passed into the `mbl()` function as `dissimilarityM` if a matrix has already been made.  
-
-* For creating the matrix, you will have to decide **how spectral dissimilarity will be calculated** by setting a couple variables in mblControl():
-    + `sm` can be set to a variety of different methods for measuring distance in a multidimensional space. We have used `"pls" "pc" "euclid" "cosine" "cor" and "movcor"`
-    + `pcSelection` determines how the number of principal components will be chosen for calculating Mahalonobis dissimilarity (when sm = "pc", "loc.pc", "pls" or "loc.pls")
-        + We have this set to the default options of `(opc,40)` meaning the optimal principal component method will be used and up to 40 components will be tested.  
-.
-* Lastly, you can specify **how the matrix will be used** within the local models, if at all, by setting the `dissUsage` parameter to `"weights" "predictors" or "none"`. 
-    + If set to `"predictors"`, the column of the matrix which shows similarity to the sample being predicted, will be added as a predictor variable to build the local model.  
-    + If set to `"weights"`, the neighbors are weighted based on dissimilarity/distance (those closer to the sample being predicted receive more weight in the model).  
-.
-* The **matrix format** will look like one of the following, depending on how it will be used...
-    + A. All reference and prediction sets samples as rows and columns ("predictors")
-      ![](./images/matrix1.png)   
-    + B. Reference set samples as rows, prediction set samples as columns ("weights")     
-      ![](./images/matrix2.png)    
-
-#### Neighbor Selection {-}
-* The `mbl()` function allows you to specify how many nearest neighbors will be used to build local models, by setting either `k`, or `k.diss` and `k.range`.   
-    + Option 1: Set `k` to a sequence of numbers to test, for how many neighbors to include.
-        + `seq(40, 40, by=20)` , would perform 1 iteration, using 40 nearest neighbors
-        + `seq(40, 100, by=20)`, would perform 4 iterations, using 40, 60, 80 and 100 nearest neighbors
-    + Option 2: 
-        + Set a dissimilarity threshold `k.diss` that limits the distance to search for neighbors from a sample. You can think of it as the radius of the circles shown in the model theory animation.     
-        ![](./images/k.diss.png)
-        + Set `k.range` to the minimum and maximum number of neighbors you want to include, within the `k.diss` distance. 
-
-#### Modeling Method {-}
-* Once neighbors are selected, MBL builds local models using the multivariate regression method specified with the variable `method` in the `mbl()` function.
-    + `pls` for partial least squares regression
-    + `wapls1` for weighted average pls
-    + `gpr` for gaussian process with dot product covariance
-* `pls.c` allows you to set the number of pls components to be used if either "pls" or "wasp1" is used.
-    + A single number if `pls` is used
-    + A vector containing the minimum and maximum number of components to be used, if `wasp1` is used
-
-#### Validation Method {-}
-* You can specify the validation method by setting the parameter `valMethod` within the `mblControl()` function.
-    + `NNv` for leave-nearest-neighbour-out cross validation
-    + `loc_crossval` for local leave group out cross validation
-    + `none` If you chose not to validate the model. This will improve processing speed.
-
-### Running MBL {-}
-The following is a wrapper function for running an mbl model, sourced from "Functions/mbl_functions.R". It takes in the names of the property, prediction and reference sets and returns an mbl model, using the functions mbl() and mblControl() from the resemble package. It is called directly in the RUNFILE script:    
+Running an MBL modeling approach is accomplished using a couple functions from the [resemble package](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#resemble): `mblControl()` and `mbl()`. The following, is a wrapper function for loading the appropriate datasets and calling these functions to run the mbl model. `runMBL()` is used directly in the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) as shown below:   
 
 ```{r, eval=FALSE}
 source("Functions/mbl_functions.R")
 mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
 ```
 
-#### `runMBL()` {-}
+### `runMBL()` {-}
 
 * `runMBL( {see below} )`
     + `PROP`: *string*- The column name of the soil property of interest.
@@ -215,25 +130,157 @@ Option 1
 
 Option 2
 ```{r, eval=FALSE}
-mbl.sqrt <- mbl(Yr = Yr, Xr = Xr, Xu = Xu, mblCtrl = ctrl, dissUsage = "none", k.diss = seq(0.3, 1, by=0.1), k.range = c(20, nrow(refSet)), pls.c = c(minpls=3, maxpls=20), method = "wapls1")
+mbl.sqrt <- mbl(Yr = Yr, Xr = Xr, Xu = Xu, mblCtrl = ctrl, dissUsage = "none", k.diss = seq(0.3, 1, by=0.1), 
+                k.range = c(20, nrow(refSet)), pls.c = c(minpls=3, maxpls=20), method = "wapls1")
 ``` 
   
 * Save the model
 ```{r, eval=FALSE}
+# Save MBL Model
 if(SAVENAME != "none"){
-  modelName <- paste("mbl", PROP, sep=".")
+  modelName <- paste("mbl", PROP, sep=".") # Assign Object Name
   assign(modelName, mbl.sqrt)
-  savefile <- paste("./Models/mbl", PROP,"RData", sep=".")
+  savefile <- paste("./Models/mbl", PROP,"RData", sep=".") # Save File
   save(list= modelName, file = savefile)
-  print(paste(modelName, "saved to", savefile))
+  cat(paste("\nModel",modelName, "saved to", savefile)) # Print Save Location
 }
+
 ```
 
 
-### Getting MBL Predictions {-}
-MBL predictions are stored in the mbl model as `MODEL$results$model-name$pred`. Since you can run the MBL model with different numbers of nearest neighbors or different dissimilarity thresholds, there can be sets of predictions stored. To choose the best model, we look for the model with the minimum standardized rmse with the function `bestModMBL()` and extract predictions from this model with `getPredMBL()`
+### Modeling Parameters {-}
+This section explains some of the main ways to customize and optimize mbl models using `mbl()` and `mblControl()` in the [resemble package](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#resemble). Full documentation on these functions are linked below:    
 
-#### `getPredMBL()` {-}
+**MBL**- [*Resemble mbl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mbl)    
+
+```
+mbl(Yr, Xr, Yu = NULL, Xu,    
+    mblCtrl = mblControl(),      
+    dissimilarityM,     
+    group = NULL,     
+    dissUsage = "predictors",      
+    k, k.diss, k.range,     
+    method,      
+    pls.c, pls.max.iter = 1, pls.tol = 1e-6,     
+    noise.v = 0.001,     
+    ...)
+```
+**MBL Control**- [*Resemble mblControl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mblControl)    
+
+```
+mblControl(sm = "pc",
+           pcSelection = list("opc", 40),
+           pcMethod = "svd",
+           ws = if(sm == "movcor") 41,
+           k0,
+           returnDiss = FALSE,
+           center = TRUE,
+           scaled = TRUE,
+           valMethod = c("NNv", "loc_crossval"),
+           localOptimization = TRUE,
+           resampling = 10, 
+           p = 0.75,
+           range.pred.lim = TRUE,
+           progress = TRUE,
+           cores = 1,            
+           allowParallel = TRUE)
+```
+
+Below is an example workflow showing the decision points of modeling with MBL. These parameters will be describe in the following subsections.
+
+![](./images/mbl_step.png)  
+
+#### Input Datasets {-}
+* The `mbl()` function accepts 4 different data products, `Xu` `Xr` `Yu` and `Yr`, summarized in the table below:    
+![](./images/mbl_input_data.png)    
+* Both ***X***s are matrices with spectral data and both ***Y***s are vectors with lab data for the property of interest.   
+* ***u*** indicates "uncertain" for our prediction set, and ***r*** indicates "reference" for our reference set.   
+* `Yu` is optional, since not all prediction sets will have associated lab data. If this is the case, set `Yu` to `NULL`.
+* See the data preprocessing tab to prepare these datasets prior to modeling. In addition, it is necessary to remove all rows in the reference set inputs (`Yr` and `Xr`) that have `NA` values. If you would like to include `Yu` but there are missing values, you must also remove those rows in both prediction set inputs (`Yu` and `Xu`).    
+    + Number of columns in `Xr` must equal that of `Xu`.
+    + Number of rows in `Yr` must equal that of `Yu`, if provided.
+
+#### Matrix of Spectral Neighbors {-}    
+* When selecting nearest neighbors to build a local model, the `mbl()` function references a **spectral dissimilarity matrix**, which relates samples in the prediction and reference sets.
+
+* This matrix can be created by setting the `sm` parameter in `mblControl()`, or can be passed into the `mbl()` function as `dissimilarityM` if a matrix has already been made.  
+
+* For creating the matrix, you will have to decide **how spectral dissimilarity will be calculated** by setting a couple variables in mblControl():
+    + `sm` can be set to a variety of different methods for measuring distance in a multidimensional space. We have used `"pls" "pc" "euclid" "cosine" "cor" and "movcor"`
+    + `pcSelection` determines how the number of principal components will be chosen for calculating Mahalonobis dissimilarity (when sm = "pc", "loc.pc", "pls" or "loc.pls")
+        + We have this set to the default options of `(opc,40)` meaning the optimal principal component method will be used and up to 40 components will be tested.  
+.
+* Lastly, you can specify **how the matrix will be used** within the local models, if at all, by setting the `dissUsage` parameter to `"weights" "predictors" or "none"`. 
+    + If set to `"predictors"`, the column of the matrix which shows similarity to the sample being predicted, will be added as a predictor variable to build the local model.  
+    + If set to `"weights"`, the neighbors are weighted based on dissimilarity/distance (those closer to the sample being predicted receive more weight in the model).  
+.
+* The **matrix format** will look like one of the following, depending on how it will be used...
+    + A. All reference and prediction sets samples as rows and columns ("predictors")
+      ![](./images/matrix1.png)   
+    + B. Reference set samples as rows, prediction set samples as columns ("weights")     
+      ![](./images/matrix2.png)    
+
+#### Neighbor Selection {-}
+* The `mbl()` function allows you to specify how many nearest neighbors will be used to build local models, by setting either `k`, or `k.diss` and `k.range`.   
+    + Option 1: Set `k` to a sequence of numbers to test, for how many neighbors to include.
+        + `seq(40, 40, by=20)` , would perform 1 iteration, using 40 nearest neighbors
+        + `seq(40, 100, by=20)`, would perform 4 iterations, using 40, 60, 80 and 100 nearest neighbors
+    + Option 2: 
+        + Set a dissimilarity threshold `k.diss` that limits the distance to search for neighbors from a sample. You can think of it as the radius of the circles shown in the model theory animation.     
+        ![](./images/k.diss.png)
+        + Set `k.range` to the minimum and maximum number of neighbors you want to include, within the `k.diss` distance. 
+
+#### Modeling Method {-}
+* Once neighbors are selected, MBL builds local models using the multivariate regression method specified with the variable `method` in the `mbl()` function.
+    + `pls` for partial least squares regression
+    + `wapls1` for weighted average pls
+    + `gpr` for gaussian process with dot product covariance
+* `pls.c` allows you to set the number of pls components to be used if either "pls" or "wasp1" is used.
+    + A single number if `pls` is used
+    + A vector containing the minimum and maximum number of components to be used, if `wasp1` is used
+
+#### Validation Method {-}
+* You can specify the validation method by setting the parameter `valMethod` within the `mblControl()` function.
+    + `NNv` for leave-nearest-neighbour-out cross validation
+    + `loc_crossval` for local leave group out cross validation
+    + `none` If you chose not to validate the model. This will improve processing speed.
+
+
+## Getting MBL Predictions {-}
+* **MBL predictions** are stored in the mbl model as `MODEL$results$model-name$pred`    
+
+* Since you can run the MBL model with different numbers of nearest neighbors or different dissimilarity thresholds, there can be **sets of predictions** stored    
+
+* To **choose the best model**, we look for the model with the minimum standardized rmse, and extract predictions from this model, using the functions `bestModMBL()` and `getPredMBL()` sourced from `Functions/mbl_functions.R`   
+
+* In the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script), `getPredMBL()` is called within a wrapper function, `getModResults()`. Complete documentation of this function can be found under the [Model Performance]() tab
+```{r, eval=FALSE}
+mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME= "plsr.OC", PREDNAME= "predSet")
+```
+
+### `bestModMBL()` {-}
+The following function returns the model with the **lowest standardized root mean standard error**- an index showing how much predictions varied from observations^[[Find more about the RMSE here](https://www.statisticshowto.com/probability-and-statistics/regression-analysis/rmse-root-mean-square-error/#:~:text=Root%20Mean%20Square%20Error%20(RMSE)%20is%20the%20standard%20deviation%20of,the%20line%20of%20best%20fit.)].
+
+
+```{r, eval=FALSE}
+bestModMBL <- function(mbl.sqrt){
+  
+  valType <- mbl.sqrt$cntrlParam$valMethod
+  if(valType=="NNv"){
+    index_best_model <- which.min(mbl.sqrt$nnValStats$st.rmse)
+  }
+  if(valType=="loc_crossval"){
+    index_best_model <- which.min(mbl.sqrt$localCrossValStats$st.rmse)
+  }
+  best_model_name <- names(mbl.sqrt$results)[index_best_model]
+  
+  return(best_model_name)
+}
+```
+
+### `getPredMBL()` {-}
+This function calls `bestModMBL()` to choose a model to get predictions from, unless `model_name` is specified otherwise. Since the lab data was square root transformed when building the model, it is back transformed (squared) after predictions are made.    
+
 ```{r, eval=FALSE}
 getPredMBL <- function(mbl.sqrt, model_name=NULL){
   
@@ -241,34 +288,14 @@ getPredMBL <- function(mbl.sqrt, model_name=NULL){
     model_name <- bestModMBL(mbl.sqrt)
   }
   sqrt_preds <- eval(parse( text=paste0("mbl.sqrt$results$", model_name,"$pred" )))
-  
-  predictions <- c(sqrt_preds)^2
+  predictions <- c(sqrt_preds)^2 # Reverse transform
   
   return(predictions)
 }
 ```
 
-#### `bestModMBL()` {-}
-```{r, eval=FALSE}
-bestModMBL <- function(mbl.sqrt){
-  
-  valType <- mbl.sqrt$cntrlParam$valMethod
-  
-  if(valType=="NNv"){
-    index_best_model <- which.min(mbl.sqrt$nnValStats$st.rmse)
-  }
-  if(valType=="loc_crossval"){
-    index_best_model <- which.min(mbl.sqrt$localCrossValStats$st.rmse)
-  }
-  
-  best_model_name <- names(mbl.sqrt$results)[index_best_model]
-  
-  return(best_model_name)
-}
-```
 
-
-#### `getLabMBL()` {-}
+### `getLabMBL()` {-}
 If lab data was input when building the model as Yu, it will be stored at `MODEL$results$model-name$yu.obs`. Otherwise, you will have to get it from your original prediction dataset 
 
 ```{r, eval=FALSE}
@@ -288,4 +315,7 @@ getLabMBL <- function(mbl.sqrt){
   
 }
 ```
+
+
+
 

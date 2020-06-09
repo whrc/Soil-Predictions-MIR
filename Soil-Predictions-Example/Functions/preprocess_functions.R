@@ -27,9 +27,9 @@ getSpecLib <- function(SPECPATH="/Data_Raw/SPECTRA",
   if(SAVENAME!= "none"){
     assign(SAVENAME,speclib)
     if(file.exists("./Data_Processed")==FALSE){dir.create("./Data_Processed")}
-    savepath <- paste0("./Data_Processed/",SAVENAME,".RData")
-    save(list=SAVENAME, file=savepath)
-    write.csv(get(SAVENAME), savepath, row.names=FALSE)
+    savefile <- paste0("./Data_Processed/",SAVENAME,".rds")
+    saveRDS(get(SAVENAME), file=savefile)
+    cat(paste(SAVENAME,"saved to", savefile))
   }
   return(speclib)
 }
@@ -77,7 +77,7 @@ opus_to_dataset <- function(SPECPATH ="/Data_Raw/SPECTRA", NWAVE=3017, SAVENAME=
     assign(SAVENAME, spectra)
     savefile <- paste0("Data_Processed/", SAVENAME, ".RData")
     save(list= SAVENAME, file= savefile)
-    print(SAVENAME,"saved to", savefile)
+    cat(paste(SAVENAME,"saved to", savefile))
   }
   
   return(spectra)
@@ -120,7 +120,7 @@ base_offset <- function(x){
 # Refine Spectral Library
 source("Functions/outlier_functions.R")
 
-refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev"), LARGE=FALSE, CALVAL=FALSE, SAVENAME="none"){
+refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev","fratio"), LARGE=FALSE, CALVAL=FALSE, SAVENAME="none"){
   
   # Remove rows with faulty lab data
   if(!is.na(PROP)){
@@ -132,7 +132,7 @@ refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev"), LARGE=FALSE, CAL
   }
   
   # Remove spectral outliers
-  if(!("fratio" %in% OUTLIER)){
+  if(("fratio" %in% OUTLIER)){
     SPECLIB  <- SPECLIB[-fratio_outliers(SPECLIB),] # Identified with fratio
   } 
   
@@ -146,13 +146,13 @@ refineSpecLib <- function(SPECLIB, PROP=NA, OUTLIER=c("stdev"), LARGE=FALSE, CAL
     SPECLIB <- calValSplit(SPECLIB)
   }
   
-  # Save the refined reference set for OC
+  # Save the refined set for OC
   if(SAVENAME != "none"){
     if(file.exists("./Data_Processed")==FALSE){dir.create("./Data_Processed")}
     assign(SAVENAME, SPECLIB)
-    savefile <- paste0("Data_Processed/", SAVENAME, ".RData")
-    save(list= SAVENAME, file= savefile)
-    print(paste(SAVENAME,"saved to", savefile))
+    savefile <- paste0("./Data_Processed/",SAVENAME,".rds")
+    saveRDS(get(SAVENAME), file=savefile)
+    cat(paste("\n", SAVENAME,"saved to", savefile))
   }
   return(SPECLIB)
 }

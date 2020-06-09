@@ -176,19 +176,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#overview"><i class="fa fa-check"></i>Overview</a></li>
 <li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#animation"><i class="fa fa-check"></i>Animation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#making-mbl-predictions"><i class="fa fa-check"></i>Making MBL Predictions</a><ul>
-<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#resemble-functions"><i class="fa fa-check"></i>Resemble Functions</a></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#running-mbl"><i class="fa fa-check"></i>Running MBL</a><ul>
+<li><a href="mbl-models.html#runmbl"><code>runMBL()</code></a></li>
 <li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#modeling-parameters"><i class="fa fa-check"></i>Modeling Parameters</a></li>
-<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#running-mbl"><i class="fa fa-check"></i>Running MBL</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mbl-models.html"><a href="mbl-models.html#getting-mbl-predictions"><i class="fa fa-check"></i>Getting MBL Predictions</a><ul>
+<li><a href="mbl-models.html#bestmodmbl"><code>bestModMBL()</code></a></li>
+<li><a href="mbl-models.html#getpredmbl"><code>getPredMBL()</code></a></li>
+<li><a href="mbl-models.html#getlabmbl"><code>getLabMBL()</code></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="model-results.html"><a href="model-results.html"><i class="fa fa-check"></i><b>7</b> Model Results</a><ul>
-<li><a href="model-results.html#getmodresults"><code>getModResults()</code></a></li>
-<li class="chapter" data-level="7.1" data-path="model-results.html"><a href="model-results.html#statistics"><i class="fa fa-check"></i><b>7.1</b> Statistics</a><ul>
-<li class="chapter" data-level="" data-path="model-results.html"><a href="model-results.html#getmodstats"><i class="fa fa-check"></i>getModStats()</a></li>
-<li class="chapter" data-level="" data-path="model-results.html"><a href="model-results.html#savemodstats"><i class="fa fa-check"></i>saveModStats()</a></li>
+<li class="chapter" data-level="7" data-path="model-performance.html"><a href="model-performance.html"><i class="fa fa-check"></i><b>7</b> Model Performance</a><ul>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#get-results"><i class="fa fa-check"></i>Get Results</a><ul>
+<li><a href="model-performance.html#getmodresults"><code>getModResults()</code></a></li>
 </ul></li>
-<li class="chapter" data-level="7.2" data-path="model-results.html"><a href="model-results.html#plots"><i class="fa fa-check"></i><b>7.2</b> Plots</a></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#predictions"><i class="fa fa-check"></i>Predictions</a><ul>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#getsavepredtable"><i class="fa fa-check"></i>getSavePredTable()</a></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#savepredictions"><i class="fa fa-check"></i>savePredictions()</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i>Statistics</a><ul>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#getmodstats"><i class="fa fa-check"></i>getModStats()</a></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#savemodstats"><i class="fa fa-check"></i>saveModStats()</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i>Plots</a><ul>
+<li><a href="model-performance.html#plotpred"><code>plotPred()</code></a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -218,7 +230,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>The prediction set and reference set will be the same dataset if you are just using a <strong>single spectral library</strong>, but can be different if you are using models from one set to make predictions on another.</li>
 <li>Data preprocesing is executed by the functions within <code>preprocess_functions.R</code><br />
 </li>
-<li>The code shown below is the section of the <code>RUNFILE.R</code> script which calls the preprocessing functions to preprocess the reference set.<br />
+<li>The code shown below is the section of the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> which calls the preprocessing functions to preprocess the reference set.<br />
 </li>
 <li>The following subsections in this guide explain the steps and their respective functions in more detail</li>
 </ul>
@@ -650,7 +662,7 @@ For example, you would want to perform a calibration transfer on the prediction 
 </div>
 <div id="calval-groups" class="section level3 unnumbered">
 <h3>Cal/Val Groups</h3>
-<p>You may chose to subset a portion of the reference set as a calibration group which will be used to build the models- leaving the remaining samples as the validation set to test the model. <strong>Kennard Stone</strong> is a method for performing this type of separation while ensuring each group is representative of the set. The following function returns the spectral library with an additional column, ‘calib’, signifying whether or not the sample is in the calibration set. This is used in the demo-script to define the reference set and prediction set:</p>
+<p>You may chose to subset a portion of the reference set as a calibration group which will be used to build the models- leaving the remaining samples as the validation set to test the model. <strong>Kennard Stone</strong> is a method for performing this type of separation while ensuring each group is representative of the set. The following function returns the spectral library with an additional column, ‘calib’, signifying whether or not the sample is in the calibration set. This is used in the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> to define the reference set and prediction set:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">refSet &lt;-<span class="st"> </span>OC_data[OC_data<span class="op">$</span>calib<span class="op">==</span><span class="dv">1</span>,]</a>
 <a class="sourceLine" id="cb24-2" data-line-number="2">predSet &lt;-<span class="st"> </span>OC_data[OC_data<span class="op">$</span>calib<span class="op">==</span><span class="dv">0</span>,]</a></code></pre></div>
 <div id="calvalsplit" class="section level4 unnumbered">

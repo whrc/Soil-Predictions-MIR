@@ -1,4 +1,18 @@
 # PLSR Models
+This section of the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) creates PLSR models and gets predictions from them:    
+```{r, eval=FALSE}
+#----------------------------------------------#
+# Partial Least Squares Regression #
+#----------------------------------------------#
+source("Functions/plsr_functions.R")
+source("Functions/perform_functions.R")
+
+# Make Model
+plsr.OC <- makePLSModel(PROP="OC", REFNAME="refSet")
+
+# Make Predictions
+pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", PREDNAME= "predSet")
+```
 
 ## Model Theory {-}
 * **Partial Least Squares Regression** (PLSR) is a useful technique for making predictions on high dimensional datasets; Those with many columns or predictor variables relative to the number of rows or instances.     
@@ -13,7 +27,7 @@
 <!--vocab: orthogonal, high dimensional, latent variables- have links to define orthogonal-->
 
 ## Making PLSR Models {-}
-The following is a wrapper function for loading the appropriate data, assigning a validation type, making a PLS model and optionally saving it. It is stored in `Functions/plsr_functions.R` and used directly in the demo script:  
+The following is a wrapper function for loading the appropriate data, assigning a validation type, making a PLS model and optionally saving it. It is stored in `Functions/plsr_functions.R` and used directly in the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script):  
 
 ```{r, eval=FALSE}
 source("Functions/plsr_functions.R")
@@ -83,7 +97,7 @@ return(model)
 ```
 
 ## Getting PLS Predictions {-}
-The following is a function for getting PLS predictions stored in `Functions/plsr_functions.R` In the demo script is it called within `getModResults()` which is stored in `Functions/perform_functions.R`. 
+The following is a function for getting PLS predictions stored in `Functions/plsr_functions.R` In the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) is it called within `getModResults()` which is stored in `Functions/perform_functions.R`. 
 
 ```{r, eval=FALSE}
 pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", PREDNAME= "predSet")

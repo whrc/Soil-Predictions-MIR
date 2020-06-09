@@ -21,8 +21,10 @@ stdev_outliers <- function(SPECLIB, PROP, SHOW=TRUE, PLOT=TRUE){
   if(SHOW==TRUE){
 
     # Show outlier prediction versus observed values
-    predobs <- data.frame(pred, SPECLIB[,PROP])
-    names(predobs) <- c("pred", "obs")
+    predobs <- data.frame(SPECLIB[,"sample_id"], round(pred,2), SPECLIB[,PROP])
+    names(predobs) <- c("sample_id", "pred", "obs")
+    
+    cat("\nLab Outliers:\n")
     print(predobs[outliers,])
 
     # Plot with Outliers
@@ -53,7 +55,7 @@ optimum_sd_outlier <- function(x,y, temp.sd,.....){
   }
   sd.index <- which(vec <= 1)[1]
   sd.value <- temp.sd[sd.index]
-  #cat(sd.value, len.outl[sd.index],  "\n")
+  
   return(c(sd.value, len.outl[sd.index]))
 }
 
@@ -115,13 +117,13 @@ fratio_outliers <- function(SPECLIB, P=0.99, SHOW=TRUE, PLOT=TRUE){
       x <- pc1 <- scores[,1]
       y <- pc2 <- scores[,2]
       z <- pc3 <- scores[,3]
-      scatter3D(x,y,z, col="black", cex = 0.5)
+      scatter3D(x,y,z, col="black", cex = 0.5, main="Spectral Outliers")
       points3D(x[outliers], y[outliers], z[outliers], col="red", pch=16, add=TRUE)
     }
     
     if(SHOW==TRUE){
       # Print Outliers
-      print("Spectral Outliers")
+      cat("\nSpectral Outliers:\n")
       print(data.frame(sample_id=SPECLIB[outliers,1], PF=round(ok[outliers],6)))
     }
     

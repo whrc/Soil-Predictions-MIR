@@ -3,7 +3,7 @@
 * Data Preprocessing must be performed for the **reference set**, used to create the models, as well as the dataset you are making predictions from, the **prediction set**
 * The prediction set and reference set will be the same dataset if you are just using a **single spectral library**, but can be different if you are using models from one set to make predictions on another.
 * Data preprocesing is executed by the functions within `preprocess_functions.R`    
-* The code shown below is the section of the `RUNFILE.R` script which calls the preprocessing functions to preprocess the reference set.     
+* The code shown below is the section of the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) which calls the preprocessing functions to preprocess the reference set.     
 * The following subsections in this guide explain the steps and their respective functions in more detail    
 
 ```{r, eval=FALSE}
@@ -459,7 +459,7 @@ fratio_outliers <- function(SPECLIB, P=0.99, SHOW=TRUE, PLOT=TRUE){
 
 ### Cal/Val Groups {-}
 
-You may chose to subset a portion of the reference set as a calibration group which will be used to build the models- leaving the remaining samples as the validation set to test the model. **Kennard Stone** is a method for performing this type of separation while ensuring each group is representative of the set. The following function returns the spectral library with an additional column, 'calib', signifying whether or not the sample is in the calibration set. This is used in the demo-script to define the reference set and prediction set:    
+You may chose to subset a portion of the reference set as a calibration group which will be used to build the models- leaving the remaining samples as the validation set to test the model. **Kennard Stone** is a method for performing this type of separation while ensuring each group is representative of the set. The following function returns the spectral library with an additional column, 'calib', signifying whether or not the sample is in the calibration set. This is used in the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) to define the reference set and prediction set:    
 ```{r,eval=FALSE}
 refSet <- OC_data[OC_data$calib==1,]
 predSet <- OC_data[OC_data$calib==0,]

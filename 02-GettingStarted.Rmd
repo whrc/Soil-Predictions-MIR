@@ -103,11 +103,18 @@ To modify for your own spectral library....
 3. Update the name of the property in `RUNFILE.R`, to match the column name of the property you would like to predict. Currently, we are predicted for "OC".
 
 
-Below is the full `RUNFILE.R` script, organized with 3 main sections:
+Below is the full `RUNFILE.R` script, organized with 3 main sections & their corresponding functions, linked below:
 
-1. Data Preprocessing    
+1. Data Preprocessing      
+    + [`getSpecLib()`](https://whrc.github.io/Soil-Predictions-MIR/data-preprocessing.html#getspeclib)    
+    + [`refineSpecLib()`](https://whrc.github.io/Soil-Predictions-MIR/data-preprocessing.html#refinespeclib)    
+    
 2. PLSR Models    
+    + [`makePLSModel()`](https://whrc.github.io/Soil-Predictions-MIR/plsr-models.html#makeplsmodel)
+    + [`getPredPLS()`](https://whrc.github.io/Soil-Predictions-MIR/plsr-models.html#getpredpls)    
+    
 3. MBL Models    
+
 ```{r, eval=FALSE}
 #----------------------------------------------#
 # Data Preprocessing #
@@ -121,7 +128,6 @@ ALL_data <- getSpecLib(SAVENAME="ALL_data")
 OC_data <- refineSpecLib(SPECLIB=ALL_data, PROP="OC", CALVAL=TRUE, SAVENAME="OC_data")
 
 # Define Reference and Prediction Sets
-#load("Data_Processed/OC_data.RData")
 refSet <- OC_data[OC_data$calib==1,]
 predSet <- OC_data[OC_data$calib==0,]
 
@@ -135,7 +141,6 @@ source("Functions/perform_functions.R")
 plsr.OC <- makePLSModel(PROP="OC", REFNAME="refSet")
 
 # Make Predictions
-#load("Models/plsr.OC.RData")
 pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", PREDNAME= "predSet")
 
 #----------------------------------------------#
@@ -148,7 +153,7 @@ source("Functions/perform_functions.R")
 mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
 
 # Extract Predictions
-#load("Models/mbl.OC.RData")
 mbl.predictions <- getModResults(PROP="OC", MODTYPE="MBL", MODNAME= "mbl.OC", PREDNAME= "predSet")
+
 ```
 
