@@ -16,9 +16,13 @@ pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", P
 
 ## Model Theory {-}
 * **Partial Least Squares Regression** (PLSR) is a useful technique for making predictions on high dimensional datasets; Those with many columns or predictor variables relative to the number of rows or instances.     
-    + For example, we are using **2720 columns** of spectral data as predictor variables for only **478 rows** of samples in the script to follow.   
-    + A simple regression model would have the issue of overfitting and thus would not be suitable for this dataset.         
-* PLSR models, like Principal Component Analysis (PCA), **reduce the dimensionality** of the dataset by creating new set of orthogonal variables that explain the most variation in the data. 
+    + For example, we are using **2720 columns** of spectral data as predictor variables for only **478 rows** of samples in the script to follow. This could cause major issues of overfitting with a simple regression and there may be a lot of redundancy in the data.    
+    
+* PLSR models, like Principal Component Analysis (PCA), **reduce the dimensionality** of the dataset by creating a new set of orthogonal variables that explain the most variation in the data called principal components.
+    + Scores: Length of spectral columns. Represented by V in the diagram below
+    + Loadings: Length of number of samples. Represented by U in the diagram below 
+    
+  ![](images/pls_theory.png)^[http://www.statistics4u.com/fundstat_eng/cc_pca_loadscore.html]
 
 * However, instead of **optimizing covariance** amoung only the predictor variables, in this case the spectra, PLS optimizes covariance between the predictors and the response variable, the soil property of interest.    
     + To learn more about PLS, check out this youtube video: [**PLS Introductory Video**]("https://www.youtube.com/watch?v=AxmqUKYeD-U")    
@@ -108,7 +112,7 @@ There are a few different ways of getting predictions from a pls model. Stored w
 
 * `getPredPLS( MODEL, NCOMP, PREDTYPE, PREDSET )`
     + `MODEL`: *object*- pls model object to get predictions from
-    + `NCOMP`: *integer*- Number of components of the model to use for getting predictions.
+    + `NCOMP`: *integer*- Number of components of the model to use for getting predictions. Default is set to `ncompOneSigma()`
     + `PREDTYPE`: *string*- The prediction method, "fitted" returns the predictions for the reference set, "valid" returns the validation predictions for the reference set, and "predict" will return predictions from applying the model on another dataset, PREDSET.       
     + `PREDSET`: *dataframe*- A dataframe to apply the model on to make predictions. Must have a 'spc' column containing a matrix of spectral data with the same number of columns as the reference set used to build the original model.    
 _
@@ -140,6 +144,23 @@ predictions <- c(sqrt_pred^2)
 names(predictions) <- c(seq(1:length(predictions)))
 return(predictions)
 ```
+
+### `ncompOneSigma()` {-} 
+This function selects the optimal number of components to use for getting pls predictions from the model.    
+
+* `ncompOneSigma( MODEL )`
+    + `MODEL`: A PLS model object   
+    
+    
+```{r, eval=FALSE}
+ncompOneSigma <- function(MODEL){
+  ncomp <- selectNcomp(MODEL, method = "onesigma", plot = TRUE, ylim = c(0, 50))
+  return(ncomp)
+}
+```
+
+The scree plot below shows how much the RMSEP decreases, with each additional component added. As you can see, the marginal improvements to the model eventually level off, and the addition of more components is not necessary for better predictions. With the method "onesigma", the optimal number of components is selected as the first model where the RMSEP is within 1 standard error of the absolute optimal RMSEP.   
+![](images/scree-plot.png)
 
 <!-- #----------------Optional Functions------------------#
 

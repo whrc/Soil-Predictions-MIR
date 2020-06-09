@@ -169,6 +169,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="plsr-models.html"><a href="plsr-models.html#getting-pls-predictions"><i class="fa fa-check"></i>Getting PLS Predictions</a><ul>
 <li><a href="plsr-models.html#getpredpls"><code>getPredPLS()</code></a></li>
+<li><a href="plsr-models.html#ncomponesigma"><code>ncompOneSigma()</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>6</b> MBL Models</a><ul>
@@ -225,15 +226,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-preprocessing" class="section level1">
 <h1><span class="header-section-number">4</span> Data Preprocessing</h1>
-<ul>
-<li>Data Preprocessing must be performed for the <strong>reference set</strong>, used to create the models, as well as the dataset you are making predictions from, the <strong>prediction set</strong></li>
-<li>The prediction set and reference set will be the same dataset if you are just using a <strong>single spectral library</strong>, but can be different if you are using models from one set to make predictions on another.</li>
-<li>Data preprocesing is executed by the functions within <code>preprocess_functions.R</code><br />
-</li>
-<li>The code shown below is the section of the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> which calls the preprocessing functions to preprocess the reference set.<br />
-</li>
-<li>The following subsections in this guide explain the steps and their respective functions in more detail</li>
-</ul>
+<p>This section of the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> preprocesses the spectral and lab data that will be used to make models and predictions from. The following subsections explain the steps of preprocessing and their respective functions in more detail</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#----------------------------------------------#</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># Data Preprocessing #</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#----------------------------------------------#</span></a>
@@ -249,6 +242,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#load(&quot;Data_Processed/OC_data.RData&quot;)</span></a>
 <a class="sourceLine" id="cb3-14" data-line-number="14">refSet &lt;-<span class="st"> </span>OC_data[OC_data<span class="op">$</span>calib<span class="op">==</span><span class="dv">1</span>,]</a>
 <a class="sourceLine" id="cb3-15" data-line-number="15">predSet &lt;-<span class="st"> </span>OC_data[OC_data<span class="op">$</span>calib<span class="op">==</span><span class="dv">0</span>,]</a></code></pre></div>
+<ul>
+<li>Data Preprocessing must be performed for the <strong>reference set</strong>, used to create the models, as well as the dataset you are making predictions from, the <strong>prediction set</strong></li>
+<li>The prediction set and reference set will be the same dataset if you are just using a <strong>single spectral library</strong>, but can be different if you are using models from one set to make predictions on another.</li>
+<li>Data preprocesing is executed by the functions within <code>preprocess_functions.R</code></li>
+</ul>
 <div id="get-spectral-library" class="section level2 unnumbered">
 <h2>Get Spectral Library</h2>
 <p>A <strong>spectral library</strong> is simply a dataset containing spectral data for various samples. For the purpose of training models, it is also necessary to have corresponding lab data for the soil properties you are interested in predicting. <code>getSpecLib()</code> is a wrapper function that takes a folder of OPUS files containing spectral data, and a ‘csv’ of lab data, and outputs a merged file with all the spectral and lab data for each sample.</p>

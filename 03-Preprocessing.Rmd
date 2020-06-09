@@ -1,10 +1,5 @@
 # Data Preprocessing
-
-* Data Preprocessing must be performed for the **reference set**, used to create the models, as well as the dataset you are making predictions from, the **prediction set**
-* The prediction set and reference set will be the same dataset if you are just using a **single spectral library**, but can be different if you are using models from one set to make predictions on another.
-* Data preprocesing is executed by the functions within `preprocess_functions.R`    
-* The code shown below is the section of the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) which calls the preprocessing functions to preprocess the reference set.     
-* The following subsections in this guide explain the steps and their respective functions in more detail    
+This section of the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) preprocesses the spectral and lab data that will be used to make models and predictions from. The following subsections explain the steps of preprocessing and their respective functions in more detail
 
 ```{r, eval=FALSE}
 #----------------------------------------------#
@@ -23,6 +18,11 @@ OC_data <- refineSpecLib(SPECLIB=ALL_data, PROP="OC", CALVAL=TRUE, SAVENAME="OC_
 refSet <- OC_data[OC_data$calib==1,]
 predSet <- OC_data[OC_data$calib==0,]
 ```
+
+* Data Preprocessing must be performed for the **reference set**, used to create the models, as well as the dataset you are making predictions from, the **prediction set**
+* The prediction set and reference set will be the same dataset if you are just using a **single spectral library**, but can be different if you are using models from one set to make predictions on another.
+* Data preprocesing is executed by the functions within `preprocess_functions.R`    
+
 
 ## Get Spectral Library   {-}
 

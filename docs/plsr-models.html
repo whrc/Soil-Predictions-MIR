@@ -21,7 +21,6 @@
   
   
 
-<meta name="author" content="Charlotte Rivard" />
 
 
 
@@ -169,6 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="plsr-models.html"><a href="plsr-models.html#getting-pls-predictions"><i class="fa fa-check"></i>Getting PLS Predictions</a><ul>
 <li><a href="plsr-models.html#getpredpls"><code>getPredPLS()</code></a></li>
+<li><a href="plsr-models.html#ncomponesigma"><code>ncompOneSigma()</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>6</b> MBL Models</a><ul>
@@ -226,28 +226,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="plsr-models" class="section level1">
 <h1><span class="header-section-number">5</span> PLSR Models</h1>
 <p>This section of the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> creates PLSR models and gets predictions from them:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co">#----------------------------------------------#</span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="co"># Partial Least Squares Regression #</span></a>
-<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="co">#----------------------------------------------#</span></a>
-<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="kw">source</span>(<span class="st">&quot;Functions/plsr_functions.R&quot;</span>)</a>
-<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="kw">source</span>(<span class="st">&quot;Functions/perform_functions.R&quot;</span>)</a>
-<a class="sourceLine" id="cb26-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb26-7" data-line-number="7"><span class="co"># Make Model</span></a>
-<a class="sourceLine" id="cb26-8" data-line-number="8">plsr.OC &lt;-<span class="st"> </span><span class="kw">makePLSModel</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>)</a>
-<a class="sourceLine" id="cb26-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb26-10" data-line-number="10"><span class="co"># Make Predictions</span></a>
-<a class="sourceLine" id="cb26-11" data-line-number="11">pls.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;PLS&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;plsr.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># Partial Least Squares Regression #</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">source</span>(<span class="st">&quot;Functions/plsr_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">source</span>(<span class="st">&quot;Functions/perform_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co"># Make Model</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">plsr.OC &lt;-<span class="st"> </span><span class="kw">makePLSModel</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co"># Make Predictions</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">pls.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;PLS&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;plsr.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
 <div id="model-theory" class="section level2 unnumbered">
 <h2>Model Theory</h2>
 <ul>
 <li><strong>Partial Least Squares Regression</strong> (PLSR) is a useful technique for making predictions on high dimensional datasets; Those with many columns or predictor variables relative to the number of rows or instances.
 <ul>
-<li>For example, we are using <strong>2720 columns</strong> of spectral data as predictor variables for only <strong>478 rows</strong> of samples in the script to follow.<br />
-</li>
-<li>A simple regression model would have the issue of overfitting and thus would not be suitable for this dataset.<br />
-</li>
+<li>For example, we are using <strong>2720 columns</strong> of spectral data as predictor variables for only <strong>478 rows</strong> of samples in the script to follow. This could cause major issues of overfitting with a simple regression and there may be a lot of redundancy in the data.</li>
 </ul></li>
-<li><p>PLSR models, like Principal Component Analysis (PCA), <strong>reduce the dimensionality</strong> of the dataset by creating new set of orthogonal variables that explain the most variation in the data.</p></li>
+<li>PLSR models, like Principal Component Analysis (PCA), <strong>reduce the dimensionality</strong> of the dataset by creating a new set of orthogonal variables that explain the most variation in the data called principal components.
+<ul>
+<li>Scores: Length of spectral columns. Represented by V in the diagram below</li>
+<li>Loadings: Length of number of samples. Represented by U in the diagram below</li>
+</ul>
+<p><img src="images/pls_theory.png" /><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p></li>
 <li>However, instead of <strong>optimizing covariance</strong> amoung only the predictor variables, in this case the spectra, PLS optimizes covariance between the predictors and the response variable, the soil property of interest.
 <ul>
 <li>To learn more about PLS, check out this youtube video: <a href="%22https://www.youtube.com/watch?v=AxmqUKYeD-U%22"><strong>PLS Introductory Video</strong></a></li>
@@ -259,9 +261,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="making-plsr-models" class="section level2 unnumbered">
 <h2>Making PLSR Models</h2>
 <p>The following is a wrapper function for loading the appropriate data, assigning a validation type, making a PLS model and optionally saving it. It is stored in <code>Functions/plsr_functions.R</code> and used directly in the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a>:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw">source</span>(<span class="st">&quot;Functions/plsr_functions.R&quot;</span>)</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="co"># Make Model</span></a>
-<a class="sourceLine" id="cb27-3" data-line-number="3">plsr.OC &lt;-<span class="st"> </span><span class="kw">makePLSModel</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">source</span>(<span class="st">&quot;Functions/plsr_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># Make Model</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">plsr.OC &lt;-<span class="st"> </span><span class="kw">makePLSModel</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>)</a></code></pre></div>
 <div id="makeplsmodel" class="section level3 unnumbered">
 <h3><code>makePLSModel()</code></h3>
 <ul>
@@ -278,16 +280,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>We use the <a href="https://cran.r-project.org/web/packages/pls/vignettes/pls-manual.pdf">pls package in r…</a></li>
 </ul>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co">#---Packages---#</span></a>
-<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw">library</span>(pls)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#---Packages---#</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">library</span>(pls)</a></code></pre></div>
 <ul>
 <li>If <code>REFPATH</code> is not NA, it will load the reference set at the path passed. Otherwise, it assumes you have passed in <code>REFNAME</code>, the variable name of a reference set already loaded. We use the <code>get()</code> command, rather than the variable itself, so that the name of the variable can be saved with our prediction performance.</li>
 </ul>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co"># Load Data</span></a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(REFPATH)){</a>
-<a class="sourceLine" id="cb29-3" data-line-number="3">  REFNAME &lt;-<span class="st"> </span><span class="kw">load</span>(REFPATH) <span class="co"># If REFPATH is given</span></a>
-<a class="sourceLine" id="cb29-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">refset &lt;-<span class="st"> </span><span class="kw">get</span>(REFNAME) <span class="co"># load as variable REFSET</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Load Data</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(REFPATH)){</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  REFNAME &lt;-<span class="st"> </span><span class="kw">load</span>(REFPATH) <span class="co"># If REFPATH is given</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">refset &lt;-<span class="st"> </span><span class="kw">get</span>(REFNAME) <span class="co"># load as variable REFSET</span></a></code></pre></div>
 <ul>
 <li><p>The <code>plsr()</code> command creates a model based on several inputs, outlined in the
 full <a href="https://www.rdocumentation.org/packages/pls/versions/2.7-2/topics/mvr"><strong>plsr() documentation</strong></a> and <a href="https://cran.r-project.org/web/packages/pls/pls.pdf"><strong>pls manual</strong></a></p></li>
@@ -309,26 +311,26 @@ full <a href="https://www.rdocumentation.org/packages/pls/versions/2.7-2/topics/
 </ul></li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># Create Model</span></a>
-<a class="sourceLine" id="cb30-2" data-line-number="2">model &lt;-<span class="st"> </span><span class="kw">plsr</span>(<span class="kw">sqrt</span>(<span class="kw">get</span>(PROP))<span class="op">~</span>spc, <span class="dt">ncomp=</span><span class="dv">20</span>, <span class="dt">data =</span> refset , <span class="dt">valid=</span>VALTYPE)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Create Model</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">model &lt;-<span class="st"> </span><span class="kw">plsr</span>(<span class="kw">sqrt</span>(<span class="kw">get</span>(PROP))<span class="op">~</span>spc, <span class="dt">ncomp=</span><span class="dv">20</span>, <span class="dt">data =</span> refset , <span class="dt">valid=</span>VALTYPE)</a></code></pre></div>
 <ul>
 <li>Optionally save the model. By default it will save to the Models folder as plsr.PROP -&gt; Ex: ‘Models/plsr.OC.RData’</li>
 </ul>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># Save Model</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="cf">if</span>(SAVENAME <span class="op">!=</span><span class="st"> &quot;none&quot;</span>){</a>
-<a class="sourceLine" id="cb31-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Models&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Models&quot;</span>)} <span class="co"># Create Folder to Save Models</span></a>
-<a class="sourceLine" id="cb31-4" data-line-number="4">  <span class="kw">assign</span>(SAVENAME, model)</a>
-<a class="sourceLine" id="cb31-5" data-line-number="5">  savefile &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Models/&quot;</span>,SAVENAME,<span class="st">&quot;.RData&quot;</span>)</a>
-<a class="sourceLine" id="cb31-6" data-line-number="6">  <span class="kw">save</span>(<span class="dt">list=</span> SAVENAME, <span class="dt">file =</span> savefile) <span class="co">#Ex: plsr.OC.RData</span></a>
-<a class="sourceLine" id="cb31-7" data-line-number="7">  <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Model saved to&quot;</span>,savefile))</a>
-<a class="sourceLine" id="cb31-8" data-line-number="8">}</a>
-<a class="sourceLine" id="cb31-9" data-line-number="9"><span class="kw">return</span>(model)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Save Model</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="cf">if</span>(SAVENAME <span class="op">!=</span><span class="st"> &quot;none&quot;</span>){</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;./Models&quot;</span>)<span class="op">==</span><span class="ot">FALSE</span>){<span class="kw">dir.create</span>(<span class="st">&quot;./Models&quot;</span>)} <span class="co"># Create Folder to Save Models</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="kw">assign</span>(SAVENAME, model)</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">  savefile &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Models/&quot;</span>,SAVENAME,<span class="st">&quot;.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">  <span class="kw">save</span>(<span class="dt">list=</span> SAVENAME, <span class="dt">file =</span> savefile) <span class="co">#Ex: plsr.OC.RData</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">  <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Model saved to&quot;</span>,savefile))</a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">}</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="kw">return</span>(model)</a></code></pre></div>
 </div>
 </div>
 <div id="getting-pls-predictions" class="section level2 unnumbered">
 <h2>Getting PLS Predictions</h2>
 <p>The following is a function for getting PLS predictions stored in <code>Functions/plsr_functions.R</code> In the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> is it called within <code>getModResults()</code> which is stored in <code>Functions/perform_functions.R</code>.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">pls.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;PLS&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;plsr.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">pls.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;PLS&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;plsr.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
 <div id="getpredpls" class="section level3 unnumbered">
 <h3><code>getPredPLS()</code></h3>
 <p>There are a few different ways of getting predictions from a pls model. Stored within the pls object itself, are the validation predictions and fitted predictions for the reference set used to build the model. However, you can also apply the model on a new dataset using the <code>predict()</code> function in the pls package.</p>
@@ -336,7 +338,7 @@ full <a href="https://www.rdocumentation.org/packages/pls/versions/2.7-2/topics/
 <li><code>getPredPLS( MODEL, NCOMP, PREDTYPE, PREDSET )</code>
 <ul>
 <li><code>MODEL</code>: <em>object</em>- pls model object to get predictions from</li>
-<li><code>NCOMP</code>: <em>integer</em>- Number of components of the model to use for getting predictions.</li>
+<li><code>NCOMP</code>: <em>integer</em>- Number of components of the model to use for getting predictions. Default is set to <code>ncompOneSigma()</code></li>
 <li><code>PREDTYPE</code>: <em>string</em>- The prediction method, “fitted” returns the predictions for the reference set, “valid” returns the validation predictions for the reference set, and “predict” will return predictions from applying the model on another dataset, PREDSET.<br />
 </li>
 <li><code>PREDSET</code>: <em>dataframe</em>- A dataframe to apply the model on to make predictions. Must have a ‘spc’ column containing a matrix of spectral data with the same number of columns as the reference set used to build the original model.<br />
@@ -344,27 +346,43 @@ _</li>
 </ul></li>
 <li>If the prediction type is “valid”, we extract the validation predictions for the reference set, made when creating the model. These are stored within the model object at <code>MODEL$validation$pred</code></li>
 </ul>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="cf">if</span>(PREDTYPE<span class="op">==</span><span class="st">&quot;valid&quot;</span>){</a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">  sqrt_pred &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">data.frame</span>(MODEL<span class="op">$</span>validation<span class="op">$</span>pred)[NCOMP])</a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="cf">if</span>(PREDTYPE<span class="op">==</span><span class="st">&quot;valid&quot;</span>){</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">  sqrt_pred &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">data.frame</span>(MODEL<span class="op">$</span>validation<span class="op">$</span>pred)[NCOMP])</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">}</a></code></pre></div>
 <ul>
 <li>If the prediction type is “fitted”, we extract the predictions from the reference set. These are the fitted values of the reference set to the model and are stored within the model at <code>MODEL$fitted.values</code></li>
 </ul>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="cf">if</span>(PREDTYPE <span class="op">==</span><span class="st"> &quot;fitted&quot;</span>){</a>
-<a class="sourceLine" id="cb34-2" data-line-number="2">  sqrt_pred &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">data.frame</span>(MODEL<span class="op">$</span>fitted.values)[NCOMP])</a>
-<a class="sourceLine" id="cb34-3" data-line-number="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="cf">if</span>(PREDTYPE <span class="op">==</span><span class="st"> &quot;fitted&quot;</span>){</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  sqrt_pred &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">data.frame</span>(MODEL<span class="op">$</span>fitted.values)[NCOMP])</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">}</a></code></pre></div>
 <ul>
 <li>If the prediction type is “predict”, we make predictions with off of the spectra in our prediction set.</li>
 </ul>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="cf">if</span>(PREDTYPE <span class="op">==</span><span class="st"> &quot;predict&quot;</span>){</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">  sqrt_pred &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">predict</span>(MODEL, <span class="dt">newdata =</span> PREDSET<span class="op">$</span>spc, <span class="dt">ncomp=</span>NCOMP))</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="cf">if</span>(PREDTYPE <span class="op">==</span><span class="st"> &quot;predict&quot;</span>){</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">  sqrt_pred &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">predict</span>(MODEL, <span class="dt">newdata =</span> PREDSET<span class="op">$</span>spc, <span class="dt">ncomp=</span>NCOMP))</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">}</a></code></pre></div>
 <ul>
 <li>Since we square root transformed the input lab data, we actually predicted for the square root of our property of interest. Here we square the predictions to untransform this data.</li>
 </ul>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">predictions &lt;-<span class="st"> </span><span class="kw">c</span>(sqrt_pred<span class="op">^</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb36-2" data-line-number="2"><span class="kw">names</span>(predictions) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">seq</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(predictions)))</a>
-<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="kw">return</span>(predictions)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">predictions &lt;-<span class="st"> </span><span class="kw">c</span>(sqrt_pred<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">names</span>(predictions) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">seq</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(predictions)))</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw">return</span>(predictions)</a></code></pre></div>
+</div>
+<div id="ncomponesigma" class="section level3 unnumbered">
+<h3><code>ncompOneSigma()</code></h3>
+<p>This function selects the optimal number of components to use for getting pls predictions from the model.</p>
+<ul>
+<li><code>ncompOneSigma( MODEL )</code>
+<ul>
+<li><code>MODEL</code>: A PLS model object</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">ncompOneSigma &lt;-<span class="st"> </span><span class="cf">function</span>(MODEL){</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">  ncomp &lt;-<span class="st"> </span><span class="kw">selectNcomp</span>(MODEL, <span class="dt">method =</span> <span class="st">&quot;onesigma&quot;</span>, <span class="dt">plot =</span> <span class="ot">TRUE</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">50</span>))</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">  <span class="kw">return</span>(ncomp)</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">}</a></code></pre></div>
+<p>The scree plot below shows how much the RMSEP decreases, with each additional component added. As you can see, the marginal improvements to the model eventually level off, and the addition of more components is not necessary for better predictions. With the method “onesigma”, the optimal number of components is selected as the first model where the RMSEP is within 1 standard error of the absolute optimal RMSEP.<br />
+<img src="images/scree-plot.png" /></p>
 <!-- #----------------Optional Functions------------------#
 
 # Get Sample ID
@@ -410,6 +428,12 @@ getPLSCoefs <- function(MODEL, PROP, NCOMP){
 
 </div>
 </div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p><a href="http://www.statistics4u.com/fundstat_eng/cc_pca_loadscore.html" class="uri">http://www.statistics4u.com/fundstat_eng/cc_pca_loadscore.html</a><a href="plsr-models.html#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
             </section>
 

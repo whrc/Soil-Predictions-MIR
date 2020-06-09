@@ -169,6 +169,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="plsr-models.html"><a href="plsr-models.html#getting-pls-predictions"><i class="fa fa-check"></i>Getting PLS Predictions</a><ul>
 <li><a href="plsr-models.html#getpredpls"><code>getPredPLS()</code></a></li>
+<li><a href="plsr-models.html#ncomponesigma"><code>ncompOneSigma()</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>6</b> MBL Models</a><ul>
@@ -226,17 +227,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="mbl-models" class="section level1">
 <h1><span class="header-section-number">6</span> MBL Models</h1>
 <p>This section of the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> creates MBL models and gets predictions from them:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co">#----------------------------------------------#</span></a>
-<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="co"># Memory Based Learner Model #</span></a>
-<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="co">#----------------------------------------------#</span></a>
-<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="kw">source</span>(<span class="st">&quot;Functions/mbl_functions.R&quot;</span>)</a>
-<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="kw">source</span>(<span class="st">&quot;Functions/perform_functions.R&quot;</span>)</a>
-<a class="sourceLine" id="cb37-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb37-7" data-line-number="7"><span class="co"># Make Model</span></a>
-<a class="sourceLine" id="cb37-8" data-line-number="8">mbl.OC &lt;-<span class="st"> </span><span class="kw">runMBL</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>, <span class="dt">PREDNAME=</span><span class="st">&quot;predSet&quot;</span>)</a>
-<a class="sourceLine" id="cb37-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb37-10" data-line-number="10"><span class="co"># Extract Predictions</span></a>
-<a class="sourceLine" id="cb37-11" data-line-number="11">mbl.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;MBL&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;mbl.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="co"># Memory Based Learner Model #</span></a>
+<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="co">#----------------------------------------------#</span></a>
+<a class="sourceLine" id="cb38-4" data-line-number="4"><span class="kw">source</span>(<span class="st">&quot;Functions/mbl_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb38-5" data-line-number="5"><span class="kw">source</span>(<span class="st">&quot;Functions/perform_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb38-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb38-7" data-line-number="7"><span class="co"># Make Model</span></a>
+<a class="sourceLine" id="cb38-8" data-line-number="8">mbl.OC &lt;-<span class="st"> </span><span class="kw">runMBL</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>, <span class="dt">PREDNAME=</span><span class="st">&quot;predSet&quot;</span>)</a>
+<a class="sourceLine" id="cb38-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb38-10" data-line-number="10"><span class="co"># Extract Predictions</span></a>
+<a class="sourceLine" id="cb38-11" data-line-number="11">mbl.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;MBL&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;mbl.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
 <div id="model-theory-1" class="section level2 unnumbered">
 <h2>Model Theory</h2>
 <div id="overview" class="section level3 unnumbered">
@@ -295,8 +296,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="runmbl" class="section level3 unnumbered">
 <h3><code>runMBL()</code></h3>
 <p><code>runMBL()</code> is a wrapper function for loading the appropriate datasets and calling the resemble functions for running an mbl model. It is used directly in the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a> as shown below:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">source</span>(<span class="st">&quot;Functions/mbl_functions.R&quot;</span>)</a>
-<a class="sourceLine" id="cb40-2" data-line-number="2">mbl.OC &lt;-<span class="st"> </span><span class="kw">runMBL</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>, <span class="dt">PREDNAME=</span><span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="kw">source</span>(<span class="st">&quot;Functions/mbl_functions.R&quot;</span>)</a>
+<a class="sourceLine" id="cb41-2" data-line-number="2">mbl.OC &lt;-<span class="st"> </span><span class="kw">runMBL</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">REFNAME=</span><span class="st">&quot;refSet&quot;</span>, <span class="dt">PREDNAME=</span><span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
 <ul>
 <li><code>runMBL()</code>
 <ul>
@@ -312,47 +313,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>Load the resemble package</li>
 </ul>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="co"># Run MBL Model</span></a>
-<a class="sourceLine" id="cb41-2" data-line-number="2"><span class="kw">library</span>(resemble)</a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="co"># Run MBL Model</span></a>
+<a class="sourceLine" id="cb42-2" data-line-number="2"><span class="kw">library</span>(resemble)</a></code></pre></div>
 <ul>
 <li>Load the data
 <ul>
 <li>If <code>REFPATH</code> is not NA, it will load the reference set at the path passed. Otherwise, it assumes you have passed in <code>REFNAME</code>, the variable name of a reference set already loaded. We use the <code>get()</code> command, rather than the variable itself, so that the name of the variable can be saved with our prediction performance. The same applies to the prediction set.</li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="co"># Load Reference Set</span></a>
-<a class="sourceLine" id="cb42-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(REFPATH)){</a>
-<a class="sourceLine" id="cb42-3" data-line-number="3">  REFNAME &lt;-<span class="st"> </span><span class="kw">load</span>(REFPATH) <span class="co"># If REFPATH is given</span></a>
-<a class="sourceLine" id="cb42-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb42-5" data-line-number="5">refset &lt;-<span class="st"> </span><span class="kw">get</span>(REFNAME) <span class="co"># load as variable REFSET</span></a>
-<a class="sourceLine" id="cb42-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb42-7" data-line-number="7"><span class="co"># Load Prediction Set</span></a>
-<a class="sourceLine" id="cb42-8" data-line-number="8"><span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(PREDPATH)){</a>
-<a class="sourceLine" id="cb42-9" data-line-number="9">  PREDNAME &lt;-<span class="st"> </span><span class="kw">load</span>(PREDPATH)</a>
-<a class="sourceLine" id="cb42-10" data-line-number="10">}</a>
-<a class="sourceLine" id="cb42-11" data-line-number="11">predSet &lt;-<span class="st"> </span><span class="kw">get</span>(PREDNAME)</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co"># Load Reference Set</span></a>
+<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(REFPATH)){</a>
+<a class="sourceLine" id="cb43-3" data-line-number="3">  REFNAME &lt;-<span class="st"> </span><span class="kw">load</span>(REFPATH) <span class="co"># If REFPATH is given</span></a>
+<a class="sourceLine" id="cb43-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb43-5" data-line-number="5">refset &lt;-<span class="st"> </span><span class="kw">get</span>(REFNAME) <span class="co"># load as variable REFSET</span></a>
+<a class="sourceLine" id="cb43-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb43-7" data-line-number="7"><span class="co"># Load Prediction Set</span></a>
+<a class="sourceLine" id="cb43-8" data-line-number="8"><span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(PREDPATH)){</a>
+<a class="sourceLine" id="cb43-9" data-line-number="9">  PREDNAME &lt;-<span class="st"> </span><span class="kw">load</span>(PREDPATH)</a>
+<a class="sourceLine" id="cb43-10" data-line-number="10">}</a>
+<a class="sourceLine" id="cb43-11" data-line-number="11">predSet &lt;-<span class="st"> </span><span class="kw">get</span>(PREDNAME)</a></code></pre></div>
 <ul>
 <li>Define inputs and eliminate rows with NA values</li>
 </ul>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co"># Define Input Datasets</span></a>
-<a class="sourceLine" id="cb43-2" data-line-number="2">Xu &lt;-<span class="st"> </span>predSet<span class="op">$</span>spc          <span class="co"># Prediction Spectra </span></a>
-<a class="sourceLine" id="cb43-3" data-line-number="3">Yu &lt;-<span class="st"> </span><span class="kw">sqrt</span>(predSet[,PROP]) <span class="co"># Prediction Lab Data</span></a>
-<a class="sourceLine" id="cb43-4" data-line-number="4">Yr &lt;-<span class="st"> </span><span class="kw">sqrt</span>(refSet[,PROP])  <span class="co"># Reference Spectra</span></a>
-<a class="sourceLine" id="cb43-5" data-line-number="5">Xr &lt;-<span class="st"> </span>refSet<span class="op">$</span>spc           <span class="co"># Reference Lab Data</span></a>
-<a class="sourceLine" id="cb43-6" data-line-number="6">  </a>
-<a class="sourceLine" id="cb43-7" data-line-number="7"><span class="co"># Get Rid of NAs</span></a>
-<a class="sourceLine" id="cb43-8" data-line-number="8">Xu &lt;-<span class="st"> </span>Xu[<span class="op">!</span><span class="kw">is.na</span>(Yu),]</a>
-<a class="sourceLine" id="cb43-9" data-line-number="9">Xr &lt;-<span class="st"> </span>Xr[<span class="op">!</span><span class="kw">is.na</span>(Yr),]</a>
-<a class="sourceLine" id="cb43-10" data-line-number="10">Yu &lt;-<span class="st"> </span>Yu[<span class="op">!</span><span class="kw">is.na</span>(Yu)]</a>
-<a class="sourceLine" id="cb43-11" data-line-number="11">Yr &lt;-<span class="st"> </span>Yr[<span class="op">!</span><span class="kw">is.na</span>(Yr)]</a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="co"># Define Input Datasets</span></a>
+<a class="sourceLine" id="cb44-2" data-line-number="2">Xu &lt;-<span class="st"> </span>predSet<span class="op">$</span>spc          <span class="co"># Prediction Spectra </span></a>
+<a class="sourceLine" id="cb44-3" data-line-number="3">Yu &lt;-<span class="st"> </span><span class="kw">sqrt</span>(predSet[,PROP]) <span class="co"># Prediction Lab Data</span></a>
+<a class="sourceLine" id="cb44-4" data-line-number="4">Yr &lt;-<span class="st"> </span><span class="kw">sqrt</span>(refSet[,PROP])  <span class="co"># Reference Spectra</span></a>
+<a class="sourceLine" id="cb44-5" data-line-number="5">Xr &lt;-<span class="st"> </span>refSet<span class="op">$</span>spc           <span class="co"># Reference Lab Data</span></a>
+<a class="sourceLine" id="cb44-6" data-line-number="6">  </a>
+<a class="sourceLine" id="cb44-7" data-line-number="7"><span class="co"># Get Rid of NAs</span></a>
+<a class="sourceLine" id="cb44-8" data-line-number="8">Xu &lt;-<span class="st"> </span>Xu[<span class="op">!</span><span class="kw">is.na</span>(Yu),]</a>
+<a class="sourceLine" id="cb44-9" data-line-number="9">Xr &lt;-<span class="st"> </span>Xr[<span class="op">!</span><span class="kw">is.na</span>(Yr),]</a>
+<a class="sourceLine" id="cb44-10" data-line-number="10">Yu &lt;-<span class="st"> </span>Yu[<span class="op">!</span><span class="kw">is.na</span>(Yu)]</a>
+<a class="sourceLine" id="cb44-11" data-line-number="11">Yr &lt;-<span class="st"> </span>Yr[<span class="op">!</span><span class="kw">is.na</span>(Yr)]</a></code></pre></div>
 <ul>
 <li>Set Control Parameters
 <ul>
 <li>In this example, nearest neighbors will be determined in principal component space (<code>sm='pc'</code>), the optimal number of principal components will be used and up to 50 components will be tested (<code>pcSelection = list('opc',50)</code>), and nearest neighbor validation will be used (<code>valMethod = 'NNv'</code>)- meaning for each prediction, a model will be built will all but the nearest neighbor of the sample being predicted.</li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw">mblControl</span>(<span class="dt">sm =</span> <span class="st">&#39;pc&#39;</span>, <span class="dt">pcSelection =</span> <span class="kw">list</span>(<span class="st">&#39;opc&#39;</span>, <span class="dv">50</span>),</a>
-<a class="sourceLine" id="cb44-2" data-line-number="2">                    <span class="dt">valMethod =</span> <span class="st">&#39;NNv&#39;</span>,<span class="dt">center=</span><span class="ot">TRUE</span>,<span class="dt">scale=</span><span class="ot">FALSE</span>,<span class="dt">allowParallel=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw">mblControl</span>(<span class="dt">sm =</span> <span class="st">&#39;pc&#39;</span>, <span class="dt">pcSelection =</span> <span class="kw">list</span>(<span class="st">&#39;opc&#39;</span>, <span class="dv">50</span>),</a>
+<a class="sourceLine" id="cb45-2" data-line-number="2">                    <span class="dt">valMethod =</span> <span class="st">&#39;NNv&#39;</span>,<span class="dt">center=</span><span class="ot">TRUE</span>,<span class="dt">scale=</span><span class="ot">FALSE</span>,<span class="dt">allowParallel=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 <ul>
 <li>Run MBL Model
 <ul>
@@ -361,22 +362,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 <p>Option 1</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">  mbl.sqrt &lt;-<span class="st"> </span><span class="kw">mbl</span>(<span class="dt">Yr =</span> Yr, <span class="dt">Xr =</span> Xr, <span class="dt">Yu =</span> Yu, <span class="dt">Xu =</span> Xu, <span class="dt">mblCtrl =</span> ctrl, <span class="dt">dissUsage =</span> <span class="st">&#39;none&#39;</span>,</a>
-<a class="sourceLine" id="cb45-2" data-line-number="2">                  <span class="dt">k =</span> <span class="kw">seq</span>(<span class="dv">40</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>), <span class="dt">method =</span> <span class="st">&#39;pls&#39;</span>, <span class="dt">pls.c =</span> <span class="dv">6</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">  mbl.sqrt &lt;-<span class="st"> </span><span class="kw">mbl</span>(<span class="dt">Yr =</span> Yr, <span class="dt">Xr =</span> Xr, <span class="dt">Yu =</span> Yu, <span class="dt">Xu =</span> Xu, <span class="dt">mblCtrl =</span> ctrl, <span class="dt">dissUsage =</span> <span class="st">&#39;none&#39;</span>,</a>
+<a class="sourceLine" id="cb46-2" data-line-number="2">                  <span class="dt">k =</span> <span class="kw">seq</span>(<span class="dv">40</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>), <span class="dt">method =</span> <span class="st">&#39;pls&#39;</span>, <span class="dt">pls.c =</span> <span class="dv">6</span>)</a></code></pre></div>
 <p>Option 2</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">mbl.sqrt &lt;-<span class="st"> </span><span class="kw">mbl</span>(<span class="dt">Yr =</span> Yr, <span class="dt">Xr =</span> Xr, <span class="dt">Xu =</span> Xu, <span class="dt">mblCtrl =</span> ctrl, <span class="dt">dissUsage =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">k.diss =</span> <span class="kw">seq</span>(<span class="fl">0.3</span>, <span class="dv">1</span>, <span class="dt">by=</span><span class="fl">0.1</span>), </a>
-<a class="sourceLine" id="cb46-2" data-line-number="2">                <span class="dt">k.range =</span> <span class="kw">c</span>(<span class="dv">20</span>, <span class="kw">nrow</span>(refSet)), <span class="dt">pls.c =</span> <span class="kw">c</span>(<span class="dt">minpls=</span><span class="dv">3</span>, <span class="dt">maxpls=</span><span class="dv">20</span>), <span class="dt">method =</span> <span class="st">&quot;wapls1&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">mbl.sqrt &lt;-<span class="st"> </span><span class="kw">mbl</span>(<span class="dt">Yr =</span> Yr, <span class="dt">Xr =</span> Xr, <span class="dt">Xu =</span> Xu, <span class="dt">mblCtrl =</span> ctrl, <span class="dt">dissUsage =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">k.diss =</span> <span class="kw">seq</span>(<span class="fl">0.3</span>, <span class="dv">1</span>, <span class="dt">by=</span><span class="fl">0.1</span>), </a>
+<a class="sourceLine" id="cb47-2" data-line-number="2">                <span class="dt">k.range =</span> <span class="kw">c</span>(<span class="dv">20</span>, <span class="kw">nrow</span>(refSet)), <span class="dt">pls.c =</span> <span class="kw">c</span>(<span class="dt">minpls=</span><span class="dv">3</span>, <span class="dt">maxpls=</span><span class="dv">20</span>), <span class="dt">method =</span> <span class="st">&quot;wapls1&quot;</span>)</a></code></pre></div>
 <ul>
 <li>Save the model</li>
 </ul>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co"># Save MBL Model</span></a>
-<a class="sourceLine" id="cb47-2" data-line-number="2"><span class="cf">if</span>(SAVENAME <span class="op">!=</span><span class="st"> &quot;none&quot;</span>){</a>
-<a class="sourceLine" id="cb47-3" data-line-number="3">  modelName &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;mbl&quot;</span>, PROP, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Assign Object Name</span></a>
-<a class="sourceLine" id="cb47-4" data-line-number="4">  <span class="kw">assign</span>(modelName, mbl.sqrt)</a>
-<a class="sourceLine" id="cb47-5" data-line-number="5">  savefile &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;./Models/mbl&quot;</span>, PROP,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Save File</span></a>
-<a class="sourceLine" id="cb47-6" data-line-number="6">  <span class="kw">save</span>(<span class="dt">list=</span> modelName, <span class="dt">file =</span> savefile)</a>
-<a class="sourceLine" id="cb47-7" data-line-number="7">  <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Model&quot;</span>,modelName, <span class="st">&quot;saved to&quot;</span>, savefile)) <span class="co"># Print Save Location</span></a>
-<a class="sourceLine" id="cb47-8" data-line-number="8">}</a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="co"># Save MBL Model</span></a>
+<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="cf">if</span>(SAVENAME <span class="op">!=</span><span class="st"> &quot;none&quot;</span>){</a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">  modelName &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;mbl&quot;</span>, PROP, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Assign Object Name</span></a>
+<a class="sourceLine" id="cb48-4" data-line-number="4">  <span class="kw">assign</span>(modelName, mbl.sqrt)</a>
+<a class="sourceLine" id="cb48-5" data-line-number="5">  savefile &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;./Models/mbl&quot;</span>, PROP,<span class="st">&quot;RData&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;.&quot;</span>) <span class="co"># Save File</span></a>
+<a class="sourceLine" id="cb48-6" data-line-number="6">  <span class="kw">save</span>(<span class="dt">list=</span> modelName, <span class="dt">file =</span> savefile)</a>
+<a class="sourceLine" id="cb48-7" data-line-number="7">  <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Model&quot;</span>,modelName, <span class="st">&quot;saved to&quot;</span>, savefile)) <span class="co"># Print Save Location</span></a>
+<a class="sourceLine" id="cb48-8" data-line-number="8">}</a></code></pre></div>
 </div>
 <div id="modeling-parameters" class="section level3 unnumbered">
 <h3>Modeling Parameters</h3>
@@ -488,64 +489,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>To <strong>choose the best model</strong>, we look for the model with the minimum standardized rmse, and extract predictions from this model, using the functions <code>bestModMBL()</code> and <code>getPredMBL()</code> sourced from <code>Functions/mbl_functions.R</code></p></li>
 <li><p>In the <a href="https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script">demo script</a>, <code>getPredMBL()</code> is called within a wrapper function, <code>getModResults()</code>. Complete documentation of this function can be found under the <a href="">Model Performance</a> tab</p></li>
 </ul>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">mbl.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;MBL&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;plsr.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">mbl.predictions &lt;-<span class="st"> </span><span class="kw">getModResults</span>(<span class="dt">PROP=</span><span class="st">&quot;OC&quot;</span>, <span class="dt">MODTYPE=</span><span class="st">&quot;MBL&quot;</span>, <span class="dt">MODNAME=</span> <span class="st">&quot;plsr.OC&quot;</span>, <span class="dt">PREDNAME=</span> <span class="st">&quot;predSet&quot;</span>)</a></code></pre></div>
 <div id="bestmodmbl" class="section level3 unnumbered">
 <h3><code>bestModMBL()</code></h3>
-<p>The following function returns the model with the <strong>lowest standardized root mean standard error</strong>- an index showing how much predictions varied from observations<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">bestModMBL &lt;-<span class="st"> </span><span class="cf">function</span>(mbl.sqrt){</a>
-<a class="sourceLine" id="cb49-2" data-line-number="2">  </a>
-<a class="sourceLine" id="cb49-3" data-line-number="3">  valType &lt;-<span class="st"> </span>mbl.sqrt<span class="op">$</span>cntrlParam<span class="op">$</span>valMethod</a>
-<a class="sourceLine" id="cb49-4" data-line-number="4">  <span class="cf">if</span>(valType<span class="op">==</span><span class="st">&quot;NNv&quot;</span>){</a>
-<a class="sourceLine" id="cb49-5" data-line-number="5">    index_best_model &lt;-<span class="st"> </span><span class="kw">which.min</span>(mbl.sqrt<span class="op">$</span>nnValStats<span class="op">$</span>st.rmse)</a>
-<a class="sourceLine" id="cb49-6" data-line-number="6">  }</a>
-<a class="sourceLine" id="cb49-7" data-line-number="7">  <span class="cf">if</span>(valType<span class="op">==</span><span class="st">&quot;loc_crossval&quot;</span>){</a>
-<a class="sourceLine" id="cb49-8" data-line-number="8">    index_best_model &lt;-<span class="st"> </span><span class="kw">which.min</span>(mbl.sqrt<span class="op">$</span>localCrossValStats<span class="op">$</span>st.rmse)</a>
-<a class="sourceLine" id="cb49-9" data-line-number="9">  }</a>
-<a class="sourceLine" id="cb49-10" data-line-number="10">  best_model_name &lt;-<span class="st"> </span><span class="kw">names</span>(mbl.sqrt<span class="op">$</span>results)[index_best_model]</a>
-<a class="sourceLine" id="cb49-11" data-line-number="11">  </a>
-<a class="sourceLine" id="cb49-12" data-line-number="12">  <span class="kw">return</span>(best_model_name)</a>
-<a class="sourceLine" id="cb49-13" data-line-number="13">}</a></code></pre></div>
+<p>The following function returns the model with the <strong>lowest standardized root mean standard error</strong>- an index showing how much predictions varied from observations<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">bestModMBL &lt;-<span class="st"> </span><span class="cf">function</span>(mbl.sqrt){</a>
+<a class="sourceLine" id="cb50-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb50-3" data-line-number="3">  valType &lt;-<span class="st"> </span>mbl.sqrt<span class="op">$</span>cntrlParam<span class="op">$</span>valMethod</a>
+<a class="sourceLine" id="cb50-4" data-line-number="4">  <span class="cf">if</span>(valType<span class="op">==</span><span class="st">&quot;NNv&quot;</span>){</a>
+<a class="sourceLine" id="cb50-5" data-line-number="5">    index_best_model &lt;-<span class="st"> </span><span class="kw">which.min</span>(mbl.sqrt<span class="op">$</span>nnValStats<span class="op">$</span>st.rmse)</a>
+<a class="sourceLine" id="cb50-6" data-line-number="6">  }</a>
+<a class="sourceLine" id="cb50-7" data-line-number="7">  <span class="cf">if</span>(valType<span class="op">==</span><span class="st">&quot;loc_crossval&quot;</span>){</a>
+<a class="sourceLine" id="cb50-8" data-line-number="8">    index_best_model &lt;-<span class="st"> </span><span class="kw">which.min</span>(mbl.sqrt<span class="op">$</span>localCrossValStats<span class="op">$</span>st.rmse)</a>
+<a class="sourceLine" id="cb50-9" data-line-number="9">  }</a>
+<a class="sourceLine" id="cb50-10" data-line-number="10">  best_model_name &lt;-<span class="st"> </span><span class="kw">names</span>(mbl.sqrt<span class="op">$</span>results)[index_best_model]</a>
+<a class="sourceLine" id="cb50-11" data-line-number="11">  </a>
+<a class="sourceLine" id="cb50-12" data-line-number="12">  <span class="kw">return</span>(best_model_name)</a>
+<a class="sourceLine" id="cb50-13" data-line-number="13">}</a></code></pre></div>
 </div>
 <div id="getpredmbl" class="section level3 unnumbered">
 <h3><code>getPredMBL()</code></h3>
 <p>This function calls <code>bestModMBL()</code> to choose a model to get predictions from, unless <code>model_name</code> is specified otherwise. Since the lab data was square root transformed when building the model, it is back transformed (squared) after predictions are made.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">getPredMBL &lt;-<span class="st"> </span><span class="cf">function</span>(mbl.sqrt, <span class="dt">model_name=</span><span class="ot">NULL</span>){</a>
-<a class="sourceLine" id="cb50-2" data-line-number="2">  </a>
-<a class="sourceLine" id="cb50-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">is.null</span>(model_name)){</a>
-<a class="sourceLine" id="cb50-4" data-line-number="4">    model_name &lt;-<span class="st"> </span><span class="kw">bestModMBL</span>(mbl.sqrt)</a>
-<a class="sourceLine" id="cb50-5" data-line-number="5">  }</a>
-<a class="sourceLine" id="cb50-6" data-line-number="6">  sqrt_preds &lt;-<span class="st"> </span><span class="kw">eval</span>(<span class="kw">parse</span>( <span class="dt">text=</span><span class="kw">paste0</span>(<span class="st">&quot;mbl.sqrt$results$&quot;</span>, model_name,<span class="st">&quot;$pred&quot;</span> )))</a>
-<a class="sourceLine" id="cb50-7" data-line-number="7">  predictions &lt;-<span class="st"> </span><span class="kw">c</span>(sqrt_preds)<span class="op">^</span><span class="dv">2</span> <span class="co"># Reverse transform</span></a>
-<a class="sourceLine" id="cb50-8" data-line-number="8">  </a>
-<a class="sourceLine" id="cb50-9" data-line-number="9">  <span class="kw">return</span>(predictions)</a>
-<a class="sourceLine" id="cb50-10" data-line-number="10">}</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1">getPredMBL &lt;-<span class="st"> </span><span class="cf">function</span>(mbl.sqrt, <span class="dt">model_name=</span><span class="ot">NULL</span>){</a>
+<a class="sourceLine" id="cb51-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb51-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">is.null</span>(model_name)){</a>
+<a class="sourceLine" id="cb51-4" data-line-number="4">    model_name &lt;-<span class="st"> </span><span class="kw">bestModMBL</span>(mbl.sqrt)</a>
+<a class="sourceLine" id="cb51-5" data-line-number="5">  }</a>
+<a class="sourceLine" id="cb51-6" data-line-number="6">  sqrt_preds &lt;-<span class="st"> </span><span class="kw">eval</span>(<span class="kw">parse</span>( <span class="dt">text=</span><span class="kw">paste0</span>(<span class="st">&quot;mbl.sqrt$results$&quot;</span>, model_name,<span class="st">&quot;$pred&quot;</span> )))</a>
+<a class="sourceLine" id="cb51-7" data-line-number="7">  predictions &lt;-<span class="st"> </span><span class="kw">c</span>(sqrt_preds)<span class="op">^</span><span class="dv">2</span> <span class="co"># Reverse transform</span></a>
+<a class="sourceLine" id="cb51-8" data-line-number="8">  </a>
+<a class="sourceLine" id="cb51-9" data-line-number="9">  <span class="kw">return</span>(predictions)</a>
+<a class="sourceLine" id="cb51-10" data-line-number="10">}</a></code></pre></div>
 </div>
 <div id="getlabmbl" class="section level3 unnumbered">
 <h3><code>getLabMBL()</code></h3>
 <p>If lab data was input when building the model as Yu, it will be stored at <code>MODEL$results$model-name$yu.obs</code>. Otherwise, you will have to get it from your original prediction dataset</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1">getLabMBL &lt;-<span class="st"> </span><span class="cf">function</span>(mbl.sqrt){</a>
-<a class="sourceLine" id="cb51-2" data-line-number="2">  </a>
-<a class="sourceLine" id="cb51-3" data-line-number="3">  Yu &lt;-<span class="st"> </span>mbl.sqrt<span class="op">$</span>call<span class="op">$</span>Yu</a>
-<a class="sourceLine" id="cb51-4" data-line-number="4">  </a>
-<a class="sourceLine" id="cb51-5" data-line-number="5">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(Yu)){</a>
-<a class="sourceLine" id="cb51-6" data-line-number="6">    sqrt_lab &lt;-<span class="st"> </span><span class="kw">eval</span>(<span class="kw">parse</span>( <span class="dt">text=</span><span class="kw">paste0</span>(<span class="st">&quot;mbl.sqrt$results$&quot;</span>,best_model_name,<span class="st">&quot;$yu.obs&quot;</span> )))</a>
-<a class="sourceLine" id="cb51-7" data-line-number="7">  }<span class="cf">else</span>{</a>
-<a class="sourceLine" id="cb51-8" data-line-number="8">    sqrt_lab &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb51-9" data-line-number="9">  }</a>
-<a class="sourceLine" id="cb51-10" data-line-number="10">  </a>
-<a class="sourceLine" id="cb51-11" data-line-number="11">  lab &lt;-<span class="st"> </span><span class="kw">c</span>(sqrt_lab)<span class="op">^</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb51-12" data-line-number="12">  </a>
-<a class="sourceLine" id="cb51-13" data-line-number="13">  <span class="kw">return</span>(lab)</a>
-<a class="sourceLine" id="cb51-14" data-line-number="14">  </a>
-<a class="sourceLine" id="cb51-15" data-line-number="15">}</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">getLabMBL &lt;-<span class="st"> </span><span class="cf">function</span>(mbl.sqrt){</a>
+<a class="sourceLine" id="cb52-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb52-3" data-line-number="3">  Yu &lt;-<span class="st"> </span>mbl.sqrt<span class="op">$</span>call<span class="op">$</span>Yu</a>
+<a class="sourceLine" id="cb52-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb52-5" data-line-number="5">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(Yu)){</a>
+<a class="sourceLine" id="cb52-6" data-line-number="6">    sqrt_lab &lt;-<span class="st"> </span><span class="kw">eval</span>(<span class="kw">parse</span>( <span class="dt">text=</span><span class="kw">paste0</span>(<span class="st">&quot;mbl.sqrt$results$&quot;</span>,best_model_name,<span class="st">&quot;$yu.obs&quot;</span> )))</a>
+<a class="sourceLine" id="cb52-7" data-line-number="7">  }<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb52-8" data-line-number="8">    sqrt_lab &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb52-9" data-line-number="9">  }</a>
+<a class="sourceLine" id="cb52-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb52-11" data-line-number="11">  lab &lt;-<span class="st"> </span><span class="kw">c</span>(sqrt_lab)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb52-12" data-line-number="12">  </a>
+<a class="sourceLine" id="cb52-13" data-line-number="13">  <span class="kw">return</span>(lab)</a>
+<a class="sourceLine" id="cb52-14" data-line-number="14">  </a>
+<a class="sourceLine" id="cb52-15" data-line-number="15">}</a></code></pre></div>
 
 </div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="2">
-<li id="fn2"><p><a href="https://www.statisticshowto.com/probability-and-statistics/regression-analysis/rmse-root-mean-square-error/#:~:text=Root%20Mean%20Square%20Error%20(RMSE)%20is%20the%20standard%20deviation%20of,the%20line%20of%20best%20fit.">Find more about the RMSE here</a><a href="mbl-models.html#fnref2" class="footnote-back">↩</a></p></li>
+<ol start="3">
+<li id="fn3"><p><a href="https://www.statisticshowto.com/probability-and-statistics/regression-analysis/rmse-root-mean-square-error/#:~:text=Root%20Mean%20Square%20Error%20(RMSE)%20is%20the%20standard%20deviation%20of,the%20line%20of%20best%20fit.">Find more about the RMSE here</a><a href="mbl-models.html#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>

@@ -169,6 +169,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="plsr-models.html"><a href="plsr-models.html#getting-pls-predictions"><i class="fa fa-check"></i>Getting PLS Predictions</a><ul>
 <li><a href="plsr-models.html#getpredpls"><code>getPredPLS()</code></a></li>
+<li><a href="plsr-models.html#ncomponesigma"><code>ncompOneSigma()</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="mbl-models.html"><a href="mbl-models.html"><i class="fa fa-check"></i><b>6</b> MBL Models</a><ul>
@@ -237,8 +238,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>Double click <code>Soil-Predictions-Example.Rproj</code> to open up the <strong>R-project</strong>. Within a project, the working directory is set to the project’s folder.
 <!-- Add picture when possible --></p></li>
 <li><p>Open up <code>RUNFILE.R</code> in the project environment. This is an example script of how to make soil predictions using spectral data. It includes the use of both <strong>PLSR</strong> models and <strong>MBL</strong> models, which are both explained in this guide.</p></li>
-<li><p>Navigate to the <code>Functions</code> folder. Within this folder are R files containing functions useful for MIR soil predictions. These files will be sourced by each other, and <code>RUNFILE.R</code>
-<img src="images/functions_files.png" /></p></li>
+<li><p>Navigate to the <code>Functions</code> folder. Within this folder are R files containing functions useful for MIR soil predictions. These files will be sourced by each other, and <code>RUNFILE.R</code></p></li>
+</ol>
+<p><img src="images/functions_files.png" /></p>
+<ol start="5" style="list-style-type: decimal">
 <li>Navigate to the <code>Data_Raw</code> folder. This should contain:
 <ul>
 <li><code>LAB_DATA.csv</code>: A ‘.csv’ file of the lab data; At a minimum, it should have a <code>sample_id</code> column and the lab data for a given property</li>
@@ -324,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Change the lab data in <code>Data_Raw/LAB_DATA.csv</code></li>
 <li>Update the name of the property in <code>RUNFILE.R</code>, to match the column name of the property you would like to predict. Currently, we are predicted for “OC”.</li>
 </ol>
-<p>Below is the full <code>RUNFILE.R</code> script, organized with 3 main sections &amp; their corresponding functions, linked below:</p>
+<p>Below is the full <code>RUNFILE.R</code> script, organized with 3 main sections &amp; their corresponding functions, linked below and described in sections 4-7 of this guide.</p>
 <ol style="list-style-type: decimal">
 <li>Data Preprocessing
 <ul>
@@ -335,9 +338,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>PLSR Models
 <ul>
 <li><a href="https://whrc.github.io/Soil-Predictions-MIR/plsr-models.html#makeplsmodel"><code>makePLSModel()</code></a></li>
+<li><a href="https://whrc.github.io/Soil-Predictions-MIR/model-performance.html#getmodresults"><code>getModResults()</code></a>
+<ul>
 <li><a href="https://whrc.github.io/Soil-Predictions-MIR/plsr-models.html#getpredpls"><code>getPredPLS()</code></a></li>
 </ul></li>
-<li>MBL Models</li>
+</ul></li>
+<li>MBL Models
+<ul>
+<li><a href="https://whrc.github.io/Soil-Predictions-MIR/mbl-models.html#runmbl"><code>runMBL()</code></a></li>
+<li><a href="https://whrc.github.io/Soil-Predictions-MIR/model-performance.html#getmodresults"><code>getModResults()</code></a>
+<ul>
+<li><a href="https://whrc.github.io/Soil-Predictions-MIR/mbl-models.html#getpredmbl"><code>getPredMBL()</code></a></li>
+</ul></li>
+</ul></li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">#----------------------------------------------#</span></a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># Data Preprocessing #</span></a>

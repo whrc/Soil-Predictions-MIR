@@ -49,7 +49,7 @@ getPredPLS <- function(MODEL, NCOMP=ncompOneSigma(MODEL), PREDTYPE="fitted", PRE
 ncompOneSigma <- function(MODEL){
   ncomp <- selectNcomp(MODEL, method = "onesigma", plot = TRUE, ylim = c(0, 50))
   return(ncomp)
-}
+}    
 
 
 #----------------Optional Functions------------------#

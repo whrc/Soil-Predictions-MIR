@@ -22,7 +22,8 @@ This folder, along with all source code for this guide, can be found in the foll
 
 3. Open up `RUNFILE.R` in the project environment. This is an example script of how to make soil predictions using spectral data. It includes the use of both **PLSR** models and **MBL** models, which are both explained in this guide. 
 
-4. Navigate to the `Functions` folder. Within this folder are R files containing functions useful for MIR soil predictions. These files will be sourced by each other, and `RUNFILE.R`
+4. Navigate to the `Functions` folder. Within this folder are R files containing functions useful for MIR soil predictions. These files will be sourced by each other, and `RUNFILE.R`      
+
 ![](images/functions_files.png)
 
 5. Navigate to the `Data_Raw` folder. This should contain:    
@@ -103,7 +104,7 @@ To modify for your own spectral library....
 3. Update the name of the property in `RUNFILE.R`, to match the column name of the property you would like to predict. Currently, we are predicted for "OC".
 
 
-Below is the full `RUNFILE.R` script, organized with 3 main sections & their corresponding functions, linked below:
+Below is the full `RUNFILE.R` script, organized with 3 main sections & their corresponding functions, linked below and described in sections 4-7 of this guide.
 
 1. Data Preprocessing      
     + [`getSpecLib()`](https://whrc.github.io/Soil-Predictions-MIR/data-preprocessing.html#getspeclib)    
@@ -111,9 +112,13 @@ Below is the full `RUNFILE.R` script, organized with 3 main sections & their cor
     
 2. PLSR Models    
     + [`makePLSModel()`](https://whrc.github.io/Soil-Predictions-MIR/plsr-models.html#makeplsmodel)
-    + [`getPredPLS()`](https://whrc.github.io/Soil-Predictions-MIR/plsr-models.html#getpredpls)    
+    + [`getModResults()`](https://whrc.github.io/Soil-Predictions-MIR/model-performance.html#getmodresults)
+        + [`getPredPLS()`](https://whrc.github.io/Soil-Predictions-MIR/plsr-models.html#getpredpls)    
     
 3. MBL Models    
+    + [`runMBL()`](https://whrc.github.io/Soil-Predictions-MIR/mbl-models.html#runmbl)
+    + [`getModResults()`](https://whrc.github.io/Soil-Predictions-MIR/model-performance.html#getmodresults)
+        + [`getPredMBL()`](https://whrc.github.io/Soil-Predictions-MIR/mbl-models.html#getpredmbl)
 
 ```{r, eval=FALSE}
 #----------------------------------------------#
