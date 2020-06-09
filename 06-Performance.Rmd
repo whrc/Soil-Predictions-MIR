@@ -12,7 +12,7 @@ It takes in the model as either a path, `MODPATH`, or the name of the object, `M
 
 ### `getModResults()` {-}
 
-* `getModResults( {see below} )`
+* `getModResults()`
     + `PROP`: *string*- The column name of the soil property of interest. Ex: "OC"
     + `MODTYPE`: *string*- "MBL" or "PLS"
     + `MODNAME`: *string*- The name of the model variable, if it is already loaded into the R environment. Use MODNAME or MODPATH 
@@ -69,8 +69,8 @@ getModResults <- function(PROP, MODTYPE, MODNAME=NA, MODPATH=NA, PREDNAME=NA, PR
   names(predobs) <- c("sample_id", paste0(PROP,".",MODTYPE), PROP)
   return(predobs)
 }
-
 ```
+
 ## Predictions {-}
 Predictions are extracting using either `getPredPLS()` or `getPredMBL()`. These are called within `getModResults()` before being saved. The following functions save predictions to a file unique to each prediction set. If this file already exists, it simply adds another column of predictions. If it does not, it will create the file to save predictions in from the original prediction set.    
 
@@ -132,8 +132,8 @@ The getModStats function returns the following statistics in a dataframe:
 * Standard deviation (of predictions)    
 * Residual prediction deviation    
 
-The minimum input is the PREDOBS table containing a column 'pred', containing the predictions and a column 'obs', its corresponding lab data. 
-The remaining parameters 
+The minimum input is the PREDOBS table containing a column 'pred', containing the predictions and a column 'obs', its corresponding lab data. The remaining parameters are characteristics about the models and prediction runs that are important to include if you are saving the statistics.   
+
 ```{r, eval=FALSE}
 getModStats <- function(PREDOBS, PROP=NA, NCOMP=NA, MODNAME=NA, PREDTYPE=NA, PREDNAME=NA, SAVE=FALSE){
   
@@ -176,6 +176,7 @@ getModStats <- function(PREDOBS, PROP=NA, NCOMP=NA, MODNAME=NA, PREDTYPE=NA, PRE
 ![](images/stats.png)
 
 ### saveModStats() {-}
+The following function will save the prediction statistics and information as a row in the performance log: `Predictions/prediction_performance.csv`   
 
 ```{r eval=FALSE}
 saveModStats <- function(MODSTATS){

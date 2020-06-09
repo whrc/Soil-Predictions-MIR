@@ -51,16 +51,52 @@ Resemble Powerpoint: http://www.fao.org/fileadmin/user_upload/GSP/docs/Spectrosc
 
 ## Running MBL {-}
 
-Running an MBL modeling approach is accomplished using a couple functions from the [resemble package](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#resemble): `mblControl()` and `mbl()`. The following, is a wrapper function for loading the appropriate datasets and calling these functions to run the mbl model. `runMBL()` is used directly in the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) as shown below:   
+Running an MBL modeling approach is accomplished using a couple functions from the [resemble package](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#resemble): `mblControl()` and `mbl()`. Full documentation for these functions is linked below and the following sections describe how they can be used.
+
+**MBL**- [*Resemble mbl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mbl)    
+
+```
+mbl(Yr, Xr, Yu = NULL, Xu,    
+    mblCtrl = mblControl(),      
+    dissimilarityM,     
+    group = NULL,     
+    dissUsage = "predictors",      
+    k, k.diss, k.range,     
+    method,      
+    pls.c, pls.max.iter = 1, pls.tol = 1e-6,     
+    noise.v = 0.001,     
+    ...)
+```
+**MBL Control**- [*Resemble mblControl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mblControl)    
+
+```
+mblControl(sm = "pc",
+           pcSelection = list("opc", 40),
+           pcMethod = "svd",
+           ws = if(sm == "movcor") 41,
+           k0,
+           returnDiss = FALSE,
+           center = TRUE,
+           scaled = TRUE,
+           valMethod = c("NNv", "loc_crossval"),
+           localOptimization = TRUE,
+           resampling = 10, 
+           p = 0.75,
+           range.pred.lim = TRUE,
+           progress = TRUE,
+           cores = 1,            
+           allowParallel = TRUE)
+```
+
+### `runMBL()` {-}
+`runMBL()` is a wrapper function for loading the appropriate datasets and calling the resemble functions for running an mbl model. It is used directly in the [demo script](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#demo-script) as shown below:   
 
 ```{r, eval=FALSE}
 source("Functions/mbl_functions.R")
 mbl.OC <- runMBL(PROP="OC", REFNAME="refSet", PREDNAME="predSet")
 ```
 
-### `runMBL()` {-}
-
-* `runMBL( {see below} )`
+* `runMBL()`
     + `PROP`: *string*- The column name of the soil property of interest.
     + `REFNAME`: *string*- The name of the reference set variable, if it is already loaded into the R environment. Use REFNAME or REFPATH
     + `REFPATH`: *string*- The path of the RData file containing your reference set, if the reference set is not already loaded. Use REFNAME or REFPATH
@@ -151,40 +187,7 @@ if(SAVENAME != "none"){
 ### Modeling Parameters {-}
 This section explains some of the main ways to customize and optimize mbl models using `mbl()` and `mblControl()` in the [resemble package](https://whrc.github.io/Soil-Predictions-MIR/getting-started.html#resemble). Full documentation on these functions are linked below:    
 
-**MBL**- [*Resemble mbl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mbl)    
 
-```
-mbl(Yr, Xr, Yu = NULL, Xu,    
-    mblCtrl = mblControl(),      
-    dissimilarityM,     
-    group = NULL,     
-    dissUsage = "predictors",      
-    k, k.diss, k.range,     
-    method,      
-    pls.c, pls.max.iter = 1, pls.tol = 1e-6,     
-    noise.v = 0.001,     
-    ...)
-```
-**MBL Control**- [*Resemble mblControl() Documentation*](https://www.rdocumentation.org/packages/resemble/versions/1.2.2/topics/mblControl)    
-
-```
-mblControl(sm = "pc",
-           pcSelection = list("opc", 40),
-           pcMethod = "svd",
-           ws = if(sm == "movcor") 41,
-           k0,
-           returnDiss = FALSE,
-           center = TRUE,
-           scaled = TRUE,
-           valMethod = c("NNv", "loc_crossval"),
-           localOptimization = TRUE,
-           resampling = 10, 
-           p = 0.75,
-           range.pred.lim = TRUE,
-           progress = TRUE,
-           cores = 1,            
-           allowParallel = TRUE)
-```
 
 Below is an example workflow showing the decision points of modeling with MBL. These parameters will be describe in the following subsections.
 
