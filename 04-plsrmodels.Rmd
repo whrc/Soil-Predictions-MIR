@@ -19,8 +19,8 @@ pls.predictions <- getModResults(PROP="OC", MODTYPE="PLS", MODNAME= "plsr.OC", P
     + For example, we are using **2720 columns** of spectral data as predictor variables for only **478 rows** of samples in the script to follow. This could cause major issues of overfitting with a simple regression and there may be a lot of redundancy in the data.    
     
 * PLSR models, like Principal Component Analysis (PCA), **reduce the dimensionality** of the dataset by creating a new set of orthogonal variables that explain the most variation in the data called principal components.
-    + Scores: Length of spectral columns. Represented by V in the diagram below
-    + Loadings: Length of number of samples. Represented by U in the diagram below 
+    + Scores: Scores are the location (or distance from origin) of each sample along each principal component. Represented by U in the diagram below.
+    + Loadings: Loadings are the weights of each of the original variables (wavenumbers) used to calculate each principal component. Represented by V in the diagram below.
     
   ![](images/pls_theory.png)^[http://www.statistics4u.com/fundstat_eng/cc_pca_loadscore.html]
 
