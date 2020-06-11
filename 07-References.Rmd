@@ -1,1 +1,3 @@
 # References {-}
+
+*Dangal S.R.S., J. Sanderman, S. Wills, and L. Rameriz-Lopez. 2019. [Accurate and Precise Prediction of Soil Properties from a Large Mid-Infrared Spectral Library](https://www.mdpi.com/2571-8789/3/1/11). Soil Systems 3(1):11. doi:10.3390/soilsystems3010011*

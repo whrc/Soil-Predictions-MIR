@@ -196,7 +196,10 @@ base_offset <- function(x){
 <!--could show head of the spectra, or a figure showing the dimensions-->
 #### Other Transformations {-}
 * Standard Normal Variate
-* First Derivative
+* Derivatives
+* Continuum removal
+* Multiplicative scatter correction
+
 
 #### (Calibration Transfer) {-}
 {Optional}

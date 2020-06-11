@@ -245,10 +245,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>For example, we are using <strong>2720 columns</strong> of spectral data as predictor variables for only <strong>478 rows</strong> of samples in the script to follow. This could cause major issues of overfitting with a simple regression and there may be a lot of redundancy in the data.</li>
 </ul></li>
-<li>PLSR models, like Principal Component Analysis (PCA), <strong>reduce the dimensionality</strong> of the dataset by creating a new set of orthogonal variables that explain the most variation in the data called principal components.
+<li>PLSR models, like Principal Component Analysis (PCA), <strong>reduce the dimensionality</strong> of the dataset by creating a new set of orthogonal variables that explain the most variation in the data, called principal components.
 <ul>
-<li>Scores: Scores are the location (or distance from origin) of each sample along each principal component. Represented by U in the diagram below.</li>
-<li>Loadings: Loadings are the weights of each of the original variables (wavenumbers) used to calculate each principal component. Represented by V in the diagram below.</li>
+<li><strong>Loadings</strong>: Loadings are the weights of each of the original variables (wavenumbers) used to calculate each principal component. Represented by V in the diagram below.</li>
+<li><strong>Scores</strong>: Scores are the location (or distance from origin) of each sample along each principal component. Represented by U in the diagram below.</li>
 </ul>
 <p><img src="images/pls_theory.png" /><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p></li>
 <li>However, instead of <strong>optimizing covariance</strong> amoung only the predictor variables, in this case the spectra, PLS optimizes covariance between the predictors and the response variable, the soil property of interest.
