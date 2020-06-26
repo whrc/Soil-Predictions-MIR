@@ -207,13 +207,13 @@ We can calculate **uncertainty** for our predictions with the **u-deviation** wh
 
 ![](images/udev.png)    
 
-* **ResXValSamp**: The residual variance for the prediction set spectra. See getResXValSamp(). When this is higher, the udeviation is higher.
+* **ResXValSamp**: The residual variance for the prediction set spectra. See `getResXValSamp()`. When this is higher, the udeviation is higher.
 
-* **ResXValTot**: The average residual variance for the reference set spectra. See getResXValTot(). When this is higher, the udeviation is lower. 
+* **ResXValTot**: The average residual variance for the reference set spectra. See `getResXValTot()`. When this is higher, the udeviation is lower. 
 
 * **ResYValVar**: The variance in predictions from their observed values using a cross validation method. When this is higher, the udeviation is higher.
 
-* **Hi**: The leverage is the distance of how far samples in the prediction set are from those in the reference set. See getLeverage(). When this is higher, the udeviation is higher.    
+* **Hi**: The leverage is the distance of how far samples in the prediction set are from those in the reference set. See `getLeverage()`. When this is higher, the udeviation is higher.    
 
 * **Ical**: The number of samples in the calibration/reference set. When this is higher, the u-deviation is lower.
 
