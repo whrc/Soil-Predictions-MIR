@@ -3,6 +3,8 @@ The following section describes the function `getModResults()` which coordinates
 
 1. Getting Predictions     
 
+2. Calculating Uncertainty
+
 2. Generating Summary Statistics   
 
 3. Displaying Plots   
@@ -119,9 +121,9 @@ savePredictions <- function(PREDOBS, PROP, MODTYPE, PREDSET, SAVENAME){
 }
 ```
 
-
 ## Statistics {-}
-After making predictions using either of the modeling methods, various summary statistics can help test the accuracy of those predictions. 
+After making predictions using either of the modeling methods, various summary statistics can help test the accuracy of those predictions. The u-deviation, as a measure of uncertainty, can help assess how much each prediction can be trusted.    
+
 
 ### getModStats() {-}
 The getModStats function returns the following statistics in a dataframe:    
@@ -195,6 +197,145 @@ saveModStats <- function(MODSTATS){
     write.csv(save_table, modStats_file, row.names=FALSE)
   }
   print(paste("Statistics saved to", modStats_file))
+}
+```
+
+
+### calcUDev() {-}    
+We can calculate **uncertainty** for our predictions with the **u-deviation** which takes into account both differences in the spectra of the prediction and reference sets, as well as the prediction performance measured against observed values. The equation for the u-deviation is shown below and explained within 
+[**The Unscrambler Method References**](https://www.camo.com/helpdocs/The_Unscrambler_Method_References.pdf)    
+
+![](images/udev.png)    
+
+* **ResXValSamp**: The residual variance for the prediction set spectra. See getResXValSamp(). When this is higher, the udeviation is higher.
+
+* **ResXValTot**: The average residual variance for the reference set spectra. See getResXValTot(). When this is higher, the udeviation is lower. 
+
+* **ResYValVar**: The variance in predictions from their observed values using a cross validation method. When this is higher, the udeviation is higher.
+
+* **Hi**: The leverage is the distance of how far samples in the prediction set are from those in the reference set. See getLeverage(). When this is higher, the udeviation is higher.    
+
+* **Ical**: The number of samples in the calibration/reference set. When this is higher, the u-deviation is lower.
+
+
+The following functions orchestrate these calculations: 
+
+#### `calcUDev()` {-}   
+This function prepares the input terms of the u-deviation equation, calling the following functions in this section, and then makes the calculation. u-deviation estimates for each prediction and number of components in the model, will be returned as a matrix.    
+
+To calculate the u-deviation run `source("Functions/udev_functions.R")` to load the appropriate functions and
+`udeviation <- calcUDev(plsr.OC, refSet, predSet, "OC")` with the model, reference set, prediction set and property you are working with.    
+
+```{r eval=FALSE}
+calcUDev <- function(MODEL, REFSET, PREDSET, PROP){
+  
+  x.cal.scores <- MODEL$scores  # Scores of reference + prediction sets
+  x.val.scores <- predict(MODEL, newdata = PREDSET$spc, type = "scores") 
+  y.val.pred <- predict(MODEL, newdata = PREDSET$spc)
+  y.val.pred <- y.val.pred[,1,] # Predictions
+  loadings <- MODEL$loadings    # Model loadings
+  x.val <- PREDSET$spc          # Spectra of prediction set
+  obs <- PREDSET[,PROP]         # Lab data for prediction set
+  ncalobj <- nrow(REFSET)       # Number of callibration samples
+  
+  # Get Leverage
+  Hi <- getLeverage(x.cal.scores, x.val.scores)
+  
+  # Get ResXValSamp
+  ResXValSamp <- getResXValSamp(PREDSET$spc, REFSET$spc, x.val.scores, loadings)
+  
+  # Get ResXValTot
+  ResXValTot <- getTotResXCal(REFSET$spc, x.cal.scores, loadings)
+  
+  # Get ResYValVar
+  ResYValVar <- MSEP(MODEL, intercept=FALSE)$val[1,1,]
+  
+  # Get U-Deviation
+  udev <- getYdev(ResYValVar, ResXValSamp, ResXValTot, Hi, ncalobj)
+  
+  return(udev)
+  
+}
+```
+
+#### `getYdev()` {-}
+Performs the equation for the u-deviation, given input parameters.    
+
+```{r}
+# Compute prediction error ydev
+getYdev <- function(ResYValVar, ResXValSamp, ResXValTot, Hi.pr, ncalobj){
+  nobj <- dim(ResXValSamp)[1]
+  ncomp <- dim(ResXValSamp)[2]
+  ydev <- matrix(0, nrow= nobj, ncol=ncomp)
+  for( i in 1:ncomp){  
+    ydev[,i] <- sqrt(ResYValVar[i] * (ResXValSamp[,i]/ResXValTot[i] + Hi[,i] + 1/ncalobj) * (1- (i+1)/ncalobj))
+  }
+  return(ydev)
+}
+```
+
+#### `getResXValSamp()` {-}
+Gets the residual variance for the prediction set spectra
+```{r, eval=FALSE}
+getResXValSamp <- function(x.val.mat,x.cal.mat,x.val.scores,x.cal.loadings){
+  nobj <- dim(x.val.mat)[1]                   # Number of samples in the prediction set
+  ncomp <- dim(x.val.scores)[2]               # Number of componenets in the model
+  npred <- dim(x.cal.loadings)[1]             # Number of spectral columns
+  res.val <- matrix(0, nrow=nobj, ncol=ncomp) # Empty matrix [prediction set samples X number of components]
+  Xmeans.cal <- colMeans(x.cal.mat)           # Reference set means for each spectral column
+  
+  # Subtracting Reference set spectral means from the prediction set spectral values
+  X.center <- x.val.mat - matrix(rep(Xmeans.cal, each = nobj), nrow=nobj)
+  
+  # For each component in the model...
+  for(i in 1:ncomp){
+    x.fac.load.wts <- x.val.scores[,1:i, drop=FALSE] %*% t(x.cal.loadings[,1:i,drop=FALSE])
+    res.val[,i] <- rowSums((-x.fac.load.wts + X.center)^2)/(npred-i) # Residual variance for prediction set spectra
+  }
+  return(res.val)
+}
+```
+
+#### `getTotResXCal()` {-}
+Gets the average residual variance for the reference/callibration set spectra.
+```{r}
+getTotResXCal <- function(x.cal.mat,x.cal.scores,x.cal.loadings){
+  nobj <- dim(x.cal.mat)[1]                   # Number of samples in the reference set
+  ncomp <- dim(x.cal.scores)[2]               # Number of components in the model
+  npred <- dim(x.cal.loadings)[1]             # Number of spectral columns
+  res.val <- matrix(0, nrow=nobj, ncol=ncomp) # Empty matrix [reference set samples X number of components]
+  X.center <- scale(x.cal.mat, scale=FALSE)   # Scaled reference set spectra
+  for(i in 1:ncomp){
+    x.fac.load.wts <- x.cal.scores[,1:i, drop=FALSE] %*% t(x.cal.loadings[,1:i,drop=FALSE])
+    res.val[,i] <- rowSums((-x.fac.load.wts + X.center)^2)/(npred-i) # Residual variance for refset spectra
+    
+  }
+  tot.res <- colMeans(res.val) # Average residual variance
+  return(tot.res)
+}
+```
+
+#### `getLeverage()` {-}   
+Gets the the distance of how far samples in the prediction set are from those in the reference set.
+```{r}
+getLeverage <- function(scores.calib, scores.valid){
+  ta.calib <- diag(crossprod(scores.calib))
+  ta.calib1 <- matrix(rep(ta.calib, each = nrow(scores.valid)), nrow=nrow(scores.valid))
+  ncal <- dim(scores.calib)[1]
+  Hi <- scores.valid^2 / ta.calib1
+  ncomp <- dim(scores.valid)[2]
+  nobj <- dim(scores.valid)[1]
+  Hi.pr <- matrix(0, nrow=nobj, ncol=ncomp)
+  for(i in 1:ncomp){
+    if(i == 1){
+      Hi.pr[,1] <- Hi[,1]
+    }
+    else {
+      Hi.pr[,i] <- rowSums(Hi[,1:i]) 
+    }
+  }
+  Hi.pr <- Hi.pr + (1/ncal)
+  return(Hi.pr)
 }
 ```
 

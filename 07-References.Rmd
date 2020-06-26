@@ -1,3 +1,9 @@
 # References {-}
 
 *Dangal S.R.S., J. Sanderman, S. Wills, and L. Rameriz-Lopez. 2019. [Accurate and Precise Prediction of Soil Properties from a Large Mid-Infrared Spectral Library](https://www.mdpi.com/2571-8789/3/1/11). Soil Systems 3(1):11. doi:10.3390/soilsystems3010011*
+
+*Vries, S. De, and Cajo J.f. Ter Braak. “Prediction Error in Partial Least Squares Regression: a Critique on the Deviation Used in The Unscrambler.” Chemometrics and Intelligent Laboratory Systems, vol. 30, no. 2, 1995, pp. 239–245., doi:10.1016/0169-7439(95)00030-5.*
+
+
+
+

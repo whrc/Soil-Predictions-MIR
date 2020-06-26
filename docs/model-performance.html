@@ -198,6 +198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#statistics"><i class="fa fa-check"></i>Statistics</a><ul>
 <li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#getmodstats"><i class="fa fa-check"></i>getModStats()</a></li>
 <li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#savemodstats"><i class="fa fa-check"></i>saveModStats()</a></li>
+<li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#calcudev"><i class="fa fa-check"></i>calcUDev()</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="model-performance.html"><a href="model-performance.html#plots"><i class="fa fa-check"></i>Plots</a><ul>
 <li><a href="model-performance.html#plotpred"><code>plotPred()</code></a></li>
@@ -229,6 +230,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The following section describes the function <code>getModResults()</code> which coordinates the steps after your pls or mbl model is created:</p>
 <ol style="list-style-type: decimal">
 <li><p>Getting Predictions</p></li>
+<li><p>Calculating Uncertainty</p></li>
 <li><p>Generating Summary Statistics</p></li>
 <li><p>Displaying Plots</p></li>
 </ol>
@@ -343,7 +345,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="statistics" class="section level2 unnumbered">
 <h2>Statistics</h2>
-<p>After making predictions using either of the modeling methods, various summary statistics can help test the accuracy of those predictions.</p>
+<p>After making predictions using either of the modeling methods, various summary statistics can help test the accuracy of those predictions. The u-deviation, as a measure of uncertainty, can help assess how much each prediction can be trusted.</p>
 <div id="getmodstats" class="section level3 unnumbered">
 <h3>getModStats()</h3>
 <p>The getModStats function returns the following statistics in a dataframe:</p>
@@ -421,31 +423,156 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb57-13" data-line-number="13">  <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Statistics saved to&quot;</span>, modStats_file))</a>
 <a class="sourceLine" id="cb57-14" data-line-number="14">}</a></code></pre></div>
 </div>
+<div id="calcudev" class="section level3 unnumbered">
+<h3>calcUDev()</h3>
+<p>We can calculate <strong>uncertainty</strong> for our predictions with the <strong>u-deviation</strong> which takes into account both differences in the spectra of the prediction and reference sets, as well as the prediction performance measured against observed values. The equation for the u-deviation is shown below and explained within
+<a href="https://www.camo.com/helpdocs/The_Unscrambler_Method_References.pdf"><strong>The Unscrambler Method References</strong></a></p>
+<p><img src="images/udev.png" /></p>
+<ul>
+<li><p><strong>ResXValSamp</strong>: The residual variance for the prediction set spectra. See getResXValSamp(). When this is higher, the udeviation is higher.</p></li>
+<li><p><strong>ResXValTot</strong>: The average residual variance for the reference set spectra. See getResXValTot(). When this is higher, the udeviation is lower.</p></li>
+<li><p><strong>ResYValVar</strong>: The variance in predictions from their observed values using a cross validation method. When this is higher, the udeviation is higher.</p></li>
+<li><p><strong>Hi</strong>: The leverage is the distance of how far samples in the prediction set are from those in the reference set. See getLeverage(). When this is higher, the udeviation is higher.</p></li>
+<li><p><strong>Ical</strong>: The number of samples in the calibration/reference set. When this is higher, the u-deviation is lower.</p></li>
+</ul>
+<p>The following functions orchestrate these calculations:</p>
+<div id="calcudev-1" class="section level4 unnumbered">
+<h4><code>calcUDev()</code></h4>
+<p>This function prepares the input terms of the u-deviation equation, calling the following functions in this section, and then makes the calculation. u-deviation estimates for each prediction and number of components in the model, will be returned as a matrix.</p>
+<p>To calculate the u-deviation run <code>source(&quot;Functions/udev_functions.R&quot;)</code> to load the appropriate functions and
+<code>udeviation &lt;- calcUDev(plsr.OC, refSet, predSet, &quot;OC&quot;)</code> with the model, reference set, prediction set and property you are working with.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">calcUDev &lt;-<span class="st"> </span><span class="cf">function</span>(MODEL, REFSET, PREDSET, PROP){</a>
+<a class="sourceLine" id="cb58-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb58-3" data-line-number="3">  x.cal.scores &lt;-<span class="st"> </span>MODEL<span class="op">$</span>scores  <span class="co"># Scores of reference + prediction sets</span></a>
+<a class="sourceLine" id="cb58-4" data-line-number="4">  x.val.scores &lt;-<span class="st"> </span><span class="kw">predict</span>(MODEL, <span class="dt">newdata =</span> PREDSET<span class="op">$</span>spc, <span class="dt">type =</span> <span class="st">&quot;scores&quot;</span>) </a>
+<a class="sourceLine" id="cb58-5" data-line-number="5">  y.val.pred &lt;-<span class="st"> </span><span class="kw">predict</span>(MODEL, <span class="dt">newdata =</span> PREDSET<span class="op">$</span>spc)</a>
+<a class="sourceLine" id="cb58-6" data-line-number="6">  y.val.pred &lt;-<span class="st"> </span>y.val.pred[,<span class="dv">1</span>,] <span class="co"># Predictions</span></a>
+<a class="sourceLine" id="cb58-7" data-line-number="7">  loadings &lt;-<span class="st"> </span>MODEL<span class="op">$</span>loadings    <span class="co"># Model loadings</span></a>
+<a class="sourceLine" id="cb58-8" data-line-number="8">  x.val &lt;-<span class="st"> </span>PREDSET<span class="op">$</span>spc          <span class="co"># Spectra of prediction set</span></a>
+<a class="sourceLine" id="cb58-9" data-line-number="9">  obs &lt;-<span class="st"> </span>PREDSET[,PROP]         <span class="co"># Lab data for prediction set</span></a>
+<a class="sourceLine" id="cb58-10" data-line-number="10">  ncalobj &lt;-<span class="st"> </span><span class="kw">nrow</span>(REFSET)       <span class="co"># Number of callibration samples</span></a>
+<a class="sourceLine" id="cb58-11" data-line-number="11">  </a>
+<a class="sourceLine" id="cb58-12" data-line-number="12">  <span class="co"># Get Leverage</span></a>
+<a class="sourceLine" id="cb58-13" data-line-number="13">  Hi &lt;-<span class="st"> </span><span class="kw">getLeverage</span>(x.cal.scores, x.val.scores)</a>
+<a class="sourceLine" id="cb58-14" data-line-number="14">  </a>
+<a class="sourceLine" id="cb58-15" data-line-number="15">  <span class="co"># Get ResXValSamp</span></a>
+<a class="sourceLine" id="cb58-16" data-line-number="16">  ResXValSamp &lt;-<span class="st"> </span><span class="kw">getResXValSamp</span>(PREDSET<span class="op">$</span>spc, REFSET<span class="op">$</span>spc, x.val.scores, loadings)</a>
+<a class="sourceLine" id="cb58-17" data-line-number="17">  </a>
+<a class="sourceLine" id="cb58-18" data-line-number="18">  <span class="co"># Get ResXValTot</span></a>
+<a class="sourceLine" id="cb58-19" data-line-number="19">  ResXValTot &lt;-<span class="st"> </span><span class="kw">getTotResXCal</span>(REFSET<span class="op">$</span>spc, x.cal.scores, loadings)</a>
+<a class="sourceLine" id="cb58-20" data-line-number="20">  </a>
+<a class="sourceLine" id="cb58-21" data-line-number="21">  <span class="co"># Get ResYValVar</span></a>
+<a class="sourceLine" id="cb58-22" data-line-number="22">  ResYValVar &lt;-<span class="st"> </span><span class="kw">MSEP</span>(MODEL, <span class="dt">intercept=</span><span class="ot">FALSE</span>)<span class="op">$</span>val[<span class="dv">1</span>,<span class="dv">1</span>,]</a>
+<a class="sourceLine" id="cb58-23" data-line-number="23">  </a>
+<a class="sourceLine" id="cb58-24" data-line-number="24">  <span class="co"># Get U-Deviation</span></a>
+<a class="sourceLine" id="cb58-25" data-line-number="25">  udev &lt;-<span class="st"> </span><span class="kw">getYdev</span>(ResYValVar, ResXValSamp, ResXValTot, Hi, ncalobj)</a>
+<a class="sourceLine" id="cb58-26" data-line-number="26">  </a>
+<a class="sourceLine" id="cb58-27" data-line-number="27">  <span class="kw">return</span>(udev)</a>
+<a class="sourceLine" id="cb58-28" data-line-number="28">  </a>
+<a class="sourceLine" id="cb58-29" data-line-number="29">}</a></code></pre></div>
+</div>
+<div id="getydev" class="section level4 unnumbered">
+<h4><code>getYdev()</code></h4>
+<p>Performs the equation for the u-deviation, given input parameters.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1"><span class="co"># Compute prediction error ydev</span></a>
+<a class="sourceLine" id="cb59-2" data-line-number="2">getYdev &lt;-<span class="st"> </span><span class="cf">function</span>(ResYValVar, ResXValSamp, ResXValTot, Hi.pr, ncalobj){</a>
+<a class="sourceLine" id="cb59-3" data-line-number="3">  nobj &lt;-<span class="st"> </span><span class="kw">dim</span>(ResXValSamp)[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb59-4" data-line-number="4">  ncomp &lt;-<span class="st"> </span><span class="kw">dim</span>(ResXValSamp)[<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb59-5" data-line-number="5">  ydev &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span> nobj, <span class="dt">ncol=</span>ncomp)</a>
+<a class="sourceLine" id="cb59-6" data-line-number="6">  <span class="cf">for</span>( i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>ncomp){  </a>
+<a class="sourceLine" id="cb59-7" data-line-number="7">    ydev[,i] &lt;-<span class="st"> </span><span class="kw">sqrt</span>(ResYValVar[i] <span class="op">*</span><span class="st"> </span>(ResXValSamp[,i]<span class="op">/</span>ResXValTot[i] <span class="op">+</span><span class="st"> </span>Hi[,i] <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>ncalobj) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span><span class="st"> </span>(i<span class="op">+</span><span class="dv">1</span>)<span class="op">/</span>ncalobj))</a>
+<a class="sourceLine" id="cb59-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb59-9" data-line-number="9">  <span class="kw">return</span>(ydev)</a>
+<a class="sourceLine" id="cb59-10" data-line-number="10">}</a></code></pre></div>
+</div>
+<div id="getresxvalsamp" class="section level4 unnumbered">
+<h4><code>getResXValSamp()</code></h4>
+<p>Gets the residual variance for the prediction set spectra</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1">getResXValSamp &lt;-<span class="st"> </span><span class="cf">function</span>(x.val.mat,x.cal.mat,x.val.scores,x.cal.loadings){</a>
+<a class="sourceLine" id="cb60-2" data-line-number="2">  nobj &lt;-<span class="st"> </span><span class="kw">dim</span>(x.val.mat)[<span class="dv">1</span>]                   <span class="co"># Number of samples in the prediction set</span></a>
+<a class="sourceLine" id="cb60-3" data-line-number="3">  ncomp &lt;-<span class="st"> </span><span class="kw">dim</span>(x.val.scores)[<span class="dv">2</span>]               <span class="co"># Number of componenets in the model</span></a>
+<a class="sourceLine" id="cb60-4" data-line-number="4">  npred &lt;-<span class="st"> </span><span class="kw">dim</span>(x.cal.loadings)[<span class="dv">1</span>]             <span class="co"># Number of spectral columns</span></a>
+<a class="sourceLine" id="cb60-5" data-line-number="5">  res.val &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span>nobj, <span class="dt">ncol=</span>ncomp) <span class="co"># Empty matrix [prediction set samples X number of components]</span></a>
+<a class="sourceLine" id="cb60-6" data-line-number="6">  Xmeans.cal &lt;-<span class="st"> </span><span class="kw">colMeans</span>(x.cal.mat)           <span class="co"># Reference set means for each spectral column</span></a>
+<a class="sourceLine" id="cb60-7" data-line-number="7">  </a>
+<a class="sourceLine" id="cb60-8" data-line-number="8">  <span class="co"># Subtracting Reference set spectral means from the prediction set spectral values</span></a>
+<a class="sourceLine" id="cb60-9" data-line-number="9">  X.center &lt;-<span class="st"> </span>x.val.mat <span class="op">-</span><span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rep</span>(Xmeans.cal, <span class="dt">each =</span> nobj), <span class="dt">nrow=</span>nobj)</a>
+<a class="sourceLine" id="cb60-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb60-11" data-line-number="11">  <span class="co"># For each component in the model...</span></a>
+<a class="sourceLine" id="cb60-12" data-line-number="12">  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>ncomp){</a>
+<a class="sourceLine" id="cb60-13" data-line-number="13">    x.fac.load.wts &lt;-<span class="st"> </span>x.val.scores[,<span class="dv">1</span><span class="op">:</span>i, drop=<span class="ot">FALSE</span>] <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(x.cal.loadings[,<span class="dv">1</span><span class="op">:</span>i,<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
+<a class="sourceLine" id="cb60-14" data-line-number="14">    res.val[,i] &lt;-<span class="st"> </span><span class="kw">rowSums</span>((<span class="op">-</span>x.fac.load.wts <span class="op">+</span><span class="st"> </span>X.center)<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(npred<span class="op">-</span>i) <span class="co"># Residual variance for prediction set spectra</span></a>
+<a class="sourceLine" id="cb60-15" data-line-number="15">  }</a>
+<a class="sourceLine" id="cb60-16" data-line-number="16">  <span class="kw">return</span>(res.val)</a>
+<a class="sourceLine" id="cb60-17" data-line-number="17">}</a></code></pre></div>
+</div>
+<div id="gettotresxcal" class="section level4 unnumbered">
+<h4><code>getTotResXCal()</code></h4>
+<p>Gets the average residual variance for the reference/callibration set spectra.</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">getTotResXCal &lt;-<span class="st"> </span><span class="cf">function</span>(x.cal.mat,x.cal.scores,x.cal.loadings){</a>
+<a class="sourceLine" id="cb61-2" data-line-number="2">  nobj &lt;-<span class="st"> </span><span class="kw">dim</span>(x.cal.mat)[<span class="dv">1</span>]                   <span class="co"># Number of samples in the reference set</span></a>
+<a class="sourceLine" id="cb61-3" data-line-number="3">  ncomp &lt;-<span class="st"> </span><span class="kw">dim</span>(x.cal.scores)[<span class="dv">2</span>]               <span class="co"># Number of components in the model</span></a>
+<a class="sourceLine" id="cb61-4" data-line-number="4">  npred &lt;-<span class="st"> </span><span class="kw">dim</span>(x.cal.loadings)[<span class="dv">1</span>]             <span class="co"># Number of spectral columns</span></a>
+<a class="sourceLine" id="cb61-5" data-line-number="5">  res.val &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span>nobj, <span class="dt">ncol=</span>ncomp) <span class="co"># Empty matrix [reference set samples X number of components]</span></a>
+<a class="sourceLine" id="cb61-6" data-line-number="6">  X.center &lt;-<span class="st"> </span><span class="kw">scale</span>(x.cal.mat, <span class="dt">scale=</span><span class="ot">FALSE</span>)   <span class="co"># Scaled reference set spectra</span></a>
+<a class="sourceLine" id="cb61-7" data-line-number="7">  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>ncomp){</a>
+<a class="sourceLine" id="cb61-8" data-line-number="8">    x.fac.load.wts &lt;-<span class="st"> </span>x.cal.scores[,<span class="dv">1</span><span class="op">:</span>i, drop=<span class="ot">FALSE</span>] <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(x.cal.loadings[,<span class="dv">1</span><span class="op">:</span>i,<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
+<a class="sourceLine" id="cb61-9" data-line-number="9">    res.val[,i] &lt;-<span class="st"> </span><span class="kw">rowSums</span>((<span class="op">-</span>x.fac.load.wts <span class="op">+</span><span class="st"> </span>X.center)<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(npred<span class="op">-</span>i) <span class="co"># Residual variance for refset spectra</span></a>
+<a class="sourceLine" id="cb61-10" data-line-number="10">    </a>
+<a class="sourceLine" id="cb61-11" data-line-number="11">  }</a>
+<a class="sourceLine" id="cb61-12" data-line-number="12">  tot.res &lt;-<span class="st"> </span><span class="kw">colMeans</span>(res.val) <span class="co"># Average residual variance</span></a>
+<a class="sourceLine" id="cb61-13" data-line-number="13">  <span class="kw">return</span>(tot.res)</a>
+<a class="sourceLine" id="cb61-14" data-line-number="14">}</a></code></pre></div>
+</div>
+<div id="getleverage" class="section level4 unnumbered">
+<h4><code>getLeverage()</code></h4>
+<p>Gets the the distance of how far samples in the prediction set are from those in the reference set.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1">getLeverage &lt;-<span class="st"> </span><span class="cf">function</span>(scores.calib, scores.valid){</a>
+<a class="sourceLine" id="cb62-2" data-line-number="2">  ta.calib &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">crossprod</span>(scores.calib))</a>
+<a class="sourceLine" id="cb62-3" data-line-number="3">  ta.calib1 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rep</span>(ta.calib, <span class="dt">each =</span> <span class="kw">nrow</span>(scores.valid)), <span class="dt">nrow=</span><span class="kw">nrow</span>(scores.valid))</a>
+<a class="sourceLine" id="cb62-4" data-line-number="4">  ncal &lt;-<span class="st"> </span><span class="kw">dim</span>(scores.calib)[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb62-5" data-line-number="5">  Hi &lt;-<span class="st"> </span>scores.valid<span class="op">^</span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span>ta.calib1</a>
+<a class="sourceLine" id="cb62-6" data-line-number="6">  ncomp &lt;-<span class="st"> </span><span class="kw">dim</span>(scores.valid)[<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb62-7" data-line-number="7">  nobj &lt;-<span class="st"> </span><span class="kw">dim</span>(scores.valid)[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb62-8" data-line-number="8">  Hi.pr &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span>nobj, <span class="dt">ncol=</span>ncomp)</a>
+<a class="sourceLine" id="cb62-9" data-line-number="9">  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>ncomp){</a>
+<a class="sourceLine" id="cb62-10" data-line-number="10">    <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">1</span>){</a>
+<a class="sourceLine" id="cb62-11" data-line-number="11">      Hi.pr[,<span class="dv">1</span>] &lt;-<span class="st"> </span>Hi[,<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb62-12" data-line-number="12">    }</a>
+<a class="sourceLine" id="cb62-13" data-line-number="13">    <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb62-14" data-line-number="14">      Hi.pr[,i] &lt;-<span class="st"> </span><span class="kw">rowSums</span>(Hi[,<span class="dv">1</span><span class="op">:</span>i]) </a>
+<a class="sourceLine" id="cb62-15" data-line-number="15">    }</a>
+<a class="sourceLine" id="cb62-16" data-line-number="16">  }</a>
+<a class="sourceLine" id="cb62-17" data-line-number="17">  Hi.pr &lt;-<span class="st"> </span>Hi.pr <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">/</span>ncal)</a>
+<a class="sourceLine" id="cb62-18" data-line-number="18">  <span class="kw">return</span>(Hi.pr)</a>
+<a class="sourceLine" id="cb62-19" data-line-number="19">}</a></code></pre></div>
+</div>
+</div>
 </div>
 <div id="plots" class="section level2 unnumbered">
 <h2>Plots</h2>
 <p>The following function creates a scatter plot of the observed lab data against the predictions, showing the line of best fit and its equation, as well as some summary statistics.</p>
 <div id="plotpred" class="section level3 unnumbered">
 <h3><code>plotPred()</code></h3>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">plotPred &lt;-<span class="st"> </span><span class="cf">function</span>(x,y, stats, <span class="dt">name=</span><span class="ot">NA</span>, <span class="dt">units=</span><span class="ot">NA</span>){</a>
-<a class="sourceLine" id="cb58-2" data-line-number="2">  max &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">c</span>(x,y))</a>
-<a class="sourceLine" id="cb58-3" data-line-number="3">  lims =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,(<span class="fl">1.1</span><span class="op">*</span>max))</a>
-<a class="sourceLine" id="cb58-4" data-line-number="4">  <span class="kw">plot</span>(y <span class="op">~</span><span class="st"> </span>x, </a>
-<a class="sourceLine" id="cb58-5" data-line-number="5">       <span class="dt">ylab =</span> <span class="kw">paste</span>(<span class="st">&quot;Predicted&quot;</span>, units), </a>
-<a class="sourceLine" id="cb58-6" data-line-number="6">       <span class="dt">xlab=</span><span class="kw">paste</span>(<span class="st">&quot;Observed&quot;</span>, units), </a>
-<a class="sourceLine" id="cb58-7" data-line-number="7">       <span class="dt">xlim =</span> lims,</a>
-<a class="sourceLine" id="cb58-8" data-line-number="8">       <span class="dt">ylim=</span>lims,<span class="dt">main =</span> <span class="kw">paste</span>(name))</a>
-<a class="sourceLine" id="cb58-9" data-line-number="9">  </a>
-<a class="sourceLine" id="cb58-10" data-line-number="10">  </a>
-<a class="sourceLine" id="cb58-11" data-line-number="11">  reg_model &lt;-<span class="kw">lm</span>(y<span class="op">~</span>x)</a>
-<a class="sourceLine" id="cb58-12" data-line-number="12">  <span class="kw">abline</span>(reg_model)</a>
-<a class="sourceLine" id="cb58-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb58-14" data-line-number="14">  topstats &lt;-<span class="st"> </span><span class="kw">bquote</span>(R<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>R2) <span class="op">*</span><span class="st"> &quot;,&quot;</span> <span class="op">~</span><span class="er">~</span><span class="kw">italic</span>(bias)<span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>bias) <span class="op">*</span><span class="st"> &quot;,&quot;</span> <span class="op">~</span><span class="er">~</span><span class="st"> </span>RMSE <span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>RMSE))</a>
-<a class="sourceLine" id="cb58-15" data-line-number="15">  <span class="kw">text</span>(<span class="kw">min</span>(x,y),<span class="kw">max</span>(x,y), topstats, <span class="dt">pos =</span> <span class="dv">4</span>, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
-<a class="sourceLine" id="cb58-16" data-line-number="16">  </a>
-<a class="sourceLine" id="cb58-17" data-line-number="17">  eqn &lt;-<span class="st"> </span><span class="kw">bquote</span>(y<span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>Slope) <span class="op">*</span><span class="st"> &quot;x&quot;</span>  <span class="op">*</span><span class="st"> &quot; + &quot;</span> <span class="op">*</span><span class="st"> </span>.(stats<span class="op">$</span>Y_Int))</a>
-<a class="sourceLine" id="cb58-18" data-line-number="18">  <span class="kw">text</span>(<span class="kw">min</span>(x,y),<span class="kw">max</span>(x,y)<span class="op">-</span>(<span class="kw">max</span>(x,y)<span class="op">-</span><span class="kw">min</span>(x,y))<span class="op">/</span><span class="dv">10</span>, eqn, <span class="dt">pos =</span> <span class="dv">4</span>, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
-<a class="sourceLine" id="cb58-19" data-line-number="19">}</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1">plotPred &lt;-<span class="st"> </span><span class="cf">function</span>(x,y, stats, <span class="dt">name=</span><span class="ot">NA</span>, <span class="dt">units=</span><span class="ot">NA</span>){</a>
+<a class="sourceLine" id="cb63-2" data-line-number="2">  max &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">c</span>(x,y))</a>
+<a class="sourceLine" id="cb63-3" data-line-number="3">  lims =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,(<span class="fl">1.1</span><span class="op">*</span>max))</a>
+<a class="sourceLine" id="cb63-4" data-line-number="4">  <span class="kw">plot</span>(y <span class="op">~</span><span class="st"> </span>x, </a>
+<a class="sourceLine" id="cb63-5" data-line-number="5">       <span class="dt">ylab =</span> <span class="kw">paste</span>(<span class="st">&quot;Predicted&quot;</span>, units), </a>
+<a class="sourceLine" id="cb63-6" data-line-number="6">       <span class="dt">xlab=</span><span class="kw">paste</span>(<span class="st">&quot;Observed&quot;</span>, units), </a>
+<a class="sourceLine" id="cb63-7" data-line-number="7">       <span class="dt">xlim =</span> lims,</a>
+<a class="sourceLine" id="cb63-8" data-line-number="8">       <span class="dt">ylim=</span>lims,<span class="dt">main =</span> <span class="kw">paste</span>(name))</a>
+<a class="sourceLine" id="cb63-9" data-line-number="9">  </a>
+<a class="sourceLine" id="cb63-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb63-11" data-line-number="11">  reg_model &lt;-<span class="kw">lm</span>(y<span class="op">~</span>x)</a>
+<a class="sourceLine" id="cb63-12" data-line-number="12">  <span class="kw">abline</span>(reg_model)</a>
+<a class="sourceLine" id="cb63-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb63-14" data-line-number="14">  topstats &lt;-<span class="st"> </span><span class="kw">bquote</span>(R<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>R2) <span class="op">*</span><span class="st"> &quot;,&quot;</span> <span class="op">~</span><span class="er">~</span><span class="kw">italic</span>(bias)<span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>bias) <span class="op">*</span><span class="st"> &quot;,&quot;</span> <span class="op">~</span><span class="er">~</span><span class="st"> </span>RMSE <span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>RMSE))</a>
+<a class="sourceLine" id="cb63-15" data-line-number="15">  <span class="kw">text</span>(<span class="kw">min</span>(x,y),<span class="kw">max</span>(x,y), topstats, <span class="dt">pos =</span> <span class="dv">4</span>, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
+<a class="sourceLine" id="cb63-16" data-line-number="16">  </a>
+<a class="sourceLine" id="cb63-17" data-line-number="17">  eqn &lt;-<span class="st"> </span><span class="kw">bquote</span>(y<span class="op">==</span><span class="st"> </span>.(stats<span class="op">$</span>Slope) <span class="op">*</span><span class="st"> &quot;x&quot;</span>  <span class="op">*</span><span class="st"> &quot; + &quot;</span> <span class="op">*</span><span class="st"> </span>.(stats<span class="op">$</span>Y_Int))</a>
+<a class="sourceLine" id="cb63-18" data-line-number="18">  <span class="kw">text</span>(<span class="kw">min</span>(x,y),<span class="kw">max</span>(x,y)<span class="op">-</span>(<span class="kw">max</span>(x,y)<span class="op">-</span><span class="kw">min</span>(x,y))<span class="op">/</span><span class="dv">10</span>, eqn, <span class="dt">pos =</span> <span class="dv">4</span>, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
+<a class="sourceLine" id="cb63-19" data-line-number="19">}</a></code></pre></div>
 <p><img src="images/predplot.png" /></p>
 
 </div>
