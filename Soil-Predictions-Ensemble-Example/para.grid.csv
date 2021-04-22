@@ -1,25 +1,21 @@
-﻿Similarity Metric,Use of Similarity Matrix,Local Model
+﻿Similarity_Metric,Usage_Similarity_Matrix,Local_Model
 euclid,none,wapls1
 cosine,none,wapls1
 cor,none,wapls1
-movcor,none,wapls1
 pc,none,wapls1
 pls,none,wapls1
 euclid,predictors,wapls1
 cosine,predictors,wapls1
 cor,predictors,wapls1
-movcor,predictors,wapls1
 pc,predictors,wapls1
 pls,predictors,wapls1
 euclid,none,pls
 cosine,none,pls
 cor,none,pls
-movcor,none,pls
 pc,none,pls
 pls,none,pls
 euclid,predictors,pls
 cosine,predictors,pls
 cor,predictors,pls
-movcor,predictors,pls
 pc,predictors,pls
 pls,predictors,pls

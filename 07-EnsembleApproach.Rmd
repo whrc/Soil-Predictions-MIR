@@ -8,7 +8,6 @@ Model runs vary on 3 variables...
 - euclid
 - cosine
 - cor
-- movcor
 - pc
 - pls
 
@@ -33,7 +32,7 @@ knitr::kable(
 
 ## Getting started {-}
 The best way to get started using this code, is by downloading the `Soil-Predictions-Ensemble-Example` folder found here:    
-[**Soil-Predictions-Ensemble-Example Folder**](https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Example)
+[**Soil-Predictions-Ensemble-Example Folder**](https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Ensemble-Example)
 
 This folder, along with all source code for this guide, can be found in the following Github Repository:    
 [**whrc/Soil-Predictions-MIR**](https://github.com/whrc/Soil-Predictions-MIR)
@@ -59,4 +58,6 @@ Change input calibration and validation spectra (5-6 and throughout), number of 
 
 Creates comprehensive files containing all predictions for each mbl model by property. (ie. pred.oc.csv, pred.bd.csv)
 Creates a file containing the lower, mean and upper prediction estimates for each property across all models (all-predictions.csv)
+
+**Note:** _The calibration set spc.oc.RData, and the transfer matrix pls.moving.w2k.RData- called in the code- were both too large to be hosted in this repository_
 

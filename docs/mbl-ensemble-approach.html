@@ -244,7 +244,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>euclid</li>
 <li>cosine</li>
 <li>cor</li>
-<li>movcor</li>
 <li>pc</li>
 <li>pls</li>
 </ul>
@@ -267,9 +266,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <caption><span id="tab:unnamed-chunk-64">Table 8.1: </span>Model Combinations for Ensemble Approach</caption>
 <thead>
 <tr class="header">
-<th align="left">Similarity.Metric</th>
-<th align="left">Use.of.Similarity.Matrix</th>
-<th align="left">Local.Model</th>
+<th align="left">Similarity_Metric</th>
+<th align="left">Usage_Similarity_Matrix</th>
+<th align="left">Local_Model</th>
 </tr>
 </thead>
 <tbody>
@@ -289,37 +288,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">wapls1</td>
 </tr>
 <tr class="even">
-<td align="left">movcor</td>
-<td align="left">none</td>
-<td align="left">wapls1</td>
-</tr>
-<tr class="odd">
 <td align="left">pc</td>
 <td align="left">none</td>
 <td align="left">wapls1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pls</td>
 <td align="left">none</td>
 <td align="left">wapls1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">euclid</td>
 <td align="left">predictors</td>
 <td align="left">wapls1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">cosine</td>
 <td align="left">predictors</td>
 <td align="left">wapls1</td>
 </tr>
-<tr class="odd">
-<td align="left">cor</td>
-<td align="left">predictors</td>
-<td align="left">wapls1</td>
-</tr>
 <tr class="even">
-<td align="left">movcor</td>
+<td align="left">cor</td>
 <td align="left">predictors</td>
 <td align="left">wapls1</td>
 </tr>
@@ -349,37 +338,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">pls</td>
 </tr>
 <tr class="even">
-<td align="left">movcor</td>
-<td align="left">none</td>
-<td align="left">pls</td>
-</tr>
-<tr class="odd">
 <td align="left">pc</td>
 <td align="left">none</td>
 <td align="left">pls</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pls</td>
 <td align="left">none</td>
 <td align="left">pls</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">euclid</td>
 <td align="left">predictors</td>
 <td align="left">pls</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">cosine</td>
 <td align="left">predictors</td>
 <td align="left">pls</td>
 </tr>
-<tr class="odd">
-<td align="left">cor</td>
-<td align="left">predictors</td>
-<td align="left">pls</td>
-</tr>
 <tr class="even">
-<td align="left">movcor</td>
+<td align="left">cor</td>
 <td align="left">predictors</td>
 <td align="left">pls</td>
 </tr>
@@ -399,7 +378,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="getting-started-1" class="section level2 unnumbered">
 <h2>Getting started</h2>
 <p>The best way to get started using this code, is by downloading the <code>Soil-Predictions-Ensemble-Example</code> folder found here:<br />
-<a href="https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Example"><strong>Soil-Predictions-Ensemble-Example Folder</strong></a></p>
+<a href="https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Ensemble-Example"><strong>Soil-Predictions-Ensemble-Example Folder</strong></a></p>
 <p>This folder, along with all source code for this guide, can be found in the following Github Repository:<br />
 <a href="https://github.com/whrc/Soil-Predictions-MIR"><strong>whrc/Soil-Predictions-MIR</strong></a></p>
 <div id="file-walkthrough-1" class="section level3 unnumbered">
@@ -416,6 +395,7 @@ Change input calibration and validation spectra (5-6 and throughout), number of 
 <p><code>setname-extract.R</code></p>
 <p>Creates comprehensive files containing all predictions for each mbl model by property. (ie. pred.oc.csv, pred.bd.csv)
 Creates a file containing the lower, mean and upper prediction estimates for each property across all models (all-predictions.csv)</p>
+<p><strong>Note:</strong> <em>The calibration set spc.oc.RData, and the transfer matrix pls.moving.w2k.RData- called in the code- were both too large to be hosted in this repository</em></p>
 
 </div>
 </div>
