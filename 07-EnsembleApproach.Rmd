@@ -1,0 +1,62 @@
+# MBL Ensemble Approach
+To make more robust predictions with measures of uncertainty, we use an ensemble approach with MBL. We run 20 mbl models, with different modeling parameters, so each samples has a distribution of predictions. We can then calculate the median prediction, as well as upper and lower confidence bounds.
+
+## Model Iterations {-}
+Model runs vary on 3 variables...
+
+1. _How similarity is determined between samples_ **5 options**
+- euclid
+- cosine
+- cor
+- movcor
+- pc
+- pls
+
+2. _Whether the similarity matrix is used as a predictor variable or not_ **2 options**
+- predictors
+- none
+
+3. _What modeling method is used for making local predictions_ **2 options**
+- pls
+- wapls
+
+**5 x 2 x 2 = 20 model combinations**
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+t <- read_csv("Soil-Predictions-Ensemble-Example/para.grid.csv")
+knitr::kable(
+  data.frame(t), booktabs=TRUE,caption="Model Combinations for Ensemble Approach"
+)
+```
+
+
+## Getting started {-}
+The best way to get started using this code, is by downloading the `Soil-Predictions-Ensemble-Example` folder found here:    
+[**Soil-Predictions-Ensemble-Example Folder**](https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Example)
+
+This folder, along with all source code for this guide, can be found in the following Github Repository:    
+[**whrc/Soil-Predictions-MIR**](https://github.com/whrc/Soil-Predictions-MIR)
+
+
+### File Walkthrough {-}
+`setname_prep.R`
+
+Performs the calibration transfer on the spectra and saves as RData file in ‘spc’ folder
+Change the input csv file, the columns being selected as spectra (lines 11-12), and output name/location
+
+`setname_oc.R`
+
+Submit as a job through cloudops, creates all the mbl models with different parameter combinations, to output/oc folder
+Change input validation and calibration sets (line 32-38), property (oc) throughout the file, output location (line 107) and create output folder for soil property
+
+`setname-fratio.R`
+
+Calculates the fratio for all samples in the calibration and validation sets and outputs a list of outlier indices from the combined dataset. Ex: calibration set indices are 1-15000, validation set indices are from 15001-15240
+Change input calibration and validation spectra (5-6 and throughout), number of directories in line 8 as needed, output location- currently ‘fratio’ subfolder.
+
+`setname-extract.R`
+
+Creates comprehensive files containing all predictions for each mbl model by property. (ie. pred.oc.csv, pred.bd.csv)
+Creates a file containing the lower, mean and upper prediction estimates for each property across all models (all-predictions.csv)
+
