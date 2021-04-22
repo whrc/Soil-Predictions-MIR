@@ -5,7 +5,7 @@ date: "5/8/2020"
 output: html_document
 ---
 
-# Getting Started
+# Getting Started (test branch)
 
 The best way to get started using this code, is by downloading the `Soil-Predictions-Example` folder found here:    
 [**Soil-Predictions-Example Folder**](https://github.com/whrc/Soil-Predictions-MIR/tree/master/Soil-Predictions-Example)
